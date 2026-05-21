@@ -30,7 +30,7 @@
 
     function App() {
       const [data, setData] = useState(null);
-      const [activeTab, setActiveTab] = useState('main');
+      const [activeTab, setActiveTab] = useState('total'); // 初期タブを総合に変更
       const [filterType, setFilterType] = useState('all');
       const [filterValue, setFilterValue] = useState('');
 
@@ -44,7 +44,6 @@
       const periods = useMemo(() => {
         if (!data) return { years: [], quarters: [], halfYears: [] };
         const allDates = [...data.main, ...data.encores].flatMap(s => s.playDates || []);
-        
         const years = [...new Set(allDates.map(d => d.substring(0, 4)))].sort().reverse();
         const quarters = [...new Set(allDates.map(d => {
             const y = d.substring(0, 4);
@@ -56,7 +55,6 @@
             const m = parseInt(d.substring(5, 7));
             return `${y}-H${m <= 6 ? '1' : '2'}`;
         }))].sort().reverse();
-
         return { years, quarters, halfYears };
       }, [data]);
 
@@ -66,36 +64,86 @@
         if (filterType === 'halfYear' && periods.halfYears.length) setFilterValue(periods.halfYears[0]);
       }, [filterType, periods]);
 
+      // ★ 新機能：本編とアンコールのデータを合体させて「総合ランキング」のベースを作る
+      const combinedData = useMemo(() => {
+        if (!data) return [];
+        const map = {};
+        const process = (arr, isEncore) => {
+            (arr || []).forEach(song => {
+                if (!map[song.name]) {
+                    map[song.name] = { name: song.name, mainDates: [], encoreDates: [], lastPlayed: "" };
+                }
+                if (isEncore) {
+                    map[song.name].encoreDates.push(...(song.playDates || []));
+                } else {
+                    map[song.name].mainDates.push(...(song.playDates || []));
+                }
+                if (!map[song.name].lastPlayed || song.lastPlayed > map[song.name].lastPlayed) {
+                    map[song.name].lastPlayed = song.lastPlayed;
+                }
+            });
+        };
+        process(data.main, false);
+        process(data.encores, true);
+        return Object.values(map);
+      }, [data]);
+
       if (!data) return <div className="p-8 text-center text-gray-500">データを読み込み中...</div>;
 
-      const filterSongs = (songs) => {
-        if (filterType === 'all') {
-            return [...songs].sort((a, b) => b.count - a.count);
+      const filterFn = (d) => {
+        if (filterType === 'all') return true;
+        if (filterType === 'year') return d.startsWith(filterValue);
+        if (filterType === 'quarter') {
+            const m = parseInt(d.substring(5, 7));
+            return `${d.substring(0, 4)}-Q${Math.ceil(m / 3)}` === filterValue;
         }
-        
-        return songs.map(song => {
-            const dates = (song.playDates || []).filter(d => {
-                if (filterType === 'year') return d.startsWith(filterValue);
-                if (filterType === 'quarter') {
-                    const m = parseInt(d.substring(5, 7));
-                    return `${d.substring(0, 4)}-Q${Math.ceil(m / 3)}` === filterValue;
-                }
-                if (filterType === 'halfYear') {
-                    const m = parseInt(d.substring(5, 7));
-                    const h = m <= 6 ? '1' : '2';
-                    return `${d.substring(0, 4)}-H${h}` === filterValue;
-                }
-                return true;
-            });
-            return { ...song, count: dates.length };
-        }).filter(song => song.count > 0).sort((a, b) => b.count - a.count);
+        if (filterType === 'halfYear') {
+            const m = parseInt(d.substring(5, 7));
+            const h = m <= 6 ? '1' : '2';
+            return `${d.substring(0, 4)}-H${h}` === filterValue;
+        }
+        return true;
       };
 
-      const filteredMain = filterSongs(data.main);
-      const filteredEncores = filterSongs(data.encores);
+      // 総合ランキングの集計
+      const filteredTotal = combinedData.map(song => {
+          const mDates = song.mainDates.filter(filterFn);
+          const eDates = song.encoreDates.filter(filterFn);
+          const totalCount = mDates.length + eDates.length;
+          
+          let latest = "";
+          if (filterType !== 'all') {
+              [...mDates, ...eDates].forEach(d => { if (d > latest) latest = d; });
+          } else {
+              latest = song.lastPlayed;
+          }
+          
+          return {
+              name: song.name,
+              count: totalCount,
+              encoreCount: eDates.length, // うちアンコールの回数を記録
+              lastPlayed: latest || song.lastPlayed
+          };
+      }).filter(s => s.count > 0).sort((a, b) => b.count - a.count);
 
-      let currentRankMain = 1;
-      let lastCountMain = -1;
+      // アンコール単独ランキングの集計
+      const filteredEncores = (data.encores || []).map(song => {
+          const eDates = (song.playDates || []).filter(filterFn);
+          let latest = "";
+          if (filterType !== 'all') {
+              eDates.forEach(d => { if (d > latest) latest = d; });
+          } else {
+              latest = song.lastPlayed;
+          }
+          return {
+              name: song.name,
+              count: eDates.length,
+              lastPlayed: latest || song.lastPlayed
+          };
+      }).filter(s => s.count > 0).sort((a, b) => b.count - a.count);
+
+      let currentRankTotal = 1;
+      let lastCountTotal = -1;
       let currentRankEncore = 1;
       let lastCountEncore = -1;
 
@@ -107,18 +155,21 @@
                 <h1 className="text-2xl md:text-3xl font-bold text-gray-900 flex items-center gap-2">
                   <span className="text-blue-600"><IconChart /></span> Drop Down Mama 集計
                 </h1>
-                <p className="text-gray-500 mt-1 text-xs md:text-sm">データ最終同期: {data.lastUpdated}</p>
+                <a 
+                  href="https://github.com/naoyuki0315/ddm-setlist-analytics/actions/workflows/update_data.yml" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-block text-gray-500 mt-1 text-xs md:text-sm transition-colors hover:text-blue-500 active:text-blue-600"
+                  title="Admin Console"
+                >
+                  データ最終同期: {data.lastUpdated}
+                </a>
               </div>
-              
-              {/* ★ メンバー防止・カモフラージュ対応
-                1. 「hidden md:inline-flex」により、スマホの通常の縦画面では【完全に非表示】になります。
-                2. スマホを横向きにするか、PCで開いた時だけ、右上に「Console」という目立たない文字リンクで出現します。
-              */}
               <a 
                 href="https://github.com/naoyuki0315/ddm-setlist-analytics/actions/workflows/update_data.yml" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="hidden md:inline-flex items-center gap-1 text-gray-400 hover:text-gray-600 text-xs transition-colors py-1 px-2"
+                className="hidden sm:inline-flex items-center gap-1 text-gray-400 hover:text-gray-600 text-xs transition-colors py-1 px-2 mt-1"
                 title="Admin Console"
               >
                 <IconSettings /> Console
@@ -152,48 +203,58 @@
             </div>
 
             <div className="flex space-x-2 mb-4 border-b border-gray-200 overflow-x-auto">
-              <button onClick={() => setActiveTab('main')} className={`py-2 px-4 whitespace-nowrap flex items-center gap-2 border-b-2 ${activeTab === 'main' ? 'border-blue-600 text-blue-600 font-bold' : 'border-transparent text-gray-500'}`}><IconMusic /> 本編 ({filteredMain.length})</button>
+              <button onClick={() => setActiveTab('total')} className={`py-2 px-4 whitespace-nowrap flex items-center gap-2 border-b-2 ${activeTab === 'total' ? 'border-blue-600 text-blue-600 font-bold' : 'border-transparent text-gray-500'}`}><IconMusic /> 総合 ({filteredTotal.length})</button>
               <button onClick={() => setActiveTab('encore')} className={`py-2 px-4 whitespace-nowrap flex items-center gap-2 border-b-2 ${activeTab === 'encore' ? 'border-purple-600 text-purple-600 font-bold' : 'border-transparent text-gray-500'}`}><span className="w-4 h-4"><IconChart /></span> アンコール ({filteredEncores.length})</button>
               <button onClick={() => setActiveTab('unknown')} className={`py-2 px-4 whitespace-nowrap flex items-center gap-2 border-b-2 ${activeTab === 'unknown' ? 'border-red-500 text-red-500 font-bold' : 'border-transparent text-gray-500'}`}><IconAlert /> 要確認 ({data.unknown.length})</button>
             </div>
 
             <main className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-              {activeTab === 'main' && (
+              {/* 総合ランキングタブ */}
+              {activeTab === 'total' && (
                 <div className="overflow-x-auto">
                   <table className="w-full text-left whitespace-nowrap">
                     <thead>
                       <tr className="bg-gray-50 text-gray-600 text-sm uppercase">
                         <th className="p-4 font-semibold text-center w-24">順位</th>
                         <th className="p-4 font-semibold">曲名</th>
-                        <th className="p-4 font-semibold text-center">回数</th>
+                        <th className="p-4 font-semibold text-center">総合回数</th>
                         <th className="p-4 font-semibold">最終演奏日</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100">
-                      {filteredMain.map((song, idx) => {
-                        if (song.count !== lastCountMain) {
-                          currentRankMain = idx + 1;
-                          lastCountMain = song.count;
+                      {filteredTotal.map((song, idx) => {
+                        if (song.count !== lastCountTotal) {
+                          currentRankTotal = idx + 1;
+                          lastCountTotal = song.count;
                         }
                         return (
                           <tr key={idx} className="hover:bg-blue-50/50 transition-colors">
-                            <td className="p-4 text-center"><RankBadge rank={currentRankMain} /></td>
+                            <td className="p-4 text-center"><RankBadge rank={currentRankTotal} /></td>
                             <td className="p-4 font-bold text-gray-800 text-base md:text-lg">{song.name}</td>
                             <td className="p-4 text-center">
-                              <span className="inline-flex items-center justify-center bg-blue-100 text-blue-800 font-bold w-9 h-9 rounded-full text-base shadow-inner">
-                                {song.count}
-                              </span>
+                              <div className="flex flex-col items-center justify-center gap-1">
+                                <span className="inline-flex items-center justify-center bg-blue-100 text-blue-800 font-bold w-10 h-10 rounded-full text-lg shadow-inner">
+                                  {song.count}
+                                </span>
+                                {/* アンコール実績がある曲のみ、バッジを表示 */}
+                                {song.encoreCount > 0 && (
+                                  <span className="text-[10px] md:text-xs text-purple-600 font-medium bg-purple-50 px-1.5 py-0.5 rounded border border-purple-100">
+                                    うちｱﾝｺｰﾙ {song.encoreCount}回
+                                  </span>
+                                )}
+                              </div>
                             </td>
                             <td className="p-4 text-sm text-gray-500">{song.lastPlayed}</td>
                           </tr>
                         );
                       })}
-                      {filteredMain.length === 0 && <tr><td colSpan="4" className="p-8 text-center text-gray-500">データがありません</td></tr>}
+                      {filteredTotal.length === 0 && <tr><td colSpan="4" className="p-8 text-center text-gray-500">データがありません</td></tr>}
                     </tbody>
                   </table>
                 </div>
               )}
 
+              {/* アンコール単独タブ */}
               {activeTab === 'encore' && (
                 <div className="overflow-x-auto">
                   <table className="w-full text-left whitespace-nowrap">
@@ -216,7 +277,7 @@
                             <td className="p-4 text-center"><RankBadge rank={currentRankEncore} /></td>
                             <td className="p-4 font-bold text-gray-800 text-base md:text-lg">{song.name}</td>
                             <td className="p-4 text-center">
-                              <span className="inline-flex items-center justify-center bg-purple-100 text-purple-800 font-bold w-9 h-9 rounded-full text-base shadow-inner">
+                              <span className="inline-flex items-center justify-center bg-purple-100 text-purple-800 font-bold w-10 h-10 rounded-full text-lg shadow-inner">
                                 {song.count}
                               </span>
                             </td>
@@ -230,6 +291,7 @@
                 </div>
               )}
 
+              {/* 要確認タブ */}
               {activeTab === 'unknown' && (
                 <div className="p-6">
                   <div className="bg-red-50 text-red-800 p-4 rounded-lg mb-6 flex items-start gap-3">
