@@ -2,13 +2,15 @@ name: Update Setlist Data
 
 on:
   schedule:
-    # 毎日 日本時間の午前4時（UTCの19時）に自動集計
     - cron: '0 19 * * *'
   workflow_dispatch:
-    # 管理用（動画アップ直後の即時反映用）ボタン
 
 permissions:
   contents: write
+
+# ▼この2行のおまじないを追加しました▼
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   update-data:
