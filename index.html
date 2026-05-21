@@ -21,6 +21,14 @@
     const IconCalendar = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>;
     const IconRefresh = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>;
 
+    // 順位バッジを描画するコンポーネント
+    const RankBadge = ({ rank }) => {
+      if (rank === 1) return <span className="text-yellow-500 font-bold text-xl drop-shadow-sm">👑 1位</span>;
+      if (rank === 2) return <span className="text-gray-400 font-bold text-lg drop-shadow-sm">🥈 2位</span>;
+      if (rank === 3) return <span className="text-amber-700 font-bold text-lg drop-shadow-sm">🥉 3位</span>;
+      return <span className="text-gray-500 font-bold">{rank}位</span>;
+    };
+
     function App() {
       const [data, setData] = useState(null);
       const [activeTab, setActiveTab] = useState('main');
@@ -84,6 +92,12 @@
       const filteredMain = filterSongs(data.main);
       const filteredEncores = filterSongs(data.encores);
 
+      // ランキング計算用の一時変数
+      let currentRankMain = 1;
+      let lastCountMain = -1;
+      let currentRankEncore = 1;
+      let lastCountEncore = -1;
+
       return (
         <div className="min-h-screen bg-gray-50 text-gray-800 font-sans p-4 md:p-8">
           <div className="max-w-4xl mx-auto">
@@ -104,7 +118,6 @@
               </a>
             </header>
 
-            {/* 集計期間フィルター（半年ごとを四半期の上に配置） */}
             <div className="mb-6 bg-white p-4 rounded-xl shadow-sm border border-gray-200 flex flex-wrap items-center gap-3">
               <span className="font-semibold text-gray-700 text-sm flex items-center gap-2"><IconCalendar />集計期間:</span>
               <select 
@@ -140,28 +153,76 @@
             <main className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
               {activeTab === 'main' && (
                 <div className="overflow-x-auto">
-                  <table className="w-full text-left">
-                    <thead><tr className="bg-gray-50 text-gray-600 text-sm uppercase"><th className="p-4 font-semibold">曲名</th><th className="p-4 font-semibold text-center">回数</th><th className="p-4 font-semibold">最終演奏日</th></tr></thead>
+                  <table className="w-full text-left whitespace-nowrap">
+                    <thead>
+                      <tr className="bg-gray-50 text-gray-600 text-sm uppercase">
+                        <th className="p-4 font-semibold text-center w-24">順位</th>
+                        <th className="p-4 font-semibold">曲名</th>
+                        <th className="p-4 font-semibold text-center">回数</th>
+                        <th className="p-4 font-semibold">最終演奏日</th>
+                      </tr>
+                    </thead>
                     <tbody className="divide-y divide-gray-100">
-                      {filteredMain.map((song, idx) => (
-                        <tr key={idx} className="hover:bg-blue-50/50"><td className="p-4 font-medium">{song.name}</td><td className="p-4 text-center"><span className="inline-flex items-center justify-center bg-blue-100 text-blue-800 font-bold w-8 h-8 rounded-full">{song.count}</span></td><td className="p-4 text-gray-500">{song.lastPlayed}</td></tr>
-                      ))}
+                      {filteredMain.map((song, idx) => {
+                        if (song.count !== lastCountMain) {
+                          currentRankMain = idx + 1;
+                          lastCountMain = song.count;
+                        }
+                        return (
+                          <tr key={idx} className="hover:bg-blue-50/50 transition-colors">
+                            <td className="p-4 text-center"><RankBadge rank={currentRankMain} /></td>
+                            <td className="p-4 font-bold text-gray-800 text-lg">{song.name}</td>
+                            <td className="p-4 text-center">
+                              <span className="inline-flex items-center justify-center bg-blue-100 text-blue-800 font-bold w-10 h-10 rounded-full text-lg shadow-inner">
+                                {song.count}
+                              </span>
+                            </td>
+                            <td className="p-4 text-gray-500">{song.lastPlayed}</td>
+                          </tr>
+                        );
+                      })}
+                      {filteredMain.length === 0 && <tr><td colSpan="4" className="p-8 text-center text-gray-500">データがありません</td></tr>}
                     </tbody>
                   </table>
                 </div>
               )}
+
               {activeTab === 'encore' && (
                 <div className="overflow-x-auto">
-                  <table className="w-full text-left">
-                    <thead><tr className="bg-purple-50 text-purple-800 text-sm uppercase"><th className="p-4 font-semibold">曲名</th><th className="p-4 font-semibold text-center">回数</th><th className="p-4 font-semibold">最終演奏日</th></tr></thead>
+                  <table className="w-full text-left whitespace-nowrap">
+                    <thead>
+                      <tr className="bg-purple-50 text-purple-800 text-sm uppercase">
+                        <th className="p-4 font-semibold text-center w-24">順位</th>
+                        <th className="p-4 font-semibold">曲名</th>
+                        <th className="p-4 font-semibold text-center">回数</th>
+                        <th className="p-4 font-semibold">最終演奏日</th>
+                      </tr>
+                    </thead>
                     <tbody className="divide-y divide-gray-100">
-                      {filteredEncores.map((song, idx) => (
-                        <tr key={idx} className="hover:bg-purple-50/50"><td className="p-4 font-medium">{song.name}</td><td className="p-4 text-center"><span className="inline-flex items-center justify-center bg-purple-100 text-purple-800 font-bold w-8 h-8 rounded-full">{song.count}</span></td><td className="p-4 text-gray-500">{song.lastPlayed}</td></tr>
-                      ))}
+                      {filteredEncores.map((song, idx) => {
+                        if (song.count !== lastCountEncore) {
+                          currentRankEncore = idx + 1;
+                          lastCountEncore = song.count;
+                        }
+                        return (
+                          <tr key={idx} className="hover:bg-purple-50/50 transition-colors">
+                            <td className="p-4 text-center"><RankBadge rank={currentRankEncore} /></td>
+                            <td className="p-4 font-bold text-gray-800 text-lg">{song.name}</td>
+                            <td className="p-4 text-center">
+                              <span className="inline-flex items-center justify-center bg-purple-100 text-purple-800 font-bold w-10 h-10 rounded-full text-lg shadow-inner">
+                                {song.count}
+                              </span>
+                            </td>
+                            <td className="p-4 text-gray-500">{song.lastPlayed}</td>
+                          </tr>
+                        );
+                      })}
+                      {filteredEncores.length === 0 && <tr><td colSpan="4" className="p-8 text-center text-gray-500">データがありません</td></tr>}
                     </tbody>
                   </table>
                 </div>
               )}
+
               {activeTab === 'unknown' && (
                 <div className="p-6">
                   <div className="bg-red-50 text-red-800 p-4 rounded-lg mb-6 flex items-start gap-3">
