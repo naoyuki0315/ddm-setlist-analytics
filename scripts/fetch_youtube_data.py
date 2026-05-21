@@ -29,25 +29,20 @@ def normalize_for_match(s):
     s = s.replace('working', 'workin')
     s = s.replace('allright', 'alright')
     s = s.replace('kilin', 'killin')
-    s = s.replace('baby', '') # "let me love you" と "let me love you baby" を一致させる
+    s = s.replace('baby', '') 
+    s = s.replace('walking', 'walkin')  # ★ walking を walkin に統一してマッチング
     
     # 不要な記号を消し去る
     s = re.sub(r'[\s\'"’`・\(\)（）\-\[\]]', '', s)
     return s
 
 def clean_song_title(raw_title):
-    # タイムスタンプ除去
     title = re.sub(r'\d{1,2}:\d{2}:\d{2}|\d{1,2}:\d{2}', '', raw_title)
-    
-    # 先頭の番号（1. や 10.）、中黒（・）、リクエスト、曲 などを除去
     title = re.sub(r'^[\s　]*\d+[.．\s　]+', '', title)
     title = re.sub(r'^[\s　]*[・\-\*※][\s　]*', '', title)
     title = re.sub(r'^(リクエスト|曲)[\s　]*', '', title)
-    
-    # アンコール表記除去
     title = re.sub(r'\(?アンコール曲?\)?', '', title, flags=re.IGNORECASE)
     title = re.sub(r'encore', '', title, flags=re.IGNORECASE)
-    
     return title.strip()
 
 def analyze_description(description, date_str, master_songs, data_store):
@@ -66,17 +61,13 @@ def analyze_description(description, date_str, master_songs, data_store):
             continue
 
         lower_line = line.lower()
-        # メンバー紹介やMCなども除外
         if any(ignore in lower_line for ignore in ['intro', 'greeting', 'mc', 'オープニング', 'エンディング', 'トーク', 'メンバー紹介']):
             continue
 
         is_encore_line = is_encore_mode or ('アンコール' in line) or ('encore' in lower_line)
         raw_title = clean_song_title(line)
-        
-        # ゴミを除去した結果、空になっていたらスキップ
         if not raw_title: continue
 
-        # 最強の表記揺れマッチング
         matched_song = None
         clean_raw = normalize_for_match(raw_title)
         
