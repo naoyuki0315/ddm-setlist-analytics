@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-05-21 03:40",
+  "lastUpdated": "2026-05-21 03:55",
   "main": [
     {
       "name": "Baby Scratch My Back",
@@ -45,7 +45,7 @@
     },
     {
       "name": "Let Me Love You Baby",
-      "count": 30,
+      "count": 35,
       "lastPlayed": "2026-05-16",
       "playDates": [
         "2026-05-16",
@@ -77,7 +77,12 @@
         "2025-03-29",
         "2025-03-22",
         "2025-02-09",
-        "2025-02-02"
+        "2025-02-02",
+        "2025-01-25",
+        "2025-01-12",
+        "2025-01-12",
+        "2024-11-23",
+        "2024-10-26"
       ]
     },
     {
@@ -117,7 +122,7 @@
     },
     {
       "name": "Hoochie Coochie Man",
-      "count": 19,
+      "count": 20,
       "lastPlayed": "2026-05-16",
       "playDates": [
         "2026-05-16",
@@ -138,7 +143,8 @@
         "2025-11-10",
         "2025-11-08",
         "2025-10-26",
-        "2025-08-17"
+        "2025-08-17",
+        "2025-08-09"
       ]
     },
     {
@@ -402,7 +408,7 @@
     },
     {
       "name": "That's Alright",
-      "count": 9,
+      "count": 16,
       "lastPlayed": "2025-12-27",
       "playDates": [
         "2025-12-27",
@@ -413,7 +419,14 @@
         "2025-05-02",
         "2025-04-12",
         "2025-04-06",
-        "2025-03-29"
+        "2025-03-29",
+        "2025-03-22",
+        "2025-02-09",
+        "2025-02-02",
+        "2025-01-30",
+        "2025-01-13",
+        "2024-12-15",
+        "2024-12-13"
       ]
     },
     {
@@ -489,11 +502,12 @@
     },
     {
       "name": "Got My Mojo Workin'",
-      "count": 25,
+      "count": 26,
       "lastPlayed": "2025-10-26",
       "playDates": [
         "2025-10-26",
         "2025-10-13",
+        "2025-07-12",
         "2025-06-06",
         "2025-04-12",
         "2025-04-06",
@@ -582,6 +596,17 @@
       ]
     },
     {
+      "name": "Killin' Floor",
+      "count": 4,
+      "lastPlayed": "2025-03-22",
+      "playDates": [
+        "2025-03-22",
+        "2025-02-09",
+        "2025-02-02",
+        "2025-01-30"
+      ]
+    },
+    {
       "name": "Little by Little",
       "count": 8,
       "lastPlayed": "2025-01-25",
@@ -616,12 +641,20 @@
       "playDates": [
         "2024-09-28"
       ]
+    },
+    {
+      "name": "The Thrill Is Gone",
+      "count": 1,
+      "lastPlayed": "2024-08-04",
+      "playDates": [
+        "2024-08-04"
+      ]
     }
   ],
   "encores": [
     {
       "name": "Got My Mojo Workin'",
-      "count": 20,
+      "count": 21,
       "lastPlayed": "2026-05-16",
       "playDates": [
         "2026-05-16",
@@ -640,6 +673,7 @@
         "2025-11-10",
         "2025-11-08",
         "2025-10-05",
+        "2025-08-17",
         "2025-08-10",
         "2025-07-27",
         "2025-06-15",
@@ -705,23 +739,7 @@
     }
   ],
   "unknown": [
-    "6.  walking by myself",
-    "mojo working",
-    "3.　フーチークーチーマン",
-    "７.     walking out on you",
-    "リクエスト　mojo workin'",
-    "６.　 walking by myself",
-    "2. 　That’s Allright",
-    "3.   Kilin’ Floor",
-    "1.  That’s Allright",
-    "2. 　Kilin’ Floor",
-    "1.  let me love you",
-    "3.   That’s Allright",
-    "メンバー紹介",
-    "2. That’s Allright",
-    "曲",
-    "1. 　 Let me love you",
-    "1.  Let me love you",
-    "6.   thrill is gone"
+    "walking by myself",
+    "walking out on you"
   ]
 }
