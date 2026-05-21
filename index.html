@@ -4,9 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DDM Setlist Analytics</title>
-  
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📊</text></svg>">
-  
   <script src="https://cdn.tailwindcss.com"></script>
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -36,7 +34,6 @@
           .catch(() => setData({ lastUpdated: "データなし", main: [], encores: [], unknown: [] }));
       }, []);
 
-      // データの演奏日から選択肢（年、四半期、半年）を自動生成
       const periods = useMemo(() => {
         if (!data) return { years: [], quarters: [], halfYears: [] };
         const allDates = [...data.main, ...data.encores].flatMap(s => s.playDates || []);
@@ -107,7 +104,7 @@
               </a>
             </header>
 
-            {/* 期間絞り込みフィルター */}
+            {/* 集計期間フィルター（半年ごとを四半期の上に配置） */}
             <div className="mb-6 bg-white p-4 rounded-xl shadow-sm border border-gray-200 flex flex-wrap items-center gap-3">
               <span className="font-semibold text-gray-700 text-sm flex items-center gap-2"><IconCalendar />集計期間:</span>
               <select 
@@ -117,8 +114,8 @@
               >
                 <option value="all">全期間 (累計)</option>
                 <option value="year">年ごと</option>
-                <option value="quarter">四半期ごと</option>
                 <option value="halfYear">半年ごと</option>
+                <option value="quarter">四半期ごと</option>
               </select>
               
               {filterType !== 'all' && (
