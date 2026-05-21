@@ -1,8 +1,11 @@
 name: Update Setlist Data
 
 on:
-  # GitHub画面の「Actions」タブから手動で実行するボタンを有効化
+  schedule:
+    # 毎日 日本時間の午前4時（UTCの19時）に自動集計
+    - cron: '0 19 * * *'
   workflow_dispatch:
+    # 管理用（動画アップ直後の即時反映用）ボタン
 
 permissions:
   contents: write
@@ -34,5 +37,4 @@ jobs:
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           git add data.json
-          # 差分がある時だけコミットする
           git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update setlist data" && git push)
