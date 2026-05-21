@@ -7,24 +7,35 @@ from googleapiclient.discovery import build
 
 # GitHubのSecretsから自動で読み込まれます
 API_KEY = os.environ.get("YOUTUBE_API_KEY")
-HANDLE = "@70315"  # 鈴木さんのチャンネルハンドル
+HANDLE = "@70315"
 
 def load_master_songs(csv_path):
-    """マスターリスト(CSV)から曲名のリストを読み込む"""
+    """CSVから曲名のリストを読み込む（1列/多列、ヘッダー有無すべて対応）"""
     songs = []
     if not os.path.exists(csv_path):
+        print(f"ファイルが見つかりません: {csv_path}")
         return songs
-    with open(csv_path, 'r', encoding='utf-8') as f:
+    
+    # utf-8-sig で文字化け(BOM)を防ぐ
+    with open(csv_path, 'r', encoding='utf-8-sig') as f:
         reader = csv.reader(f)
         headers = next(reader, None)
-        # 楽曲名が入っている列（2列目 = インデックス1）を自動特定
-        name_idx = 1
-        if headers and '楽曲名' in headers:
-            name_idx = headers.index('楽曲名')
         
+        name_idx = 0 # デフォルトは1列目(0)
+        
+        if headers:
+            if '楽曲名' in headers:
+                name_idx = headers.index('楽曲名')
+            else:
+                # ヘッダーではなく1曲目のデータだった場合はリストに追加
+                song = headers[name_idx].strip()
+                if song:
+                    songs.append(song)
+
         for row in reader:
             if len(row) > name_idx and row[name_idx].strip():
                 songs.append(row[name_idx].strip())
+                
     return songs
 
 def clean_song_title(raw_title):
@@ -64,10 +75,14 @@ def analyze_description(description, date_str, master_songs, data_store):
         if not raw_title:
             continue
 
-        # マスターデータとの照合
+        # マスターデータとの照合（表記揺れ対策を強化）
         matched_song = None
         for master in master_songs:
-            if master.lower() in raw_title.lower():
+            # 比較する時は、両方のスペースを消して小文字に統一して判定する
+            clean_master = master.replace(' ', '').replace('　', '').lower()
+            clean_raw = raw_title.replace(' ', '').replace('　', '').lower()
+            
+            if clean_master in clean_raw or clean_raw in clean_master:
                 matched_song = master
                 break
         
@@ -85,14 +100,12 @@ def analyze_description(description, date_str, master_songs, data_store):
 
 def main():
     if not API_KEY:
-        print("エラー: YOUTUBE_API_KEY が見つかりません。GitHub Secretsの設定を確認してください。")
+        print("エラー: YOUTUBE_API_KEY が見つかりません。")
         return
 
     youtube = build('youtube', 'v3', developerKey=API_KEY)
-    
     print(f"チャンネル {HANDLE} の情報を取得中...")
     
-    # 1. チャンネルの情報を取得して、アップロード済み動画のプレイリストIDを取り出す
     channel_res = youtube.channels().list(
         part="contentDetails",
         forHandle=HANDLE
@@ -104,7 +117,6 @@ def main():
         
     uploads_playlist_id = channel_res["items"][0]["contentDetails"]["relatedPlaylists"]["uploads"]
     
-    # 2. 動画リストを全件取得（ページネーション対応）
     videos = []
     next_page_token = None
     print("動画リストを抽出中...")
@@ -121,31 +133,30 @@ def main():
         if not next_page_token:
             break
 
+    # 鈴木さんがアップロードしたCSVファイルを読み込む
     master_songs = load_master_songs('master_songs.csv')
+    print(f"マスターデータとして {len(master_songs)} 曲を読み込みました。")
+    
     data_store = {
         'main': {},
         'encores': {},
         'unknown': []
     }
 
-    # 3. 概要欄の解析と集計
     print(f"全{len(videos)}件の動画からライブ演奏データを集計します...")
     for video in videos:
         snippet = video["snippet"]
         title = snippet["title"]
         description = snippet["description"]
         
-        # タイトルに日付らしきもの(数字など)が含まれているかざっくり判定
         if not re.search(r'\d', title):
             continue
             
-        # 最終演奏日は動画の公開日(YYYY-MM-DD)を使用
         published_at = snippet["publishedAt"]
         date_str = published_at.split('T')[0]
         
         analyze_description(description, date_str, master_songs, data_store)
 
-    # 4. JSONに保存
     output = {
         "lastUpdated": datetime.now().strftime("%Y-%m-%d %H:%M"),
         "main": [{"name": k, "count": v['count'], "lastPlayed": v['lastPlayed']} for k, v in data_store['main'].items()],
