@@ -1,45 +1,39 @@
 import os
 import re
-import csv
 import json
+import unicodedata
 from datetime import datetime
 from googleapiclient.discovery import build
 
-# GitHubのSecretsから自動で読み込まれます
 API_KEY = os.environ.get("YOUTUBE_API_KEY")
 HANDLE = "@70315"
 
 def load_master_songs(csv_path):
-    """CSVから曲名のリストを読み込む（1列/多列、ヘッダー有無すべて対応）"""
+    """1列のCSVやテキストから確実に曲名を読み込む"""
     songs = []
     if not os.path.exists(csv_path):
-        print(f"ファイルが見つかりません: {csv_path}")
         return songs
     
-    # utf-8-sig で文字化け(BOM)を防ぐ
     with open(csv_path, 'r', encoding='utf-8-sig') as f:
-        reader = csv.reader(f)
-        headers = next(reader, None)
-        
-        name_idx = 0 # デフォルトは1列目(0)
-        
-        if headers:
-            if '楽曲名' in headers:
-                name_idx = headers.index('楽曲名')
-            else:
-                # ヘッダーではなく1曲目のデータだった場合はリストに追加
-                song = headers[name_idx].strip()
-                if song:
-                    songs.append(song)
+        for line in f:
+            # カンマがあれば一番左を取得（CSV対応）、なければそのまま
+            song = line.strip().split(',')[0].strip()
+            # 空行やヘッダー文字は除外
+            if song and song != '楽曲名' and song != 'No.':
+                songs.append(song)
+    return list(set(songs))
 
-        for row in reader:
-            if len(row) > name_idx and row[name_idx].strip():
-                songs.append(row[name_idx].strip())
-                
-    return songs
+def normalize_for_match(s):
+    """表記揺れを極限まで吸収するための正規化処理"""
+    # 全角半角の統一（NFKC）
+    s = unicodedata.normalize('NFKC', s)
+    # 小文字化
+    s = s.lower()
+    # スペース、アポストロフィ、カッコなどの記号をすべて消し去る
+    s = re.sub(r'[\s\'"’`・\(\)（）\-\[\]]', '', s)
+    return s
 
 def clean_song_title(raw_title):
-    """ノイズを除去して純粋な曲名にする"""
     title = re.sub(r'\d{1,2}:\d{2}:\d{2}|\d{1,2}:\d{2}', '', raw_title)
     title = re.sub(r'^[-\s]+', '', title)
     title = re.sub(r'\(?アンコール曲?\)?', '', title, flags=re.IGNORECASE)
@@ -47,41 +41,34 @@ def clean_song_title(raw_title):
     return title.strip()
 
 def analyze_description(description, date_str, master_songs, data_store):
-    """概要欄のテキストを解析して集計する"""
     lines = description.split('\n')
     is_encore_mode = False
 
     for line in lines:
         line = line.strip()
-        if not line:
-            continue
+        if not line: continue
 
-        # アンコール判定 (単独行)
         if line.lower() == 'アンコール' or line.lower() == 'encore':
             is_encore_mode = True
             continue
 
-        # タイムスタンプが含まれる行か
         if not re.search(r'\d{1,2}:\d{2}', line):
             continue
 
-        # ノイズ除外 (MCなど)
         lower_line = line.lower()
         if any(ignore in lower_line for ignore in ['intro', 'greeting', 'mc', 'オープニング', 'エンディング', 'トーク']):
             continue
 
         is_encore_line = is_encore_mode or ('アンコール' in line) or ('encore' in lower_line)
         raw_title = clean_song_title(line)
-        if not raw_title:
-            continue
+        if not raw_title: continue
 
-        # マスターデータとの照合（表記揺れ対策を強化）
+        # 最強の表記揺れマッチング
         matched_song = None
+        clean_raw = normalize_for_match(raw_title)
+        
         for master in master_songs:
-            # 比較する時は、両方のスペースを消して小文字に統一して判定する
-            clean_master = master.replace(' ', '').replace('　', '').lower()
-            clean_raw = raw_title.replace(' ', '').replace('　', '').lower()
-            
+            clean_master = normalize_for_match(master)
             if clean_master in clean_raw or clean_raw in clean_master:
                 matched_song = master
                 break
@@ -90,9 +77,10 @@ def analyze_description(description, date_str, master_songs, data_store):
 
         if matched_song:
             if matched_song not in target_dict:
-                target_dict[matched_song] = {'count': 0, 'lastPlayed': date_str}
+                target_dict[matched_song] = {'count': 0, 'lastPlayed': '', 'playDates': []}
             target_dict[matched_song]['count'] += 1
-            if date_str > target_dict[matched_song]['lastPlayed']:
+            target_dict[matched_song]['playDates'].append(date_str)
+            if not target_dict[matched_song]['lastPlayed'] or date_str > target_dict[matched_song]['lastPlayed']:
                 target_dict[matched_song]['lastPlayed'] = date_str
         else:
             if raw_title not in data_store['unknown']:
@@ -104,70 +92,43 @@ def main():
         return
 
     youtube = build('youtube', 'v3', developerKey=API_KEY)
-    print(f"チャンネル {HANDLE} の情報を取得中...")
     
-    channel_res = youtube.channels().list(
-        part="contentDetails",
-        forHandle=HANDLE
-    ).execute()
-    
-    if not channel_res.get("items"):
-        print("指定されたチャンネルが見つかりませんでした。")
-        return
+    channel_res = youtube.channels().list(part="contentDetails", forHandle=HANDLE).execute()
+    if not channel_res.get("items"): return
         
     uploads_playlist_id = channel_res["items"][0]["contentDetails"]["relatedPlaylists"]["uploads"]
     
     videos = []
     next_page_token = None
-    print("動画リストを抽出中...")
     while True:
         playlist_res = youtube.playlistItems().list(
-            part="snippet",
-            playlistId=uploads_playlist_id,
-            maxResults=50,
-            pageToken=next_page_token
+            part="snippet", playlistId=uploads_playlist_id, maxResults=50, pageToken=next_page_token
         ).execute()
-        
         videos.extend(playlist_res.get("items", []))
         next_page_token = playlist_res.get("nextPageToken")
-        if not next_page_token:
-            break
+        if not next_page_token: break
 
-    # 鈴木さんがアップロードしたCSVファイルを読み込む
     master_songs = load_master_songs('master_songs.csv')
-    print(f"マスターデータとして {len(master_songs)} 曲を読み込みました。")
-    
-    data_store = {
-        'main': {},
-        'encores': {},
-        'unknown': []
-    }
+    data_store = {'main': {}, 'encores': {}, 'unknown': []}
 
-    print(f"全{len(videos)}件の動画からライブ演奏データを集計します...")
     for video in videos:
         snippet = video["snippet"]
         title = snippet["title"]
         description = snippet["description"]
-        
-        if not re.search(r'\d', title):
-            continue
+        if not re.search(r'\d', title): continue
             
-        published_at = snippet["publishedAt"]
-        date_str = published_at.split('T')[0]
-        
+        date_str = snippet["publishedAt"].split('T')[0]
         analyze_description(description, date_str, master_songs, data_store)
 
     output = {
         "lastUpdated": datetime.now().strftime("%Y-%m-%d %H:%M"),
-        "main": [{"name": k, "count": v['count'], "lastPlayed": v['lastPlayed']} for k, v in data_store['main'].items()],
-        "encores": [{"name": k, "count": v['count'], "lastPlayed": v['lastPlayed']} for k, v in data_store['encores'].items()],
+        "main": [{"name": k, "count": v['count'], "lastPlayed": v['lastPlayed'], "playDates": v['playDates']} for k, v in data_store['main'].items()],
+        "encores": [{"name": k, "count": v['count'], "lastPlayed": v['lastPlayed'], "playDates": v['playDates']} for k, v in data_store['encores'].items()],
         "unknown": data_store['unknown']
     }
 
     with open('data.json', 'w', encoding='utf-8') as f:
         json.dump(output, f, ensure_ascii=False, indent=2)
-        
-    print("✅ data.json の生成が完了しました！")
 
 if __name__ == "__main__":
     main()
