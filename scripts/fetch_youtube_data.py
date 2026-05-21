@@ -24,15 +24,13 @@ def normalize_for_match(s):
     s = unicodedata.normalize('NFKC', s)
     s = s.lower()
     
-    # 特有の表記揺れ・スペルミスを強制補正
     s = s.replace('フーチークーチーマン', 'hoochiecoochieman')
     s = s.replace('working', 'workin')
     s = s.replace('allright', 'alright')
     s = s.replace('kilin', 'killin')
     s = s.replace('baby', '') 
-    s = s.replace('walking', 'walkin')  # ★ walking を walkin に統一してマッチング
+    s = s.replace('walking', 'walkin')
     
-    # 不要な記号を消し去る
     s = re.sub(r'[\s\'"’`・\(\)（）\-\[\]]', '', s)
     return s
 
@@ -115,13 +113,17 @@ def main():
     master_songs = load_master_songs('master_songs.csv')
     data_store = {'main': {}, 'encores': {}, 'unknown': []}
 
-    for video in videos:
+    print(f"全{len(videos)}件の動画からライブ演奏データを集計します...")
+    for idx, video in enumerate(videos):
         snippet = video["snippet"]
         title = snippet["title"]
         if not re.search(r'\d', title): continue
             
         date_str = snippet["publishedAt"].split('T')[0]
         description = snippet["description"]
+        
+        # 進行状況を画面に出力
+        print(f"[{idx+1}/{len(videos)}] 解析中: {title} ({date_str})")
         analyze_description(description, date_str, master_songs, data_store)
 
     output = {
@@ -131,8 +133,10 @@ def main():
         "unknown": data_store['unknown']
     }
 
+    print("保存処理に入ります...")
     with open('data.json', 'w', encoding='utf-8') as f:
         json.dump(output, f, ensure_ascii=False, indent=2)
+    print("✅ 全ての処理が完了しました。")
 
 if __name__ == "__main__":
     main()
