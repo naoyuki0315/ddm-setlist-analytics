@@ -9,35 +9,45 @@ API_KEY = os.environ.get("YOUTUBE_API_KEY")
 HANDLE = "@70315"
 
 def load_master_songs(csv_path):
-    """1列のCSVやテキストから確実に曲名を読み込む"""
     songs = []
     if not os.path.exists(csv_path):
         return songs
     
     with open(csv_path, 'r', encoding='utf-8-sig') as f:
         for line in f:
-            # カンマがあれば一番左を取得（CSV対応）、なければそのまま
             song = line.strip().split(',')[0].strip()
-            # 空行やヘッダー文字は除外
             if song and song != '楽曲名' and song != 'No.':
                 songs.append(song)
     return list(set(songs))
 
 def normalize_for_match(s):
-    """表記揺れを極限まで吸収するための正規化処理"""
-    # 全角半角の統一（NFKC）
     s = unicodedata.normalize('NFKC', s)
-    # 小文字化
     s = s.lower()
-    # スペース、アポストロフィ、カッコなどの記号をすべて消し去る
+    
+    # 特有の表記揺れ・スペルミスを強制補正
+    s = s.replace('フーチークーチーマン', 'hoochiecoochieman')
+    s = s.replace('working', 'workin')
+    s = s.replace('allright', 'alright')
+    s = s.replace('kilin', 'killin')
+    s = s.replace('baby', '') # "let me love you" と "let me love you baby" を一致させる
+    
+    # 不要な記号を消し去る
     s = re.sub(r'[\s\'"’`・\(\)（）\-\[\]]', '', s)
     return s
 
 def clean_song_title(raw_title):
+    # タイムスタンプ除去
     title = re.sub(r'\d{1,2}:\d{2}:\d{2}|\d{1,2}:\d{2}', '', raw_title)
-    title = re.sub(r'^[-\s]+', '', title)
+    
+    # 先頭の番号（1. や 10.）、中黒（・）、リクエスト、曲 などを除去
+    title = re.sub(r'^[\s　]*\d+[.．\s　]+', '', title)
+    title = re.sub(r'^[\s　]*[・\-\*※][\s　]*', '', title)
+    title = re.sub(r'^(リクエスト|曲)[\s　]*', '', title)
+    
+    # アンコール表記除去
     title = re.sub(r'\(?アンコール曲?\)?', '', title, flags=re.IGNORECASE)
     title = re.sub(r'encore', '', title, flags=re.IGNORECASE)
+    
     return title.strip()
 
 def analyze_description(description, date_str, master_songs, data_store):
@@ -56,11 +66,14 @@ def analyze_description(description, date_str, master_songs, data_store):
             continue
 
         lower_line = line.lower()
-        if any(ignore in lower_line for ignore in ['intro', 'greeting', 'mc', 'オープニング', 'エンディング', 'トーク']):
+        # メンバー紹介やMCなども除外
+        if any(ignore in lower_line for ignore in ['intro', 'greeting', 'mc', 'オープニング', 'エンディング', 'トーク', 'メンバー紹介']):
             continue
 
         is_encore_line = is_encore_mode or ('アンコール' in line) or ('encore' in lower_line)
         raw_title = clean_song_title(line)
+        
+        # ゴミを除去した結果、空になっていたらスキップ
         if not raw_title: continue
 
         # 最強の表記揺れマッチング
@@ -114,10 +127,10 @@ def main():
     for video in videos:
         snippet = video["snippet"]
         title = snippet["title"]
-        description = snippet["description"]
         if not re.search(r'\d', title): continue
             
         date_str = snippet["publishedAt"].split('T')[0]
+        description = snippet["description"]
         analyze_description(description, date_str, master_songs, data_store)
 
     output = {
