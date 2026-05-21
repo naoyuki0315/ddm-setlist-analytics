@@ -2,12 +2,12 @@ import os
 import re
 import csv
 import json
-import urllib.request
 from datetime import datetime
+from googleapiclient.discovery import build
 
-# GitHub Actionsのシークレットから取得する想定
-API_KEY = os.environ.get("YOUTUBE_API_KEY", "YOUR_API_KEY_HERE")
-CHANNEL_ID = "YOUR_CHANNEL_ID_HERE" # 後で設定します
+# GitHubのSecretsから自動で読み込まれます
+API_KEY = os.environ.get("YOUTUBE_API_KEY")
+HANDLE = "@70315"  # 鈴木さんのチャンネルハンドル
 
 def load_master_songs(csv_path):
     """マスターリスト(CSV)から曲名のリストを読み込む"""
@@ -15,18 +15,22 @@ def load_master_songs(csv_path):
     if not os.path.exists(csv_path):
         return songs
     with open(csv_path, 'r', encoding='utf-8') as f:
-        reader = csv.DictReader(f)
+        reader = csv.reader(f)
+        headers = next(reader, None)
+        # 楽曲名が入っている列（2列目 = インデックス1）を自動特定
+        name_idx = 1
+        if headers and '楽曲名' in headers:
+            name_idx = headers.index('楽曲名')
+        
         for row in reader:
-            if '楽曲名' in row and row['楽曲名'].strip():
-                songs.append(row['楽曲名'].strip())
+            if len(row) > name_idx and row[name_idx].strip():
+                songs.append(row[name_idx].strip())
     return songs
 
 def clean_song_title(raw_title):
     """ノイズを除去して純粋な曲名にする"""
-    # タイムスタンプ、ハイフン、カッコなどを除去
     title = re.sub(r'\d{1,2}:\d{2}:\d{2}|\d{1,2}:\d{2}', '', raw_title)
     title = re.sub(r'^[-\s]+', '', title)
-    # アンコール表記などを除去
     title = re.sub(r'\(?アンコール曲?\)?', '', title, flags=re.IGNORECASE)
     title = re.sub(r'encore', '', title, flags=re.IGNORECASE)
     return title.strip()
@@ -36,34 +40,31 @@ def analyze_description(description, date_str, master_songs, data_store):
     lines = description.split('\n')
     is_encore_mode = False
 
-    for i, line in enumerate(lines):
+    for line in lines:
         line = line.strip()
         if not line:
             continue
 
-        # アンコール判定 (単独行の「アンコール」)
+        # アンコール判定 (単独行)
         if line.lower() == 'アンコール' or line.lower() == 'encore':
             is_encore_mode = True
             continue
 
-        # タイムスタンプが含まれる行かチェック (例: 00:00 または 1:00:00)
+        # タイムスタンプが含まれる行か
         if not re.search(r'\d{1,2}:\d{2}', line):
             continue
 
-        # ノイズ除外 (intro, greeting, mc など)
+        # ノイズ除外 (MCなど)
         lower_line = line.lower()
-        if any(ignore in lower_line for ignore in ['intro', 'greeting', 'mc', 'オープニング', 'エンディング']):
+        if any(ignore in lower_line for ignore in ['intro', 'greeting', 'mc', 'オープニング', 'エンディング', 'トーク']):
             continue
 
-        # アンコール判定 (行内に含まれる場合)
         is_encore_line = is_encore_mode or ('アンコール' in line) or ('encore' in lower_line)
-
-        # 曲名を抽出
         raw_title = clean_song_title(line)
         if not raw_title:
             continue
 
-        # マスターデータとの照合 (完全一致だけでなく、含まれるかでざっくり判定)
+        # マスターデータとの照合
         matched_song = None
         for master in master_songs:
             if master.lower() in raw_title.lower():
@@ -73,44 +74,78 @@ def analyze_description(description, date_str, master_songs, data_store):
         target_dict = data_store['encores'] if is_encore_line else data_store['main']
 
         if matched_song:
-            # 既知の曲
             if matched_song not in target_dict:
                 target_dict[matched_song] = {'count': 0, 'lastPlayed': date_str}
             target_dict[matched_song]['count'] += 1
-            # 日付が新しい場合は更新
             if date_str > target_dict[matched_song]['lastPlayed']:
                 target_dict[matched_song]['lastPlayed'] = date_str
         else:
-            # 未登録曲
             if raw_title not in data_store['unknown']:
                 data_store['unknown'].append(raw_title)
 
 def main():
-    master_songs = load_master_songs('master_songs.csv')
+    if not API_KEY:
+        print("エラー: YOUTUBE_API_KEY が見つかりません。GitHub Secretsの設定を確認してください。")
+        return
+
+    youtube = build('youtube', 'v3', developerKey=API_KEY)
     
+    print(f"チャンネル {HANDLE} の情報を取得中...")
+    
+    # 1. チャンネルの情報を取得して、アップロード済み動画のプレイリストIDを取り出す
+    channel_res = youtube.channels().list(
+        part="contentDetails",
+        forHandle=HANDLE
+    ).execute()
+    
+    if not channel_res.get("items"):
+        print("指定されたチャンネルが見つかりませんでした。")
+        return
+        
+    uploads_playlist_id = channel_res["items"][0]["contentDetails"]["relatedPlaylists"]["uploads"]
+    
+    # 2. 動画リストを全件取得（ページネーション対応）
+    videos = []
+    next_page_token = None
+    print("動画リストを抽出中...")
+    while True:
+        playlist_res = youtube.playlistItems().list(
+            part="snippet",
+            playlistId=uploads_playlist_id,
+            maxResults=50,
+            pageToken=next_page_token
+        ).execute()
+        
+        videos.extend(playlist_res.get("items", []))
+        next_page_token = playlist_res.get("nextPageToken")
+        if not next_page_token:
+            break
+
+    master_songs = load_master_songs('master_songs.csv')
     data_store = {
         'main': {},
         'encores': {},
         'unknown': []
     }
 
-    # ----- ここにYouTube API経由で動画リストと概要欄を取得する処理が入ります -----
-    # ※ 実際の稼働時は API_KEY を使ってデータを取得しますが、
-    # スクリプトの骨格として用意しています。
-    
-    # テスト用ダミーデータでの処理シミュレーション
-    dummy_description = """
-    00:00 intro
-    02:30 Born in Chicago
-    06:10 横浜ホンキートンクブルース
-    12:00 MC
-    アンコール
-    15:00 Got My Mojo Workin' (アンコール曲)
-    20:00 知らない新曲
-    """
-    analyze_description(dummy_description, "2026-05-20", master_songs, data_store)
+    # 3. 概要欄の解析と集計
+    print(f"全{len(videos)}件の動画からライブ演奏データを集計します...")
+    for video in videos:
+        snippet = video["snippet"]
+        title = snippet["title"]
+        description = snippet["description"]
+        
+        # タイトルに日付らしきもの(数字など)が含まれているかざっくり判定
+        if not re.search(r'\d', title):
+            continue
+            
+        # 最終演奏日は動画の公開日(YYYY-MM-DD)を使用
+        published_at = snippet["publishedAt"]
+        date_str = published_at.split('T')[0]
+        
+        analyze_description(description, date_str, master_songs, data_store)
 
-    # データをJSON用に整形
+    # 4. JSONに保存
     output = {
         "lastUpdated": datetime.now().strftime("%Y-%m-%d %H:%M"),
         "main": [{"name": k, "count": v['count'], "lastPlayed": v['lastPlayed']} for k, v in data_store['main'].items()],
@@ -120,7 +155,8 @@ def main():
 
     with open('data.json', 'w', encoding='utf-8') as f:
         json.dump(output, f, ensure_ascii=False, indent=2)
-    print("✅ data.json generated successfully.")
+        
+    print("✅ data.json の生成が完了しました！")
 
 if __name__ == "__main__":
     main()
