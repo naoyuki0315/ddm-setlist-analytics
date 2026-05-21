@@ -2,7 +2,7 @@ import os
 import re
 import json
 import unicodedata
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 from googleapiclient.discovery import build
 
 API_KEY = os.environ.get("YOUTUBE_API_KEY")
@@ -122,12 +122,14 @@ def main():
         date_str = snippet["publishedAt"].split('T')[0]
         description = snippet["description"]
         
-        # 進行状況を画面に出力
         print(f"[{idx+1}/{len(videos)}] 解析中: {title} ({date_str})")
         analyze_description(description, date_str, master_songs, data_store)
 
+    # ★ ここで日本時間 (JST: UTC+9) に変換しています
+    JST = timezone(timedelta(hours=+9), 'JST')
+    
     output = {
-        "lastUpdated": datetime.now().strftime("%Y-%m-%d %H:%M"),
+        "lastUpdated": datetime.now(JST).strftime("%Y-%m-%d %H:%M"),
         "main": [{"name": k, "count": v['count'], "lastPlayed": v['lastPlayed'], "playDates": v['playDates']} for k, v in data_store['main'].items()],
         "encores": [{"name": k, "count": v['count'], "lastPlayed": v['lastPlayed'], "playDates": v['playDates']} for k, v in data_store['encores'].items()],
         "unknown": data_store['unknown']
