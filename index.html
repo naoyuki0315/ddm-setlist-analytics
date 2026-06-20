@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DDM Setlist Analytics</title>
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📊</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📊</text></svg>">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -13,8 +15,8 @@
 
   <script>
     const { useState, useEffect, useMemo } = React;
+    const e = React.createElement;
 
-    // --- コンポーネント定義 ---
     function App() {
       const [data, setData] = useState(null);
       const [activeTab, setActiveTab] = useState('total');
@@ -23,51 +25,53 @@
         fetch('./data.json')
           .then(res => res.json())
           .then(setData)
-          .catch(err => console.error("データ読み込み失敗", err));
+          .catch(() => setData({ lastUpdated: "エラー", main: [], encores: [], unknown: [] }));
       }, []);
 
-      if (!data) return React.createElement("div", {className: "p-8 text-center text-gray-500"}, "データを読み込み中...");
+      if (!data) return e("div", {className: "p-8 text-center text-gray-500"}, "データを読み込み中...");
 
-      // 簡易的なランキング生成（本来のロジックをここに復元）
-      const list = [...(data.main || []), ...(data.encores || [])];
-      const sortedData = list
-        .map(s => ({ name: s.name, count: s.playDates ? s.playDates.length : 0 }))
-        .sort((a, b) => b.count - a.count);
+      // 移植ロジック: 全ての曲を結合してカウント
+      const combinedMap = {};
+      [...data.main, ...data.encores].forEach(song => {
+        if (!combinedMap[song.name]) combinedMap[song.name] = { name: song.name, count: 0 };
+        combinedMap[song.name].count += (song.playDates ? song.playDates.length : 0);
+      });
+      const sortedTotal = Object.values(combinedMap).sort((a, b) => b.count - a.count);
 
-      return React.createElement("div", {className: "min-h-screen bg-gray-50 p-4"},
-        React.createElement("div", {className: "max-w-4xl mx-auto"},
-          React.createElement("h1", {className: "text-2xl font-bold mb-4"}, "Drop Down Mama 集計"),
+      return e("div", {className: "min-h-screen bg-gray-50 text-gray-800 p-4"},
+        e("div", {className: "max-w-4xl mx-auto"},
+          e("header", {className: "mb-6"},
+            e("h1", {className: "text-2xl font-bold"}, "📊 DDM Setlist Analytics"),
+            e("p", {className: "text-xs text-gray-500"}, "Last Updated: " + data.lastUpdated)
+          ),
           
-          // タブボタン
-          React.createElement("div", {className: "flex gap-4 mb-4 border-b"},
-            React.createElement("button", {onClick: () => setActiveTab('total'), className: activeTab === 'total' ? "border-b-2 border-blue-600 pb-2" : "pb-2"}, "総合"),
-            React.createElement("button", {onClick: () => setActiveTab('unknown'), className: activeTab === 'unknown' ? "border-b-2 border-red-600 pb-2" : "pb-2"}, "要確認")
+          // タブ切り替え
+          e("div", {className: "flex gap-4 border-b mb-4"},
+            ["total", "encore", "unknown"].map(tab => 
+              e("button", {
+                key: tab,
+                onClick: () => setActiveTab(tab),
+                className: `pb-2 font-bold ${activeTab === tab ? "border-b-2 border-blue-600 text-blue-600" : "text-gray-500"}`
+              }, tab.toUpperCase())
+            )
           ),
 
-          // テーブル部分
+          // コンテンツ表示
           activeTab === 'total' ? 
-            React.createElement("table", {className: "w-full bg-white shadow-sm rounded"},
-              React.createElement("thead", {className: "bg-gray-100"}, 
-                React.createElement("tr", null, 
-                  React.createElement("th", {className: "p-2"}, "曲名"),
-                  React.createElement("th", {className: "p-2"}, "回数")
+            e("table", {className: "w-full bg-white shadow rounded overflow-hidden"},
+              e("tbody", null, sortedTotal.map((s, i) => 
+                e("tr", {key: i, className: "border-b"},
+                  e("td", {className: "p-3"}, s.name),
+                  e("td", {className: "p-3 text-right font-bold"}, s.count + "回")
                 )
-              ),
-              React.createElement("tbody", null,
-                sortedData.map((song, i) => React.createElement("tr", {key: i, className: "border-t"},
-                  React.createElement("td", {className: "p-2"}, song.name),
-                  React.createElement("td", {className: "p-2 text-center"}, song.count)
-                ))
-              )
+              ))
             )
-            : 
-            React.createElement("div", null, "要確認データ: " + (data.unknown ? data.unknown.length : 0))
+            : e("div", {className: "text-center text-gray-500"}, "現在こちらのタブは調整中です")
         )
       );
     }
 
-    const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(React.createElement(App));
+    ReactDOM.createRoot(document.getElementById('root')).render(e(App));
   </script>
 </body>
 </html>
