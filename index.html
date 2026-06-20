@@ -4,16 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>スズナ演奏曲ランキング</title>
-  
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%232563eb'/><path d='M20 80 L20 50 L40 50 L40 80 Z' fill='white'/><path d='M42 80 L42 30 L62 30 L62 80 Z' fill='white'/><path d='M64 80 L64 40 L84 40 L84 80 Z' fill='white'/><circle cx='52' cy='25' r='8' fill='white'/></svg>">
   <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%232563eb'/><path d='M20 80 L20 50 L40 50 L40 80 Z' fill='white'/><path d='M42 80 L42 30 L62 30 L62 80 Z' fill='white'/><path d='M64 80 L64 40 L84 40 L84 80 Z' fill='white'/><circle cx='52' cy='25' r='8' fill='white'/></svg>">
-
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-50 text-gray-800 p-4">
   <div id="root" class="max-w-2xl mx-auto">
     <h1 class="text-xl font-bold mb-6 text-gray-900 leading-tight">スズナ演奏曲<br>ライブ演奏回数ランキング</h1>
-    <div id="tabs" class="flex gap-4 border-b mb-6"></div>
+    <div id="tabs" class="flex gap-4 border-b mb-4"></div>
+    <div id="filter-area" class="mb-4 hidden">
+      <select id="year-select" onchange="render()" class="p-2 border rounded w-full"></select>
+    </div>
     <table class="w-full bg-white shadow rounded overflow-hidden">
       <tbody id="list"></tbody>
     </table>
@@ -28,51 +29,53 @@
         const res = await fetch('./data.json');
         rawData = await res.json();
         render();
-      } catch (e) {
-        document.getElementById('list').innerHTML = "<tr><td class='p-8 text-center text-red-500'>データ読み込みエラー</td></tr>";
-      }
-    }
-
-    function getStats(sourceArray) {
-      const map = {};
-      sourceArray.forEach(s => {
-        if (!map[s.name]) map[s.name] = { name: s.name, count: 0, last: s.lastPlayed || "" };
-        map[s.name].count += (s.playDates || []).length;
-        if ((s.lastPlayed || "") > map[s.name].last) map[s.name].last = s.lastPlayed;
-      });
-      return Object.values(map).sort((a, b) => b.count - a.count);
+      } catch (e) { alert("データ読み込みエラー"); }
     }
 
     function render() {
-      // タブから要確認を除外
-      const tabs = { total: '総合', encore: 'アンコール' };
+      const tabs = { total: '総合', year: '年別' };
       document.getElementById('tabs').innerHTML = Object.entries(tabs).map(([id, label]) => 
-        `<button onclick="setTab('${id}')" class="pb-2 font-bold ${currentTab === id ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500'}">${label}</button>`
+        `<button onclick="currentTab='${id}'; render()" class="pb-2 font-bold ${currentTab === id ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500'}">${label}</button>`
       ).join('');
 
-      const source = currentTab === 'total' 
-        ? [...(rawData.main || []), ...(rawData.encores || [])] 
-        : (rawData.encores || []);
-      
-      const stats = getStats(source);
+      const filterArea = document.getElementById('filter-area');
+      filterArea.classList.toggle('hidden', currentTab !== 'year');
 
-      document.getElementById('list').innerHTML = stats.map((s, i) => `
-        <tr class="border-t hover:bg-gray-50 transition-colors">
-          <td class="p-3">
-            <div class="font-bold text-gray-900">
-              ${i < 3 ? ['👑','🥈','🥉'][i] : '<span class="text-gray-400 font-bold inline-block w-8">' + (i + 1) + '位</span>'} 
-              ${s.name}
-            </div>
-            <div class="text-xs text-gray-400 mt-1">最終演奏: ${s.last}</div>
-          </td>
-          <td class="text-right p-3 font-bold text-blue-600 whitespace-nowrap">${s.count}回</td>
+      let source = [...(rawData.main || []), ...(rawData.encores || [])];
+      
+      if (currentTab === 'year') {
+        const years = [...new Set(source.flatMap(s => s.playDates.map(d => d.split('-')[0])))].sort().reverse();
+        const yearSelect = document.getElementById('year-select');
+        if (yearSelect.options.length === 0) {
+          yearSelect.innerHTML = `<option value="all">全期間</option>` + years.map(y => 
+            `<option value="${y}-1">前半 ${y}年</option><option value="${y}-2">後半 ${y}年</option>`
+          ).join('');
+        }
+        
+        const [targetYear, half] = yearSelect.value.split('-');
+        if (yearSelect.value !== 'all') {
+          source = source.map(s => ({
+            ...s,
+            playDates: s.playDates.filter(d => {
+              const [y, m] = d.split('-');
+              return y === targetYear && (half === '1' ? m <= '06' : m > '06');
+            })
+          })).filter(s => s.playDates.length > 0);
+        }
+      }
+
+      const map = {};
+      source.forEach(s => {
+        if (!map[s.name]) map[s.name] = { name: s.name, count: 0 };
+        map[s.name].count += s.playDates.length;
+      });
+
+      document.getElementById('list').innerHTML = Object.values(map).sort((a,b) => b.count - a.count).map((s, i) => `
+        <tr class="border-t">
+          <td class="p-3 font-bold">${i < 3 ? ['👑','🥈','🥉'][i] : (i+1)+'位'} ${s.name}</td>
+          <td class="text-right p-3 text-blue-600">${s.count}回</td>
         </tr>
       `).join('');
-    }
-
-    function setTab(tab) {
-      currentTab = tab;
-      render();
     }
 
     init();
