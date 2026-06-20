@@ -4,17 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>スズナ演奏曲ランキング</title>
-  
   <link rel="icon" href="./icon.png" type="image/png">
   <link rel="apple-touch-icon" href="./icon.png">
-
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-50 text-gray-800 p-4">
   <div id="root" class="max-w-2xl mx-auto">
     <h1 class="text-xl font-bold mb-6 text-gray-900 leading-tight">スズナ演奏曲<br>ライブ演奏回数ランキング</h1>
     <div id="tabs" class="flex gap-4 border-b mb-4"></div>
-    <div id="filter-area" class="mb-4 hidden">
+    <div id="filter-area" class="mb-4">
       <select id="year-select" onchange="render()" class="p-2 border rounded w-full bg-white"></select>
     </div>
     <table class="w-full bg-white shadow rounded overflow-hidden">
@@ -23,22 +21,27 @@
   </div>
 
   <script>
+    const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTzWOELNEzNkvAb1Nld1Tjzv0_Z5mvRvuQdeH20jy-LYP0cycHgpWcpR6rcSBFqm-5lGKZYLgSmW4cg/pub?gid=842461559&single=true&output=csv';
     let rawData = null;
-    let currentTab = 'total';
+    let masterSongs = [];
+    let currentTab = 'year';
 
     async function init() {
       try {
-        const res = await fetch('./data.json');
-        rawData = await res.json();
-        
+        const [resCsv, resJson] = await Promise.all([
+          fetch(CSV_URL).then(r => r.text()),
+          fetch('./data.json').then(r => r.json())
+        ]);
+        masterSongs = resCsv.split('\n').map(l => l.split(',')[0].trim()).filter(Boolean);
+        rawData = resJson;
+
         const select = document.getElementById('year-select');
         const now = new Date();
         const currentYear = now.getFullYear();
         const currentMonth = now.getMonth() + 1;
-
-        let options = [{v:'all', l:'全期間'}];
+        let options = [];
         for(let y = 2024; y <= currentYear; y++) {
-          if (y === 2024) { options.push({v:'2024-2', l:'2024年後半'}); }
+          if (y === 2024) options.push({v:'2024-2', l:'2024年後半'});
           else {
             if (y < currentYear || currentMonth > 6) options.push({v:y+'-1', l:y+'年前半'});
             if (y < currentYear || currentMonth > 12) options.push({v:y+'-2', l:y+'年後半'});
@@ -47,35 +50,37 @@
         }
         select.innerHTML = options.map(o => `<option value="${o.v}">${o.l}</option>`).join('');
         render();
-      } catch (e) { console.error("データ読み込みエラー", e); }
+      } catch (e) { alert("データ読み込みエラー"); }
     }
 
     function render() {
-      const tabs = { total: '総合', year: '年別' };
+      const tabs = { year: '年別', encore: 'アンコール年別', unknown: '持ち曲以外' };
       document.getElementById('tabs').innerHTML = Object.entries(tabs).map(([id, label]) => 
         `<button onclick="currentTab='${id}'; render()" class="pb-2 font-bold ${currentTab === id ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500'}">${label}</button>`
       ).join('');
 
-      document.getElementById('filter-area').classList.toggle('hidden', currentTab !== 'year');
+      document.getElementById('filter-area').classList.toggle('hidden', currentTab === 'unknown');
 
-      let source = [...(rawData.main || []), ...(rawData.encores || [])];
+      let source = currentTab === 'encore' ? [...rawData.encores] : [...rawData.main, ...rawData.encores];
       
-      if (currentTab === 'year') {
-        const val = document.getElementById('year-select').value;
-        if (val !== 'all') {
-          const [y, type] = val.split('-');
-          source = source.map(s => ({
-            ...s,
-            playDates: s.playDates.filter(d => {
-              const [sy, sm] = d.split('-');
-              if (sy !== y) return false;
-              if (type === '1') return sm <= '06';
-              if (type === '2') return sm > '06';
-              return true;
-            })
-          })).filter(s => s.playDates.length > 0);
-        }
+      if (currentTab === 'unknown') {
+        const unknown = [...new Set(source.filter(s => !masterSongs.includes(s.name)).map(s => s.name))];
+        document.getElementById('list').innerHTML = unknown.map(name => `<tr class="border-t p-4"><td class="p-3 text-red-600 font-bold">${name}</td></tr>`).join('');
+        return;
       }
+
+      const val = document.getElementById('year-select').value;
+      const [y, type] = val.split('-');
+      source = source.map(s => ({
+        ...s,
+        playDates: s.playDates.filter(d => {
+          const [sy, sm] = d.split('-');
+          if (sy !== y) return false;
+          if (type === '1') return sm <= '06';
+          if (type === '2') return sm > '06';
+          return true;
+        })
+      })).filter(s => s.playDates.length > 0);
 
       const map = {};
       source.forEach(s => {
