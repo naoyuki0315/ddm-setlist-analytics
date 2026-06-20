@@ -13,7 +13,7 @@
     <h1 class="text-xl font-bold mb-6 text-gray-900 leading-tight">スズナ演奏曲<br>ライブ演奏回数ランキング</h1>
     <div id="tabs" class="flex gap-4 border-b mb-4"></div>
     <div id="filter-area" class="mb-4 hidden">
-      <select id="year-select" onchange="render()" class="p-2 border rounded w-full"></select>
+      <select id="year-select" onchange="render()" class="p-2 border rounded w-full bg-white"></select>
     </div>
     <table class="w-full bg-white shadow rounded overflow-hidden">
       <tbody id="list"></tbody>
@@ -28,6 +28,23 @@
       try {
         const res = await fetch('./data.json');
         rawData = await res.json();
+        
+        // プルダウンの自動生成（2024年後半から現在まで）
+        const select = document.getElementById('year-select');
+        const now = new Date();
+        const currentYear = now.getFullYear();
+        const currentMonth = now.getMonth() + 1;
+
+        let options = [{v:'all', l:'全期間'}];
+        for(let y = 2024; y <= currentYear; y++) {
+          if (y === 2024) { options.push({v:'2024-2', l:'2024年後半'}); }
+          else {
+            if (y < currentYear || currentMonth > 6) options.push({v:y+'-1', l:y+'年前半'});
+            if (y < currentYear || currentMonth > 12) options.push({v:y+'-2', l:y+'年後半'});
+            if (y < currentYear) options.push({v:y+'-all', l:y+'年総合'});
+          }
+        }
+        select.innerHTML = options.map(o => `<option value="${o.v}">${o.l}</option>`).join('');
         render();
       } catch (e) { alert("データ読み込みエラー"); }
     }
@@ -38,27 +55,22 @@
         `<button onclick="currentTab='${id}'; render()" class="pb-2 font-bold ${currentTab === id ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500'}">${label}</button>`
       ).join('');
 
-      const filterArea = document.getElementById('filter-area');
-      filterArea.classList.toggle('hidden', currentTab !== 'year');
+      document.getElementById('filter-area').classList.toggle('hidden', currentTab !== 'year');
 
       let source = [...(rawData.main || []), ...(rawData.encores || [])];
       
       if (currentTab === 'year') {
-        const years = [...new Set(source.flatMap(s => s.playDates.map(d => d.split('-')[0])))].sort().reverse();
-        const yearSelect = document.getElementById('year-select');
-        if (yearSelect.options.length === 0) {
-          yearSelect.innerHTML = `<option value="all">全期間</option>` + years.map(y => 
-            `<option value="${y}-1">前半 ${y}年</option><option value="${y}-2">後半 ${y}年</option>`
-          ).join('');
-        }
-        
-        const [targetYear, half] = yearSelect.value.split('-');
-        if (yearSelect.value !== 'all') {
+        const val = document.getElementById('year-select').value;
+        if (val !== 'all') {
+          const [y, type] = val.split('-');
           source = source.map(s => ({
             ...s,
             playDates: s.playDates.filter(d => {
-              const [y, m] = d.split('-');
-              return y === targetYear && (half === '1' ? m <= '06' : m > '06');
+              const [sy, sm] = d.split('-');
+              if (sy !== y) return false;
+              if (type === '1') return sm <= '06';
+              if (type === '2') return sm > '06';
+              return true; // 総合
             })
           })).filter(s => s.playDates.length > 0);
         }
@@ -77,7 +89,6 @@
         </tr>
       `).join('');
     }
-
     init();
   </script>
 </body>
