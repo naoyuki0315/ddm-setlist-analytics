@@ -36,14 +36,14 @@ def normalize_for_match(s):
 
 def clean_song_title(raw_title):
     title = re.sub(r'\d{1,2}:\d{2}:\d{2}|\d{1,2}:\d{2}', '', raw_title)
-    title = re.sub(r'^[\s　]*\d+[.．\s　]+', '', title)
-    title = re.sub(r'^[\s　]*[・\-\*※][\s　]*', '', title)
-    title = re.sub(r'^(リクエスト|曲)[\s　]*', '', title)
+    title = re.sub(r'^[\s ]*\d+[.．\s ]+', '', title)
+    title = re.sub(r'^[\s ]*[・\-\*※][\s ]*', '', title)
+    title = re.sub(r'^(リクエスト|曲)[\s ]*', '', title)
     title = re.sub(r'\(?アンコール曲?\)?', '', title, flags=re.IGNORECASE)
     title = re.sub(r'encore', '', title, flags=re.IGNORECASE)
     return title.strip()
 
-def analyze_description(description, date_str, master_songs, data_store):
+def analyze_description(description, date_str, video_id, master_songs, data_store):
     lines = description.split('\n')
     is_encore_mode = False
 
@@ -79,9 +79,12 @@ def analyze_description(description, date_str, master_songs, data_store):
 
         if matched_song:
             if matched_song not in target_dict:
-                target_dict[matched_song] = {'count': 0, 'lastPlayed': '', 'playDates': []}
+                target_dict[matched_song] = {'count': 0, 'lastPlayed': '', 'playDates': [], 'urls': []}
+            
             target_dict[matched_song]['count'] += 1
             target_dict[matched_song]['playDates'].append(date_str)
+            target_dict[matched_song]['urls'].append({'date': date_str, 'url': f"https://www.youtube.com/watch?v={video_id}"})
+            
             if not target_dict[matched_song]['lastPlayed'] or date_str > target_dict[matched_song]['lastPlayed']:
                 target_dict[matched_song]['lastPlayed'] = date_str
         else:
@@ -117,21 +120,21 @@ def main():
     for idx, video in enumerate(videos):
         snippet = video["snippet"]
         title = snippet["title"]
+        video_id = snippet["resourceId"]["videoId"] # 追加
         if not re.search(r'\d', title): continue
             
         date_str = snippet["publishedAt"].split('T')[0]
         description = snippet["description"]
         
         print(f"[{idx+1}/{len(videos)}] 解析中: {title} ({date_str})")
-        analyze_description(description, date_str, master_songs, data_store)
+        analyze_description(description, date_str, video_id, master_songs, data_store)
 
-    # ★ ここで日本時間 (JST: UTC+9) に変換しています
     JST = timezone(timedelta(hours=+9), 'JST')
     
     output = {
         "lastUpdated": datetime.now(JST).strftime("%Y-%m-%d %H:%M"),
-        "main": [{"name": k, "count": v['count'], "lastPlayed": v['lastPlayed'], "playDates": v['playDates']} for k, v in data_store['main'].items()],
-        "encores": [{"name": k, "count": v['count'], "lastPlayed": v['lastPlayed'], "playDates": v['playDates']} for k, v in data_store['encores'].items()],
+        "main": [{"name": k, "count": v['count'], "lastPlayed": v['lastPlayed'], "playDates": v['playDates'], "urls": v['urls']} for k, v in data_store['main'].items()],
+        "encores": [{"name": k, "count": v['count'], "lastPlayed": v['lastPlayed'], "playDates": v['playDates'], "urls": v['urls']} for k, v in data_store['encores'].items()],
         "unknown": data_store['unknown']
     }
 
