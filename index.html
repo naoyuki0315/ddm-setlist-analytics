@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DDM Setlist Analytics</title>
   <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📊</text></svg>">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📊</text></svg>">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -28,43 +27,43 @@
           .catch(() => setData({ lastUpdated: "データなし", main: [], encores: [], unknown: [] }));
       }, []);
 
-      if (!data) return e("div", {className: "p-8 text-center text-gray-500"}, "Loading...");
+      if (!data) return e("div", {className: "p-8 text-center text-gray-500"}, "読み込み中...");
 
-      // 以前のロジック：総合ランキング
-      const combined = [...data.main, ...data.encores].reduce((acc, cur) => {
-        if (!acc[cur.name]) acc[cur.name] = { name: cur.name, count: 0 };
-        acc[cur.name].count += (cur.playDates ? cur.playDates.length : 0);
-        return acc;
-      }, {});
-      const sortedTotal = Object.values(combined).sort((a, b) => b.count - a.count);
+      // 以前のロジックを完全再現
+      const combinedData = useMemo(() => {
+        const map = {};
+        [...data.main, ...data.encores].forEach(song => {
+          if (!map[song.name]) map[song.name] = { name: song.name, count: 0 };
+          map[song.name].count += (song.playDates ? song.playDates.length : 0);
+        });
+        return Object.values(map).sort((a, b) => b.count - a.count);
+      }, [data]);
 
       return e("div", {className: "min-h-screen bg-gray-50 p-4"},
         e("div", {className: "max-w-4xl mx-auto"},
           e("h1", {className: "text-2xl font-bold mb-4 flex items-center gap-2"}, "📊 DDM Setlist Analytics"),
           
           // タブ
-          e("div", {className: "flex gap-2 border-b mb-6"},
+          e("div", {className: "flex gap-4 border-b mb-6"},
             ["total", "encore", "unknown"].map(tab => 
               e("button", {
                 key: tab,
                 onClick: () => setActiveTab(tab),
-                className: `px-4 py-2 font-bold ${activeTab === tab ? "border-b-2 border-blue-600 text-blue-600" : "text-gray-500"}`
+                className: `pb-2 font-bold ${activeTab === tab ? "border-b-2 border-blue-600 text-blue-600" : "text-gray-500"}`
               }, tab.toUpperCase())
             )
           ),
 
-          // リスト表示
+          // テーブル
           e("table", {className: "w-full bg-white shadow rounded overflow-hidden"},
-            e("thead", {className: "bg-gray-100 text-left"},
-              e("tr", null, e("th", {className: "p-3"}, "曲名"), e("th", {className: "p-3 text-right"}, "回数"))
+            e("thead", {className: "bg-gray-100"},
+              e("tr", null, e("th", {className: "p-3 text-left"}, "曲名"), e("th", {className: "p-3 text-right"}, "回数"))
             ),
             e("tbody", null, 
-              (activeTab === 'total' ? sortedTotal : []).map((s, i) => 
-                e("tr", {key: i, className: "border-t"},
-                  e("td", {className: "p-3"}, s.name),
-                  e("td", {className: "p-3 text-right font-bold text-blue-600"}, s.count)
-                )
-              )
+              combinedData.map((s, i) => e("tr", {key: i, className: "border-t"},
+                e("td", {className: "p-3"}, s.name),
+                e("td", {className: "p-3 text-right font-bold text-blue-600"}, s.count)
+              ))
             )
           )
         )
