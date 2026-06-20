@@ -4,8 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>スズナ演奏曲ランキング</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%232563eb'/><path d='M20 80 L20 50 L40 50 L40 80 Z' fill='white'/><path d='M42 80 L42 30 L62 30 L62 80 Z' fill='white'/><path d='M64 80 L64 40 L84 40 L84 80 Z' fill='white'/><circle cx='52' cy='25' r='8' fill='white'/></svg>">
-  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%232563eb'/><path d='M20 80 L20 50 L40 50 L40 80 Z' fill='white'/><path d='M42 80 L42 30 L62 30 L62 80 Z' fill='white'/><path d='M64 80 L64 40 L84 40 L84 80 Z' fill='white'/><circle cx='52' cy='25' r='8' fill='white'/></svg>">
+  
+  <link rel="icon" href="./icon.png" type="image/png">
+  <link rel="apple-touch-icon" href="./icon.png">
+
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-50 text-gray-800 p-4">
@@ -29,7 +31,6 @@
         const res = await fetch('./data.json');
         rawData = await res.json();
         
-        // プルダウンの自動生成（2024年後半から現在まで）
         const select = document.getElementById('year-select');
         const now = new Date();
         const currentYear = now.getFullYear();
@@ -46,7 +47,7 @@
         }
         select.innerHTML = options.map(o => `<option value="${o.v}">${o.l}</option>`).join('');
         render();
-      } catch (e) { alert("データ読み込みエラー"); }
+      } catch (e) { console.error("データ読み込みエラー", e); }
     }
 
     function render() {
@@ -70,7 +71,7 @@
               if (sy !== y) return false;
               if (type === '1') return sm <= '06';
               if (type === '2') return sm > '06';
-              return true; // 総合
+              return true;
             })
           })).filter(s => s.playDates.length > 0);
         }
