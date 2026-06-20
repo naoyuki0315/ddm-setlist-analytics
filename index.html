@@ -35,20 +35,24 @@
         masterSongs = resCsv.split('\n').map(l => l.split(',')[0].trim()).filter(Boolean);
         rawData = resJson;
 
+        // プルダウン生成ロジック
         const select = document.getElementById('year-select');
         const now = new Date();
-        const currentYear = now.getFullYear();
-        const currentMonth = now.getMonth() + 1;
-        let options = [];
-        for(let y = 2024; y <= currentYear; y++) {
-          if (y === 2024) options.push({v:'2024-2', l:'2024年後半'});
+        const curY = now.getFullYear();
+        const curM = now.getMonth() + 1;
+        
+        let periods = [{v:'all', l:'総合'}];
+        for(let y = 2024; y <= curY; y++) {
+          if (y === 2024) { periods.push({v:'2024-2', l:'2024年後半'}); }
           else {
-            if (y < currentYear || currentMonth > 6) options.push({v:y+'-1', l:y+'年前半'});
-            if (y < currentYear || currentMonth > 12) options.push({v:y+'-2', l:y+'年後半'});
-            if (y < currentYear) options.push({v:y+'-all', l:y+'年総合'});
+            if (y < curY || curM > 6) periods.push({v:y+'-1', l:y+'年前半'});
+            if (y < curY || curM > 12) periods.push({v:y+'-2', l:y+'年後半'});
+            if (y < curY) periods.push({v:y+'-all', l:y+'年総合'});
           }
         }
-        select.innerHTML = options.map(o => `<option value="${o.v}">${o.l}</option>`).join('');
+        // 総合以外を「新しい順」にソート
+        const sorted = [periods[0], ...periods.slice(1).reverse()];
+        select.innerHTML = sorted.map(o => `<option value="${o.v}">${o.l}</option>`).join('');
         render();
       } catch (e) { alert("データ読み込みエラー"); }
     }
@@ -64,23 +68,26 @@
       let source = currentTab === 'encore' ? [...rawData.encores] : [...rawData.main, ...rawData.encores];
       
       if (currentTab === 'unknown') {
+        // マスターリストに存在しない曲名のみを抽出
         const unknown = [...new Set(source.filter(s => !masterSongs.includes(s.name)).map(s => s.name))];
         document.getElementById('list').innerHTML = unknown.map(name => `<tr class="border-t p-4"><td class="p-3 text-red-600 font-bold">${name}</td></tr>`).join('');
         return;
       }
 
       const val = document.getElementById('year-select').value;
-      const [y, type] = val.split('-');
-      source = source.map(s => ({
-        ...s,
-        playDates: s.playDates.filter(d => {
-          const [sy, sm] = d.split('-');
-          if (sy !== y) return false;
-          if (type === '1') return sm <= '06';
-          if (type === '2') return sm > '06';
-          return true;
-        })
-      })).filter(s => s.playDates.length > 0);
+      if (val !== 'all') {
+        const [y, type] = val.split('-');
+        source = source.map(s => ({
+          ...s,
+          playDates: s.playDates.filter(d => {
+            const [sy, sm] = d.split('-');
+            if (sy !== y) return false;
+            if (type === '1') return sm <= '06';
+            if (type === '2') return sm > '06';
+            return true;
+          })
+        })).filter(s => s.playDates.length > 0);
+      }
 
       const map = {};
       source.forEach(s => {
