@@ -2,7 +2,6 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>スズナ演奏曲ランキング</title>
   <link rel="icon" href="./icon.png" type="image/png">
   <link rel="apple-touch-icon" href="./icon.png">
@@ -32,10 +31,18 @@
           fetch(CSV_URL).then(r => r.text()),
           fetch('./data.json').then(r => r.json())
         ]);
-        masterSongs = resCsv.split('\n').map(l => l.split(',')[0].trim()).filter(Boolean);
+        
+        // 【修正点】B列（インデックス1）を楽曲名として取得
+        masterSongs = resCsv.split('\n')
+          .slice(1) // ヘッダー行をスキップ
+          .map(line => {
+            const cols = line.split(',');
+            return cols[1] ? cols[1].trim() : ""; // B列を抽出
+          })
+          .filter(name => name !== ""); // 空行を除外
+
         rawData = resJson;
 
-        // プルダウン生成ロジック
         const select = document.getElementById('year-select');
         const now = new Date();
         const curY = now.getFullYear();
@@ -43,18 +50,16 @@
         
         let periods = [{v:'all', l:'総合'}];
         for(let y = 2024; y <= curY; y++) {
-          if (y === 2024) { periods.push({v:'2024-2', l:'2024年後半'}); }
+          if (y === 2024) periods.push({v:'2024-2', l:'2024年後半'});
           else {
             if (y < curY || curM > 6) periods.push({v:y+'-1', l:y+'年前半'});
             if (y < curY || curM > 12) periods.push({v:y+'-2', l:y+'年後半'});
             if (y < curY) periods.push({v:y+'-all', l:y+'年総合'});
           }
         }
-        // 総合以外を「新しい順」にソート
-        const sorted = [periods[0], ...periods.slice(1).reverse()];
-        select.innerHTML = sorted.map(o => `<option value="${o.v}">${o.l}</option>`).join('');
+        select.innerHTML = [periods[0], ...periods.slice(1).reverse()].map(o => `<option value="${o.v}">${o.l}</option>`).join('');
         render();
-      } catch (e) { alert("データ読み込みエラー"); }
+      } catch (e) { alert("データ読み込みエラー: " + e.message); }
     }
 
     function render() {
@@ -68,25 +73,24 @@
       let source = currentTab === 'encore' ? [...rawData.encores] : [...rawData.main, ...rawData.encores];
       
       if (currentTab === 'unknown') {
-        // マスターリストに存在しない曲名のみを抽出
+        // マスターリスト（B列の楽曲群）に存在しない曲名のみを抽出
         const unknown = [...new Set(source.filter(s => !masterSongs.includes(s.name)).map(s => s.name))];
-        document.getElementById('list').innerHTML = unknown.map(name => `<tr class="border-t p-4"><td class="p-3 text-red-600 font-bold">${name}</td></tr>`).join('');
+        document.getElementById('list').innerHTML = unknown.length > 0 
+          ? unknown.map(name => `<tr class="border-t p-4"><td class="p-3 text-red-600 font-bold">${name}</td></tr>`).join('')
+          : "<tr><td class='p-8 text-center text-gray-500'>持ち曲以外の曲はありません</td></tr>";
         return;
       }
 
       const val = document.getElementById('year-select').value;
       if (val !== 'all') {
         const [y, type] = val.split('-');
-        source = source.map(s => ({
-          ...s,
-          playDates: s.playDates.filter(d => {
-            const [sy, sm] = d.split('-');
-            if (sy !== y) return false;
-            if (type === '1') return sm <= '06';
-            if (type === '2') return sm > '06';
-            return true;
-          })
-        })).filter(s => s.playDates.length > 0);
+        source = source.map(s => ({ ...s, playDates: s.playDates.filter(d => {
+          const [sy, sm] = d.split('-');
+          if (sy !== y) return false;
+          if (type === '1') return sm <= '06';
+          if (type === '2') return sm > '06';
+          return true;
+        })})).filter(s => s.playDates.length > 0);
       }
 
       const map = {};
