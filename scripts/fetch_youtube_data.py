@@ -2,7 +2,9 @@ import os
 import re
 import json
 import unicodedata
-import requests  # 実行環境にインストールされていない場合は pip install requests
+import requests
+import csv
+import io
 from datetime import datetime, timezone, timedelta
 from googleapiclient.discovery import build
 
@@ -12,18 +14,30 @@ HANDLE = "@70315"
 CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTzWOELNEzNkvAb1Nld1Tjzv0_Z5mvRvuQdeH20jy-LYP0cycHgpWcpR6rcSBFqm-5lGKZYLgSmW4cg/pub?gid=842461559&single=true&output=csv'
 
 def load_master_songs_from_web(csv_url):
-    """スプレッドシートのCSVからB列（楽曲名）を読み込む"""
+    """スプレッドシートのCSVから「楽曲名」列を検索して読み込む"""
     try:
         response = requests.get(csv_url)
         response.encoding = 'utf-8-sig'
+        f = io.StringIO(response.text)
+        reader = csv.reader(f)
+        
         songs = []
-        for line in response.text.splitlines():
-            cols = line.split(',')
-            # B列目（インデックス1）が楽曲名
-            if len(cols) > 1:
-                song = cols[1].strip()
-                if song and song not in ['楽曲名', 'No.']:
+        header_index = -1
+        
+        for row in reader:
+            # 「楽曲名」というヘッダーがある列を探す
+            if '楽曲名' in row:
+                header_index = row.index('楽曲名')
+                continue
+            
+            # ヘッダーが見つかった後、その列のデータを取得
+            if header_index != -1 and len(row) > header_index:
+                song = row[header_index].strip()
+                # 楽曲名として妥当なものだけ追加
+                if song and song != '楽曲名' and not song.isdigit():
                     songs.append(song)
+        
+        print(f"DEBUG: マスターリスト読み込み完了。{len(set(songs))}件の楽曲を取得しました。")
         return list(set(songs))
     except Exception as e:
         print(f"マスターリストの読み込みに失敗しました: {e}")
