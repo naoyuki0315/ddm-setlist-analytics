@@ -25,48 +25,48 @@
         fetch('./data.json')
           .then(res => res.json())
           .then(setData)
-          .catch(() => setData({ lastUpdated: "エラー", main: [], encores: [], unknown: [] }));
+          .catch(() => setData({ lastUpdated: "データなし", main: [], encores: [], unknown: [] }));
       }, []);
 
-      if (!data) return e("div", {className: "p-8 text-center text-gray-500"}, "データを読み込み中...");
+      if (!data) return e("div", {className: "p-8 text-center text-gray-500"}, "Loading...");
 
-      // 移植ロジック: 全ての曲を結合してカウント
-      const combinedMap = {};
-      [...data.main, ...data.encores].forEach(song => {
-        if (!combinedMap[song.name]) combinedMap[song.name] = { name: song.name, count: 0 };
-        combinedMap[song.name].count += (song.playDates ? song.playDates.length : 0);
-      });
-      const sortedTotal = Object.values(combinedMap).sort((a, b) => b.count - a.count);
+      // 以前のロジック：総合ランキング
+      const combined = [...data.main, ...data.encores].reduce((acc, cur) => {
+        if (!acc[cur.name]) acc[cur.name] = { name: cur.name, count: 0 };
+        acc[cur.name].count += (cur.playDates ? cur.playDates.length : 0);
+        return acc;
+      }, {});
+      const sortedTotal = Object.values(combined).sort((a, b) => b.count - a.count);
 
-      return e("div", {className: "min-h-screen bg-gray-50 text-gray-800 p-4"},
+      return e("div", {className: "min-h-screen bg-gray-50 p-4"},
         e("div", {className: "max-w-4xl mx-auto"},
-          e("header", {className: "mb-6"},
-            e("h1", {className: "text-2xl font-bold"}, "📊 DDM Setlist Analytics"),
-            e("p", {className: "text-xs text-gray-500"}, "Last Updated: " + data.lastUpdated)
-          ),
+          e("h1", {className: "text-2xl font-bold mb-4 flex items-center gap-2"}, "📊 DDM Setlist Analytics"),
           
-          // タブ切り替え
-          e("div", {className: "flex gap-4 border-b mb-4"},
+          // タブ
+          e("div", {className: "flex gap-2 border-b mb-6"},
             ["total", "encore", "unknown"].map(tab => 
               e("button", {
                 key: tab,
                 onClick: () => setActiveTab(tab),
-                className: `pb-2 font-bold ${activeTab === tab ? "border-b-2 border-blue-600 text-blue-600" : "text-gray-500"}`
+                className: `px-4 py-2 font-bold ${activeTab === tab ? "border-b-2 border-blue-600 text-blue-600" : "text-gray-500"}`
               }, tab.toUpperCase())
             )
           ),
 
-          // コンテンツ表示
-          activeTab === 'total' ? 
-            e("table", {className: "w-full bg-white shadow rounded overflow-hidden"},
-              e("tbody", null, sortedTotal.map((s, i) => 
-                e("tr", {key: i, className: "border-b"},
+          // リスト表示
+          e("table", {className: "w-full bg-white shadow rounded overflow-hidden"},
+            e("thead", {className: "bg-gray-100 text-left"},
+              e("tr", null, e("th", {className: "p-3"}, "曲名"), e("th", {className: "p-3 text-right"}, "回数"))
+            ),
+            e("tbody", null, 
+              (activeTab === 'total' ? sortedTotal : []).map((s, i) => 
+                e("tr", {key: i, className: "border-t"},
                   e("td", {className: "p-3"}, s.name),
-                  e("td", {className: "p-3 text-right font-bold"}, s.count + "回")
+                  e("td", {className: "p-3 text-right font-bold text-blue-600"}, s.count)
                 )
-              ))
+              )
             )
-            : e("div", {className: "text-center text-gray-500"}, "現在こちらのタブは調整中です")
+          )
         )
       );
     }
