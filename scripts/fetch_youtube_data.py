@@ -8,13 +8,14 @@ import io
 from datetime import datetime, timezone, timedelta
 from googleapiclient.discovery import build
 
+# 設定項目
 API_KEY = os.environ.get("YOUTUBE_API_KEY")
-HANDLE = "@70315"
-# スプレッドシート公開CSVのURL
+# チャンネルIDを直接指定（ハンドル名ではなくこちらが確実です）
+CHANNEL_ID = "UC4m7H3u7Uo-QZq8e9s4_7Sg" 
 CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTzWOELNEzNkvAb1Nld1Tjzv0_Z5mvRvuQdeH20jy-LYP0cycHgpWcpR6rcSBFqm-5lGKZYLgSmW4cg/pub?gid=842461559&single=true&output=csv'
 
 def load_master_songs_from_web(csv_url):
-    """スプレッドシートのCSVから「楽曲名」列を検索して読み込む"""
+    """スプレッドシートの「楽曲名」列を検索して読み込む"""
     try:
         response = requests.get(csv_url)
         response.encoding = 'utf-8-sig'
@@ -25,19 +26,16 @@ def load_master_songs_from_web(csv_url):
         header_index = -1
         
         for row in reader:
-            # 「楽曲名」というヘッダーがある列を探す
             if '楽曲名' in row:
                 header_index = row.index('楽曲名')
                 continue
             
-            # ヘッダーが見つかった後、その列のデータを取得
             if header_index != -1 and len(row) > header_index:
                 song = row[header_index].strip()
-                # 楽曲名として妥当なものだけ追加
                 if song and song != '楽曲名' and not song.isdigit():
                     songs.append(song)
         
-        print(f"DEBUG: マスターリスト読み込み完了。{len(set(songs))}件の楽曲を取得しました。")
+        print(f"DEBUG: 楽曲リスト読み込み完了。{len(set(songs))}件の楽曲を取得しました。")
         return list(set(songs))
     except Exception as e:
         print(f"マスターリストの読み込みに失敗しました: {e}")
@@ -110,8 +108,13 @@ def main():
         return
 
     youtube = build('youtube', 'v3', developerKey=API_KEY)
-    channel_res = youtube.channels().list(part="contentDetails", forHandle=HANDLE).execute()
-    if not channel_res.get("items"): return
+    
+    print(f"チャンネルID {CHANNEL_ID} から動画を取得します...")
+    channel_res = youtube.channels().list(part="contentDetails", id=CHANNEL_ID).execute()
+    if not channel_res.get("items"): 
+        print("エラー: チャンネルが見つかりません。")
+        return
+        
     uploads_playlist_id = channel_res["items"][0]["contentDetails"]["relatedPlaylists"]["uploads"]
     
     videos = []
@@ -122,12 +125,13 @@ def main():
         ).execute()
         videos.extend(playlist_res.get("items", []))
         next_page_token = playlist_res.get("nextPageToken")
+        print(f"現在 {len(videos)} 件の動画を取得済み...")
         if not next_page_token: break
 
     master_songs = load_master_songs_from_web(CSV_URL)
     data_store = {'main': {}, 'encores': {}, 'unknown': []}
 
-    print(f"全{len(videos)}件の動画からデータを集計します...")
+    print(f"全{len(videos)}件の動画から集計を開始します...")
     for idx, video in enumerate(videos):
         snippet = video["snippet"]
         video_id = snippet["resourceId"]["videoId"]
@@ -146,7 +150,7 @@ def main():
 
     with open('data.json', 'w', encoding='utf-8') as f:
         json.dump(output, f, ensure_ascii=False, indent=2)
-    print("✅ 完了しました。")
+    print("✅ 全ての処理が完了しました。")
 
 if __name__ == "__main__":
     main()
