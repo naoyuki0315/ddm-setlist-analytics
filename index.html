@@ -12,27 +12,59 @@
   <div id="root"></div>
 
   <script>
-    // JSXを使わず、標準のReact.createElementで記述します
     const { useState, useEffect, useMemo } = React;
 
-    const App = () => {
+    // --- コンポーネント定義 ---
+    function App() {
       const [data, setData] = useState(null);
+      const [activeTab, setActiveTab] = useState('total');
 
       useEffect(() => {
         fetch('./data.json')
           .then(res => res.json())
           .then(setData)
-          .catch(() => setData({ lastUpdated: "データなし", main: [], encores: [], unknown: [] }));
+          .catch(err => console.error("データ読み込み失敗", err));
       }, []);
 
-      if (!data) return React.createElement("div", {className: "p-8 text-center"}, "読み込み中...");
+      if (!data) return React.createElement("div", {className: "p-8 text-center text-gray-500"}, "データを読み込み中...");
 
-      // ここにメインの表示内容を記述します
-      return React.createElement("div", {className: "p-8"}, 
-        React.createElement("h1", {className: "text-2xl font-bold"}, "Drop Down Mama 集計"),
-        React.createElement("p", null, "データ最終更新: " + data.lastUpdated)
+      // 簡易的なランキング生成（本来のロジックをここに復元）
+      const list = [...(data.main || []), ...(data.encores || [])];
+      const sortedData = list
+        .map(s => ({ name: s.name, count: s.playDates ? s.playDates.length : 0 }))
+        .sort((a, b) => b.count - a.count);
+
+      return React.createElement("div", {className: "min-h-screen bg-gray-50 p-4"},
+        React.createElement("div", {className: "max-w-4xl mx-auto"},
+          React.createElement("h1", {className: "text-2xl font-bold mb-4"}, "Drop Down Mama 集計"),
+          
+          // タブボタン
+          React.createElement("div", {className: "flex gap-4 mb-4 border-b"},
+            React.createElement("button", {onClick: () => setActiveTab('total'), className: activeTab === 'total' ? "border-b-2 border-blue-600 pb-2" : "pb-2"}, "総合"),
+            React.createElement("button", {onClick: () => setActiveTab('unknown'), className: activeTab === 'unknown' ? "border-b-2 border-red-600 pb-2" : "pb-2"}, "要確認")
+          ),
+
+          // テーブル部分
+          activeTab === 'total' ? 
+            React.createElement("table", {className: "w-full bg-white shadow-sm rounded"},
+              React.createElement("thead", {className: "bg-gray-100"}, 
+                React.createElement("tr", null, 
+                  React.createElement("th", {className: "p-2"}, "曲名"),
+                  React.createElement("th", {className: "p-2"}, "回数")
+                )
+              ),
+              React.createElement("tbody", null,
+                sortedData.map((song, i) => React.createElement("tr", {key: i, className: "border-t"},
+                  React.createElement("td", {className: "p-2"}, song.name),
+                  React.createElement("td", {className: "p-2 text-center"}, song.count)
+                ))
+              )
+            )
+            : 
+            React.createElement("div", null, "要確認データ: " + (data.unknown ? data.unknown.length : 0))
+        )
       );
-    };
+    }
 
     const root = ReactDOM.createRoot(document.getElementById('root'));
     root.render(React.createElement(App));
