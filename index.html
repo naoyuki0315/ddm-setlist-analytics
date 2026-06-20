@@ -2,61 +2,84 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DDM Setlist Analytics</title>
   <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📊</text></svg>">
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-50 text-gray-800 p-4">
   <div id="root" class="max-w-2xl mx-auto">
-    <h1 class="text-xl font-bold mb-4">📊 DDM Setlist Analytics</h1>
-    <div id="tabs" class="flex gap-2 mb-4"></div>
-    <table class="w-full bg-white shadow rounded">
+    <h1 class="text-2xl font-bold mb-6 flex items-center gap-2">📊 DDM Setlist Analytics</h1>
+    <div id="tabs" class="flex gap-2 border-b mb-6"></div>
+    <table class="w-full bg-white shadow rounded overflow-hidden">
       <tbody id="list"></tbody>
     </table>
   </div>
 
   <script>
-    let globalData = null;
-    const listEl = document.getElementById('list');
-    const tabsEl = document.getElementById('tabs');
+    let rawData = null;
+    let currentTab = 'total';
 
-    async function loadData() {
+    async function init() {
       try {
         const res = await fetch('./data.json');
-        globalData = await res.json();
-        render('total');
+        rawData = await res.json();
+        render();
       } catch (e) {
-        listEl.innerHTML = "<tr><td class='p-4'>データ読み込みエラー</td></tr>";
+        document.getElementById('list').innerHTML = "<tr><td class='p-8 text-center'>データ読み込みエラー</td></tr>";
       }
     }
 
-    function render(tab) {
-      // タブ生成
-      tabsEl.innerHTML = ['total', 'encore', 'unknown'].map(t => 
-        `<button onclick="render('${t}')" class="px-3 py-1 border ${tab === t ? 'bg-blue-600 text-white' : 'bg-gray-100'}">${t.toUpperCase()}</button>`
-      ).join('');
-
-      // 集計
+    function getStats(sourceArray) {
       const map = {};
-      [...(globalData.main || []), ...(globalData.encores || [])].forEach(s => {
+      sourceArray.forEach(s => {
         if (!map[s.name]) map[s.name] = { name: s.name, count: 0, last: s.lastPlayed || "" };
         map[s.name].count += (s.playDates || []).length;
+        // 最終演奏日を更新（より新しい日付があれば上書き）
+        if ((s.lastPlayed || "") > map[s.name].last) map[s.name].last = s.lastPlayed;
       });
-      const sorted = Object.values(map).sort((a, b) => b.count - a.count);
+      return Object.values(map).sort((a, b) => b.count - a.count);
+    }
 
-      // リスト描画
-      listEl.innerHTML = sorted.map((s, i) => `
-        <tr class="border-t">
+    function render() {
+      const tabs = { total: '総合', encore: 'アンコール', unknown: '要確認' };
+      document.getElementById('tabs').innerHTML = Object.entries(tabs).map(([id, label]) => 
+        `<button onclick="setTab('${id}')" class="px-4 py-2 font-bold ${currentTab === id ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500'}">${label}</button>`
+      ).join('');
+
+      const listEl = document.getElementById('list');
+
+      // 1. 要確認タブ
+      if (currentTab === 'unknown') {
+        listEl.innerHTML = (rawData.unknown || []).map(s => `<tr class="border-t p-4"><td class="p-3 text-red-600">${s}</td></tr>`).join('');
+        return;
+      }
+
+      // 2. 総合 vs アンコールのみのランキング集計
+      const source = currentTab === 'total' 
+        ? [...(rawData.main || []), ...(rawData.encores || [])] 
+        : (rawData.encores || []);
+      
+      const stats = getStats(source);
+
+      // 3. 描画
+      listEl.innerHTML = stats.map((s, i) => `
+        <tr class="border-t hover:bg-gray-50">
           <td class="p-3">
-            <div class="font-bold">${i < 3 ? ['👑','🥈','🥉'][i] : ''} ${s.name}</div>
-            <div class="text-xs text-gray-500">${s.last}</div>
+            <div class="font-bold">${i < 3 ? ['👑','🥈','🥉'][i] : '<span class="text-gray-400 font-bold">' + (i + 1) + '位</span>'} ${s.name}</div>
+            <div class="text-xs text-gray-400">${s.last}</div>
           </td>
           <td class="text-right p-3 font-bold text-blue-600">${s.count}回</td>
         </tr>
       `).join('');
     }
 
-    loadData();
+    function setTab(tab) {
+      currentTab = tab;
+      render();
+    }
+
+    init();
   </script>
 </body>
 </html>
