@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DDM Setlist Analytics</title>
+  <title>スズナ演奏曲ランキング</title>
   
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%232563eb'/><path d='M20 80 L20 50 L40 50 L40 80 Z' fill='white'/><path d='M42 80 L42 30 L62 30 L62 80 Z' fill='white'/><path d='M64 80 L64 40 L84 40 L84 80 Z' fill='white'/><circle cx='52' cy='25' r='8' fill='white'/></svg>">
   <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%232563eb'/><path d='M20 80 L20 50 L40 50 L40 80 Z' fill='white'/><path d='M42 80 L42 30 L62 30 L62 80 Z' fill='white'/><path d='M64 80 L64 40 L84 40 L84 80 Z' fill='white'/><circle cx='52' cy='25' r='8' fill='white'/></svg>">
@@ -12,8 +12,8 @@
 </head>
 <body class="bg-gray-50 text-gray-800 p-4">
   <div id="root" class="max-w-2xl mx-auto">
-    <h1 class="text-2xl font-bold mb-6 flex items-center gap-2">📊 DDM Setlist Analytics</h1>
-    <div id="tabs" class="flex gap-2 border-b mb-6"></div>
+    <h1 class="text-xl font-bold mb-6 text-gray-900 leading-tight">スズナ演奏曲<br>ライブ演奏回数ランキング</h1>
+    <div id="tabs" class="flex gap-4 border-b mb-6"></div>
     <table class="w-full bg-white shadow rounded overflow-hidden">
       <tbody id="list"></tbody>
     </table>
@@ -29,7 +29,7 @@
         rawData = await res.json();
         render();
       } catch (e) {
-        document.getElementById('list').innerHTML = "<tr><td class='p-8 text-center'>データ読み込みエラー</td></tr>";
+        document.getElementById('list').innerHTML = "<tr><td class='p-8 text-center text-red-500'>データ読み込みエラー</td></tr>";
       }
     }
 
@@ -44,17 +44,11 @@
     }
 
     function render() {
-      const tabs = { total: '総合', encore: 'アンコール', unknown: '要確認' };
+      // タブから要確認を除外
+      const tabs = { total: '総合', encore: 'アンコール' };
       document.getElementById('tabs').innerHTML = Object.entries(tabs).map(([id, label]) => 
-        `<button onclick="setTab('${id}')" class="px-4 py-2 font-bold ${currentTab === id ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500'}">${label}</button>`
+        `<button onclick="setTab('${id}')" class="pb-2 font-bold ${currentTab === id ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500'}">${label}</button>`
       ).join('');
-
-      const listEl = document.getElementById('list');
-
-      if (currentTab === 'unknown') {
-        listEl.innerHTML = (rawData.unknown || []).map(s => `<tr class="border-t p-4"><td class="p-3 text-red-600 font-medium">${s}</td></tr>`).join('');
-        return;
-      }
 
       const source = currentTab === 'total' 
         ? [...(rawData.main || []), ...(rawData.encores || [])] 
@@ -62,13 +56,16 @@
       
       const stats = getStats(source);
 
-      listEl.innerHTML = stats.map((s, i) => `
+      document.getElementById('list').innerHTML = stats.map((s, i) => `
         <tr class="border-t hover:bg-gray-50 transition-colors">
           <td class="p-3">
-            <div class="font-bold text-gray-900">${i < 3 ? ['👑','🥈','🥉'][i] : '<span class="text-gray-400 font-bold inline-block w-8">' + (i + 1) + '位</span>'} ${s.name}</div>
-            <div class="text-xs text-gray-400 mt-1">${s.last}</div>
+            <div class="font-bold text-gray-900">
+              ${i < 3 ? ['👑','🥈','🥉'][i] : '<span class="text-gray-400 font-bold inline-block w-8">' + (i + 1) + '位</span>'} 
+              ${s.name}
+            </div>
+            <div class="text-xs text-gray-400 mt-1">最終演奏: ${s.last}</div>
           </td>
-          <td class="text-right p-3 font-bold text-blue-600">${s.count}回</td>
+          <td class="text-right p-3 font-bold text-blue-600 whitespace-nowrap">${s.count}回</td>
         </tr>
       `).join('');
     }
