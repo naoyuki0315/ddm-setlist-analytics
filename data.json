@@ -1,72 +1,2827 @@
 {
-  "lastUpdated": "2026-06-21 05:18",
-  "main": [],
-  "encores": [],
+  "lastUpdated": "2026-06-21 22:48",
+  "main": [
+    {
+      "name": "Baby Scratch My Back",
+      "count": 37,
+      "lastPlayed": "2026-06-06",
+      "playDates": [
+        "2026-06-06",
+        "2026-05-31",
+        "2026-05-16",
+        "2026-04-26",
+        "2026-04-19",
+        "2026-02-08",
+        "2026-02-01",
+        "2026-01-31",
+        "2026-01-26",
+        "2026-01-25",
+        "2025-12-27",
+        "2025-12-21",
+        "2025-12-20",
+        "2025-12-15",
+        "2025-11-29",
+        "2025-11-23",
+        "2025-11-22",
+        "2025-11-10",
+        "2025-11-08",
+        "2025-10-26",
+        "2025-10-13",
+        "2025-10-05",
+        "2025-09-27",
+        "2025-09-15",
+        "2025-08-24",
+        "2025-08-17",
+        "2025-08-10",
+        "2025-08-09",
+        "2025-07-27",
+        "2025-07-21",
+        "2025-07-13",
+        "2025-07-12",
+        "2025-06-29",
+        "2025-06-28",
+        "2025-06-15",
+        "2025-06-06",
+        "2025-05-02"
+      ],
+      "urls": [
+        {
+          "date": "2026-06-06",
+          "url": "https://www.youtube.com/watch?v=NyjlcwoUmpg"
+        },
+        {
+          "date": "2026-05-31",
+          "url": "https://www.youtube.com/watch?v=uc2plsxpuQE"
+        },
+        {
+          "date": "2026-05-16",
+          "url": "https://www.youtube.com/watch?v=Gl1xVt9QDjQ"
+        },
+        {
+          "date": "2026-04-26",
+          "url": "https://www.youtube.com/watch?v=I0Eac_OQicg"
+        },
+        {
+          "date": "2026-04-19",
+          "url": "https://www.youtube.com/watch?v=Tpzqs5RIs78"
+        },
+        {
+          "date": "2026-02-08",
+          "url": "https://www.youtube.com/watch?v=MOUX714iUVI"
+        },
+        {
+          "date": "2026-02-01",
+          "url": "https://www.youtube.com/watch?v=zCExAFuP0GM"
+        },
+        {
+          "date": "2026-01-31",
+          "url": "https://www.youtube.com/watch?v=EcqHQ3vnjdA"
+        },
+        {
+          "date": "2026-01-26",
+          "url": "https://www.youtube.com/watch?v=JSAbOrgKDDc"
+        },
+        {
+          "date": "2026-01-25",
+          "url": "https://www.youtube.com/watch?v=jhgiukdGlGY"
+        },
+        {
+          "date": "2025-12-27",
+          "url": "https://www.youtube.com/watch?v=SbXLbZVVigk"
+        },
+        {
+          "date": "2025-12-21",
+          "url": "https://www.youtube.com/watch?v=PIG5hZtR2Xc"
+        },
+        {
+          "date": "2025-12-20",
+          "url": "https://www.youtube.com/watch?v=OZVq1BVI_AY"
+        },
+        {
+          "date": "2025-12-15",
+          "url": "https://www.youtube.com/watch?v=09T0YBgh5EU"
+        },
+        {
+          "date": "2025-11-29",
+          "url": "https://www.youtube.com/watch?v=bNQu3DuCFv4"
+        },
+        {
+          "date": "2025-11-23",
+          "url": "https://www.youtube.com/watch?v=ZgEcAF-CvKs"
+        },
+        {
+          "date": "2025-11-22",
+          "url": "https://www.youtube.com/watch?v=ODYrHL4W9ss"
+        },
+        {
+          "date": "2025-11-10",
+          "url": "https://www.youtube.com/watch?v=wpicXg7WGVI"
+        },
+        {
+          "date": "2025-11-08",
+          "url": "https://www.youtube.com/watch?v=LS6aHGfKQ8c"
+        },
+        {
+          "date": "2025-10-26",
+          "url": "https://www.youtube.com/watch?v=SzI-zaComPU"
+        },
+        {
+          "date": "2025-10-13",
+          "url": "https://www.youtube.com/watch?v=qNYoafvfppA"
+        },
+        {
+          "date": "2025-10-05",
+          "url": "https://www.youtube.com/watch?v=_vKoK-ogFlg"
+        },
+        {
+          "date": "2025-09-27",
+          "url": "https://www.youtube.com/watch?v=rmAq2-f8pCs"
+        },
+        {
+          "date": "2025-09-15",
+          "url": "https://www.youtube.com/watch?v=YpEhom1kmsU"
+        },
+        {
+          "date": "2025-08-24",
+          "url": "https://www.youtube.com/watch?v=Iq0MbQGVpqs"
+        },
+        {
+          "date": "2025-08-17",
+          "url": "https://www.youtube.com/watch?v=8n052euDrAw"
+        },
+        {
+          "date": "2025-08-10",
+          "url": "https://www.youtube.com/watch?v=T9O6H8tgtR0"
+        },
+        {
+          "date": "2025-08-09",
+          "url": "https://www.youtube.com/watch?v=S02urdCg79c"
+        },
+        {
+          "date": "2025-07-27",
+          "url": "https://www.youtube.com/watch?v=ZRbtYI24HNo"
+        },
+        {
+          "date": "2025-07-21",
+          "url": "https://www.youtube.com/watch?v=KJDkQZWzw1E"
+        },
+        {
+          "date": "2025-07-13",
+          "url": "https://www.youtube.com/watch?v=PS8-UZ6jXoo"
+        },
+        {
+          "date": "2025-07-12",
+          "url": "https://www.youtube.com/watch?v=50EpXfI36-I"
+        },
+        {
+          "date": "2025-06-29",
+          "url": "https://www.youtube.com/watch?v=Hr_9VWmnmkk"
+        },
+        {
+          "date": "2025-06-28",
+          "url": "https://www.youtube.com/watch?v=KoBk-JAfzZU"
+        },
+        {
+          "date": "2025-06-15",
+          "url": "https://www.youtube.com/watch?v=Ruvk2Z1nRps"
+        },
+        {
+          "date": "2025-06-06",
+          "url": "https://www.youtube.com/watch?v=8R96bPow3zE"
+        },
+        {
+          "date": "2025-05-02",
+          "url": "https://www.youtube.com/watch?v=OkSWLx6_FlM"
+        }
+      ]
+    },
+    {
+      "name": "Messin' With the Kid",
+      "count": 22,
+      "lastPlayed": "2026-06-06",
+      "playDates": [
+        "2026-06-06",
+        "2026-05-31",
+        "2026-02-01",
+        "2026-01-31",
+        "2026-01-26",
+        "2026-01-25",
+        "2025-11-23",
+        "2025-11-22",
+        "2025-08-17",
+        "2025-08-10",
+        "2025-08-09",
+        "2025-04-12",
+        "2025-03-22",
+        "2025-02-09",
+        "2025-02-02",
+        "2024-12-28",
+        "2024-11-23",
+        "2024-10-26",
+        "2024-09-28",
+        "2024-09-01",
+        "2024-08-11",
+        "2024-08-04"
+      ],
+      "urls": [
+        {
+          "date": "2026-06-06",
+          "url": "https://www.youtube.com/watch?v=NyjlcwoUmpg"
+        },
+        {
+          "date": "2026-05-31",
+          "url": "https://www.youtube.com/watch?v=uc2plsxpuQE"
+        },
+        {
+          "date": "2026-02-01",
+          "url": "https://www.youtube.com/watch?v=zCExAFuP0GM"
+        },
+        {
+          "date": "2026-01-31",
+          "url": "https://www.youtube.com/watch?v=EcqHQ3vnjdA"
+        },
+        {
+          "date": "2026-01-26",
+          "url": "https://www.youtube.com/watch?v=JSAbOrgKDDc"
+        },
+        {
+          "date": "2026-01-25",
+          "url": "https://www.youtube.com/watch?v=jhgiukdGlGY"
+        },
+        {
+          "date": "2025-11-23",
+          "url": "https://www.youtube.com/watch?v=ZgEcAF-CvKs"
+        },
+        {
+          "date": "2025-11-22",
+          "url": "https://www.youtube.com/watch?v=ODYrHL4W9ss"
+        },
+        {
+          "date": "2025-08-17",
+          "url": "https://www.youtube.com/watch?v=8n052euDrAw"
+        },
+        {
+          "date": "2025-08-10",
+          "url": "https://www.youtube.com/watch?v=T9O6H8tgtR0"
+        },
+        {
+          "date": "2025-08-09",
+          "url": "https://www.youtube.com/watch?v=S02urdCg79c"
+        },
+        {
+          "date": "2025-04-12",
+          "url": "https://www.youtube.com/watch?v=bObIrmM8piM"
+        },
+        {
+          "date": "2025-03-22",
+          "url": "https://www.youtube.com/watch?v=wvTohCiJ9E4"
+        },
+        {
+          "date": "2025-02-09",
+          "url": "https://www.youtube.com/watch?v=EJZi7HBLv24"
+        },
+        {
+          "date": "2025-02-02",
+          "url": "https://www.youtube.com/watch?v=rN7Z6HCRQlg"
+        },
+        {
+          "date": "2024-12-28",
+          "url": "https://www.youtube.com/watch?v=Ph-Vfo2GVgo"
+        },
+        {
+          "date": "2024-11-23",
+          "url": "https://www.youtube.com/watch?v=FH0FSKWyNB0"
+        },
+        {
+          "date": "2024-10-26",
+          "url": "https://www.youtube.com/watch?v=9EmQ2AF4thY"
+        },
+        {
+          "date": "2024-09-28",
+          "url": "https://www.youtube.com/watch?v=gnI-jh_UEnQ"
+        },
+        {
+          "date": "2024-09-01",
+          "url": "https://www.youtube.com/watch?v=2qMbNZyTFhE"
+        },
+        {
+          "date": "2024-08-11",
+          "url": "https://www.youtube.com/watch?v=TCn1A8_qd_g"
+        },
+        {
+          "date": "2024-08-04",
+          "url": "https://www.youtube.com/watch?v=NgHWoQgMz6Y"
+        }
+      ]
+    },
+    {
+      "name": "Bad Boy",
+      "count": 22,
+      "lastPlayed": "2026-06-06",
+      "playDates": [
+        "2026-06-06",
+        "2026-05-31",
+        "2025-11-10",
+        "2025-11-08",
+        "2025-10-26",
+        "2025-10-13",
+        "2025-10-05",
+        "2025-08-24",
+        "2025-08-17",
+        "2025-08-10",
+        "2025-07-27",
+        "2025-07-13",
+        "2025-07-12",
+        "2025-06-29",
+        "2025-06-28",
+        "2025-06-15",
+        "2025-03-26",
+        "2025-01-13",
+        "2024-12-15",
+        "2024-12-13",
+        "2024-10-06",
+        "2024-09-07"
+      ],
+      "urls": [
+        {
+          "date": "2026-06-06",
+          "url": "https://www.youtube.com/watch?v=NyjlcwoUmpg"
+        },
+        {
+          "date": "2026-05-31",
+          "url": "https://www.youtube.com/watch?v=uc2plsxpuQE"
+        },
+        {
+          "date": "2025-11-10",
+          "url": "https://www.youtube.com/watch?v=wpicXg7WGVI"
+        },
+        {
+          "date": "2025-11-08",
+          "url": "https://www.youtube.com/watch?v=LS6aHGfKQ8c"
+        },
+        {
+          "date": "2025-10-26",
+          "url": "https://www.youtube.com/watch?v=SzI-zaComPU"
+        },
+        {
+          "date": "2025-10-13",
+          "url": "https://www.youtube.com/watch?v=qNYoafvfppA"
+        },
+        {
+          "date": "2025-10-05",
+          "url": "https://www.youtube.com/watch?v=_vKoK-ogFlg"
+        },
+        {
+          "date": "2025-08-24",
+          "url": "https://www.youtube.com/watch?v=Iq0MbQGVpqs"
+        },
+        {
+          "date": "2025-08-17",
+          "url": "https://www.youtube.com/watch?v=8n052euDrAw"
+        },
+        {
+          "date": "2025-08-10",
+          "url": "https://www.youtube.com/watch?v=T9O6H8tgtR0"
+        },
+        {
+          "date": "2025-07-27",
+          "url": "https://www.youtube.com/watch?v=ZRbtYI24HNo"
+        },
+        {
+          "date": "2025-07-13",
+          "url": "https://www.youtube.com/watch?v=PS8-UZ6jXoo"
+        },
+        {
+          "date": "2025-07-12",
+          "url": "https://www.youtube.com/watch?v=50EpXfI36-I"
+        },
+        {
+          "date": "2025-06-29",
+          "url": "https://www.youtube.com/watch?v=Hr_9VWmnmkk"
+        },
+        {
+          "date": "2025-06-28",
+          "url": "https://www.youtube.com/watch?v=KoBk-JAfzZU"
+        },
+        {
+          "date": "2025-06-15",
+          "url": "https://www.youtube.com/watch?v=Ruvk2Z1nRps"
+        },
+        {
+          "date": "2025-03-26",
+          "url": "https://www.youtube.com/watch?v=xgU5idQf8TQ"
+        },
+        {
+          "date": "2025-01-13",
+          "url": "https://www.youtube.com/watch?v=zzGr4FarwBs"
+        },
+        {
+          "date": "2024-12-15",
+          "url": "https://www.youtube.com/watch?v=MT09z-D0xTs"
+        },
+        {
+          "date": "2024-12-13",
+          "url": "https://www.youtube.com/watch?v=atlDRaMLc8s"
+        },
+        {
+          "date": "2024-10-06",
+          "url": "https://www.youtube.com/watch?v=UXaM8n_mZjk"
+        },
+        {
+          "date": "2024-09-07",
+          "url": "https://www.youtube.com/watch?v=_4DYZAeGhcA"
+        }
+      ]
+    },
+    {
+      "name": "Key to the Highway",
+      "count": 23,
+      "lastPlayed": "2026-06-06",
+      "playDates": [
+        "2026-06-06",
+        "2026-05-31",
+        "2025-09-27",
+        "2025-09-15",
+        "2025-07-27",
+        "2025-03-26",
+        "2025-02-09",
+        "2025-02-02",
+        "2025-01-25",
+        "2025-01-13",
+        "2025-01-12",
+        "2025-01-12",
+        "2024-12-28",
+        "2024-12-15",
+        "2024-12-13",
+        "2024-11-23",
+        "2024-10-26",
+        "2024-10-06",
+        "2024-09-28",
+        "2024-09-07",
+        "2024-09-01",
+        "2024-08-11",
+        "2024-08-04"
+      ],
+      "urls": [
+        {
+          "date": "2026-06-06",
+          "url": "https://www.youtube.com/watch?v=NyjlcwoUmpg"
+        },
+        {
+          "date": "2026-05-31",
+          "url": "https://www.youtube.com/watch?v=uc2plsxpuQE"
+        },
+        {
+          "date": "2025-09-27",
+          "url": "https://www.youtube.com/watch?v=rmAq2-f8pCs"
+        },
+        {
+          "date": "2025-09-15",
+          "url": "https://www.youtube.com/watch?v=YpEhom1kmsU"
+        },
+        {
+          "date": "2025-07-27",
+          "url": "https://www.youtube.com/watch?v=ZRbtYI24HNo"
+        },
+        {
+          "date": "2025-03-26",
+          "url": "https://www.youtube.com/watch?v=xgU5idQf8TQ"
+        },
+        {
+          "date": "2025-02-09",
+          "url": "https://www.youtube.com/watch?v=EJZi7HBLv24"
+        },
+        {
+          "date": "2025-02-02",
+          "url": "https://www.youtube.com/watch?v=rN7Z6HCRQlg"
+        },
+        {
+          "date": "2025-01-25",
+          "url": "https://www.youtube.com/watch?v=c2T86nXq5E4"
+        },
+        {
+          "date": "2025-01-13",
+          "url": "https://www.youtube.com/watch?v=zzGr4FarwBs"
+        },
+        {
+          "date": "2025-01-12",
+          "url": "https://www.youtube.com/watch?v=FJhh4OBcnSU"
+        },
+        {
+          "date": "2025-01-12",
+          "url": "https://www.youtube.com/watch?v=_l5OjNwU67c"
+        },
+        {
+          "date": "2024-12-28",
+          "url": "https://www.youtube.com/watch?v=Ph-Vfo2GVgo"
+        },
+        {
+          "date": "2024-12-15",
+          "url": "https://www.youtube.com/watch?v=MT09z-D0xTs"
+        },
+        {
+          "date": "2024-12-13",
+          "url": "https://www.youtube.com/watch?v=atlDRaMLc8s"
+        },
+        {
+          "date": "2024-11-23",
+          "url": "https://www.youtube.com/watch?v=FH0FSKWyNB0"
+        },
+        {
+          "date": "2024-10-26",
+          "url": "https://www.youtube.com/watch?v=9EmQ2AF4thY"
+        },
+        {
+          "date": "2024-10-06",
+          "url": "https://www.youtube.com/watch?v=UXaM8n_mZjk"
+        },
+        {
+          "date": "2024-09-28",
+          "url": "https://www.youtube.com/watch?v=gnI-jh_UEnQ"
+        },
+        {
+          "date": "2024-09-07",
+          "url": "https://www.youtube.com/watch?v=_4DYZAeGhcA"
+        },
+        {
+          "date": "2024-09-01",
+          "url": "https://www.youtube.com/watch?v=2qMbNZyTFhE"
+        },
+        {
+          "date": "2024-08-11",
+          "url": "https://www.youtube.com/watch?v=TCn1A8_qd_g"
+        },
+        {
+          "date": "2024-08-04",
+          "url": "https://www.youtube.com/watch?v=NgHWoQgMz6Y"
+        }
+      ]
+    },
+    {
+      "name": "Help Me",
+      "count": 20,
+      "lastPlayed": "2026-06-06",
+      "playDates": [
+        "2026-06-06",
+        "2026-05-31",
+        "2026-05-16",
+        "2026-04-26",
+        "2026-04-19",
+        "2025-11-23",
+        "2025-11-22",
+        "2025-09-27",
+        "2025-09-15",
+        "2025-06-06",
+        "2025-03-22",
+        "2025-02-02",
+        "2025-01-13",
+        "2025-01-12",
+        "2025-01-12",
+        "2024-12-15",
+        "2024-12-13",
+        "2024-11-23",
+        "2024-10-06",
+        "2024-09-07"
+      ],
+      "urls": [
+        {
+          "date": "2026-06-06",
+          "url": "https://www.youtube.com/watch?v=NyjlcwoUmpg"
+        },
+        {
+          "date": "2026-05-31",
+          "url": "https://www.youtube.com/watch?v=uc2plsxpuQE"
+        },
+        {
+          "date": "2026-05-16",
+          "url": "https://www.youtube.com/watch?v=Gl1xVt9QDjQ"
+        },
+        {
+          "date": "2026-04-26",
+          "url": "https://www.youtube.com/watch?v=I0Eac_OQicg"
+        },
+        {
+          "date": "2026-04-19",
+          "url": "https://www.youtube.com/watch?v=Tpzqs5RIs78"
+        },
+        {
+          "date": "2025-11-23",
+          "url": "https://www.youtube.com/watch?v=ZgEcAF-CvKs"
+        },
+        {
+          "date": "2025-11-22",
+          "url": "https://www.youtube.com/watch?v=ODYrHL4W9ss"
+        },
+        {
+          "date": "2025-09-27",
+          "url": "https://www.youtube.com/watch?v=rmAq2-f8pCs"
+        },
+        {
+          "date": "2025-09-15",
+          "url": "https://www.youtube.com/watch?v=YpEhom1kmsU"
+        },
+        {
+          "date": "2025-06-06",
+          "url": "https://www.youtube.com/watch?v=8R96bPow3zE"
+        },
+        {
+          "date": "2025-03-22",
+          "url": "https://www.youtube.com/watch?v=wvTohCiJ9E4"
+        },
+        {
+          "date": "2025-02-02",
+          "url": "https://www.youtube.com/watch?v=rN7Z6HCRQlg"
+        },
+        {
+          "date": "2025-01-13",
+          "url": "https://www.youtube.com/watch?v=zzGr4FarwBs"
+        },
+        {
+          "date": "2025-01-12",
+          "url": "https://www.youtube.com/watch?v=FJhh4OBcnSU"
+        },
+        {
+          "date": "2025-01-12",
+          "url": "https://www.youtube.com/watch?v=_l5OjNwU67c"
+        },
+        {
+          "date": "2024-12-15",
+          "url": "https://www.youtube.com/watch?v=MT09z-D0xTs"
+        },
+        {
+          "date": "2024-12-13",
+          "url": "https://www.youtube.com/watch?v=atlDRaMLc8s"
+        },
+        {
+          "date": "2024-11-23",
+          "url": "https://www.youtube.com/watch?v=FH0FSKWyNB0"
+        },
+        {
+          "date": "2024-10-06",
+          "url": "https://www.youtube.com/watch?v=UXaM8n_mZjk"
+        },
+        {
+          "date": "2024-09-07",
+          "url": "https://www.youtube.com/watch?v=_4DYZAeGhcA"
+        }
+      ]
+    },
+    {
+      "name": "Let Me Love You Baby",
+      "count": 36,
+      "lastPlayed": "2026-06-06",
+      "playDates": [
+        "2026-06-06",
+        "2026-05-16",
+        "2026-04-26",
+        "2026-04-19",
+        "2026-02-08",
+        "2025-12-27",
+        "2025-12-21",
+        "2025-12-20",
+        "2025-12-15",
+        "2025-11-29",
+        "2025-11-10",
+        "2025-11-08",
+        "2025-10-26",
+        "2025-10-13",
+        "2025-10-05",
+        "2025-08-24",
+        "2025-08-10",
+        "2025-07-27",
+        "2025-07-21",
+        "2025-07-13",
+        "2025-07-12",
+        "2025-06-29",
+        "2025-06-28",
+        "2025-06-15",
+        "2025-06-06",
+        "2025-05-02",
+        "2025-04-06",
+        "2025-03-29",
+        "2025-03-22",
+        "2025-02-09",
+        "2025-02-02",
+        "2025-01-25",
+        "2025-01-12",
+        "2025-01-12",
+        "2024-11-23",
+        "2024-10-26"
+      ],
+      "urls": [
+        {
+          "date": "2026-06-06",
+          "url": "https://www.youtube.com/watch?v=NyjlcwoUmpg"
+        },
+        {
+          "date": "2026-05-16",
+          "url": "https://www.youtube.com/watch?v=Gl1xVt9QDjQ"
+        },
+        {
+          "date": "2026-04-26",
+          "url": "https://www.youtube.com/watch?v=I0Eac_OQicg"
+        },
+        {
+          "date": "2026-04-19",
+          "url": "https://www.youtube.com/watch?v=Tpzqs5RIs78"
+        },
+        {
+          "date": "2026-02-08",
+          "url": "https://www.youtube.com/watch?v=MOUX714iUVI"
+        },
+        {
+          "date": "2025-12-27",
+          "url": "https://www.youtube.com/watch?v=SbXLbZVVigk"
+        },
+        {
+          "date": "2025-12-21",
+          "url": "https://www.youtube.com/watch?v=PIG5hZtR2Xc"
+        },
+        {
+          "date": "2025-12-20",
+          "url": "https://www.youtube.com/watch?v=OZVq1BVI_AY"
+        },
+        {
+          "date": "2025-12-15",
+          "url": "https://www.youtube.com/watch?v=09T0YBgh5EU"
+        },
+        {
+          "date": "2025-11-29",
+          "url": "https://www.youtube.com/watch?v=bNQu3DuCFv4"
+        },
+        {
+          "date": "2025-11-10",
+          "url": "https://www.youtube.com/watch?v=wpicXg7WGVI"
+        },
+        {
+          "date": "2025-11-08",
+          "url": "https://www.youtube.com/watch?v=LS6aHGfKQ8c"
+        },
+        {
+          "date": "2025-10-26",
+          "url": "https://www.youtube.com/watch?v=SzI-zaComPU"
+        },
+        {
+          "date": "2025-10-13",
+          "url": "https://www.youtube.com/watch?v=qNYoafvfppA"
+        },
+        {
+          "date": "2025-10-05",
+          "url": "https://www.youtube.com/watch?v=_vKoK-ogFlg"
+        },
+        {
+          "date": "2025-08-24",
+          "url": "https://www.youtube.com/watch?v=Iq0MbQGVpqs"
+        },
+        {
+          "date": "2025-08-10",
+          "url": "https://www.youtube.com/watch?v=T9O6H8tgtR0"
+        },
+        {
+          "date": "2025-07-27",
+          "url": "https://www.youtube.com/watch?v=ZRbtYI24HNo"
+        },
+        {
+          "date": "2025-07-21",
+          "url": "https://www.youtube.com/watch?v=KJDkQZWzw1E"
+        },
+        {
+          "date": "2025-07-13",
+          "url": "https://www.youtube.com/watch?v=PS8-UZ6jXoo"
+        },
+        {
+          "date": "2025-07-12",
+          "url": "https://www.youtube.com/watch?v=50EpXfI36-I"
+        },
+        {
+          "date": "2025-06-29",
+          "url": "https://www.youtube.com/watch?v=Hr_9VWmnmkk"
+        },
+        {
+          "date": "2025-06-28",
+          "url": "https://www.youtube.com/watch?v=KoBk-JAfzZU"
+        },
+        {
+          "date": "2025-06-15",
+          "url": "https://www.youtube.com/watch?v=Ruvk2Z1nRps"
+        },
+        {
+          "date": "2025-06-06",
+          "url": "https://www.youtube.com/watch?v=8R96bPow3zE"
+        },
+        {
+          "date": "2025-05-02",
+          "url": "https://www.youtube.com/watch?v=OkSWLx6_FlM"
+        },
+        {
+          "date": "2025-04-06",
+          "url": "https://www.youtube.com/watch?v=E09s7_2BXYY"
+        },
+        {
+          "date": "2025-03-29",
+          "url": "https://www.youtube.com/watch?v=RGD2TBzgY90"
+        },
+        {
+          "date": "2025-03-22",
+          "url": "https://www.youtube.com/watch?v=wvTohCiJ9E4"
+        },
+        {
+          "date": "2025-02-09",
+          "url": "https://www.youtube.com/watch?v=EJZi7HBLv24"
+        },
+        {
+          "date": "2025-02-02",
+          "url": "https://www.youtube.com/watch?v=rN7Z6HCRQlg"
+        },
+        {
+          "date": "2025-01-25",
+          "url": "https://www.youtube.com/watch?v=c2T86nXq5E4"
+        },
+        {
+          "date": "2025-01-12",
+          "url": "https://www.youtube.com/watch?v=FJhh4OBcnSU"
+        },
+        {
+          "date": "2025-01-12",
+          "url": "https://www.youtube.com/watch?v=_l5OjNwU67c"
+        },
+        {
+          "date": "2024-11-23",
+          "url": "https://www.youtube.com/watch?v=FH0FSKWyNB0"
+        },
+        {
+          "date": "2024-10-26",
+          "url": "https://www.youtube.com/watch?v=9EmQ2AF4thY"
+        }
+      ]
+    },
+    {
+      "name": "Little by Little",
+      "count": 10,
+      "lastPlayed": "2026-06-06",
+      "playDates": [
+        "2026-06-06",
+        "2026-05-31",
+        "2025-01-25",
+        "2025-01-12",
+        "2025-01-12",
+        "2024-12-28",
+        "2024-09-28",
+        "2024-09-01",
+        "2024-08-11",
+        "2024-08-04"
+      ],
+      "urls": [
+        {
+          "date": "2026-06-06",
+          "url": "https://www.youtube.com/watch?v=NyjlcwoUmpg"
+        },
+        {
+          "date": "2026-05-31",
+          "url": "https://www.youtube.com/watch?v=uc2plsxpuQE"
+        },
+        {
+          "date": "2025-01-25",
+          "url": "https://www.youtube.com/watch?v=c2T86nXq5E4"
+        },
+        {
+          "date": "2025-01-12",
+          "url": "https://www.youtube.com/watch?v=FJhh4OBcnSU"
+        },
+        {
+          "date": "2025-01-12",
+          "url": "https://www.youtube.com/watch?v=_l5OjNwU67c"
+        },
+        {
+          "date": "2024-12-28",
+          "url": "https://www.youtube.com/watch?v=Ph-Vfo2GVgo"
+        },
+        {
+          "date": "2024-09-28",
+          "url": "https://www.youtube.com/watch?v=gnI-jh_UEnQ"
+        },
+        {
+          "date": "2024-09-01",
+          "url": "https://www.youtube.com/watch?v=2qMbNZyTFhE"
+        },
+        {
+          "date": "2024-08-11",
+          "url": "https://www.youtube.com/watch?v=TCn1A8_qd_g"
+        },
+        {
+          "date": "2024-08-04",
+          "url": "https://www.youtube.com/watch?v=NgHWoQgMz6Y"
+        }
+      ]
+    },
+    {
+      "name": "You Belong to Me",
+      "count": 30,
+      "lastPlayed": "2026-06-06",
+      "playDates": [
+        "2026-06-06",
+        "2026-05-31",
+        "2026-05-16",
+        "2026-01-26",
+        "2025-12-27",
+        "2025-11-29",
+        "2025-11-10",
+        "2025-10-26",
+        "2025-10-13",
+        "2025-10-05",
+        "2025-08-24",
+        "2025-08-17",
+        "2025-07-27",
+        "2025-06-29",
+        "2025-06-28",
+        "2025-06-15",
+        "2025-06-06",
+        "2025-04-06",
+        "2025-03-26",
+        "2025-02-02",
+        "2025-01-12",
+        "2025-01-12",
+        "2024-12-28",
+        "2024-12-15",
+        "2024-11-23",
+        "2024-10-26",
+        "2024-10-06",
+        "2024-09-28",
+        "2024-09-07",
+        "2024-09-01"
+      ],
+      "urls": [
+        {
+          "date": "2026-06-06",
+          "url": "https://www.youtube.com/watch?v=NyjlcwoUmpg"
+        },
+        {
+          "date": "2026-05-31",
+          "url": "https://www.youtube.com/watch?v=uc2plsxpuQE"
+        },
+        {
+          "date": "2026-05-16",
+          "url": "https://www.youtube.com/watch?v=Gl1xVt9QDjQ"
+        },
+        {
+          "date": "2026-01-26",
+          "url": "https://www.youtube.com/watch?v=JSAbOrgKDDc"
+        },
+        {
+          "date": "2025-12-27",
+          "url": "https://www.youtube.com/watch?v=SbXLbZVVigk"
+        },
+        {
+          "date": "2025-11-29",
+          "url": "https://www.youtube.com/watch?v=bNQu3DuCFv4"
+        },
+        {
+          "date": "2025-11-10",
+          "url": "https://www.youtube.com/watch?v=wpicXg7WGVI"
+        },
+        {
+          "date": "2025-10-26",
+          "url": "https://www.youtube.com/watch?v=SzI-zaComPU"
+        },
+        {
+          "date": "2025-10-13",
+          "url": "https://www.youtube.com/watch?v=qNYoafvfppA"
+        },
+        {
+          "date": "2025-10-05",
+          "url": "https://www.youtube.com/watch?v=_vKoK-ogFlg"
+        },
+        {
+          "date": "2025-08-24",
+          "url": "https://www.youtube.com/watch?v=Iq0MbQGVpqs"
+        },
+        {
+          "date": "2025-08-17",
+          "url": "https://www.youtube.com/watch?v=8n052euDrAw"
+        },
+        {
+          "date": "2025-07-27",
+          "url": "https://www.youtube.com/watch?v=ZRbtYI24HNo"
+        },
+        {
+          "date": "2025-06-29",
+          "url": "https://www.youtube.com/watch?v=Hr_9VWmnmkk"
+        },
+        {
+          "date": "2025-06-28",
+          "url": "https://www.youtube.com/watch?v=KoBk-JAfzZU"
+        },
+        {
+          "date": "2025-06-15",
+          "url": "https://www.youtube.com/watch?v=Ruvk2Z1nRps"
+        },
+        {
+          "date": "2025-06-06",
+          "url": "https://www.youtube.com/watch?v=8R96bPow3zE"
+        },
+        {
+          "date": "2025-04-06",
+          "url": "https://www.youtube.com/watch?v=E09s7_2BXYY"
+        },
+        {
+          "date": "2025-03-26",
+          "url": "https://www.youtube.com/watch?v=xgU5idQf8TQ"
+        },
+        {
+          "date": "2025-02-02",
+          "url": "https://www.youtube.com/watch?v=rN7Z6HCRQlg"
+        },
+        {
+          "date": "2025-01-12",
+          "url": "https://www.youtube.com/watch?v=FJhh4OBcnSU"
+        },
+        {
+          "date": "2025-01-12",
+          "url": "https://www.youtube.com/watch?v=_l5OjNwU67c"
+        },
+        {
+          "date": "2024-12-28",
+          "url": "https://www.youtube.com/watch?v=Ph-Vfo2GVgo"
+        },
+        {
+          "date": "2024-12-15",
+          "url": "https://www.youtube.com/watch?v=MT09z-D0xTs"
+        },
+        {
+          "date": "2024-11-23",
+          "url": "https://www.youtube.com/watch?v=FH0FSKWyNB0"
+        },
+        {
+          "date": "2024-10-26",
+          "url": "https://www.youtube.com/watch?v=9EmQ2AF4thY"
+        },
+        {
+          "date": "2024-10-06",
+          "url": "https://www.youtube.com/watch?v=UXaM8n_mZjk"
+        },
+        {
+          "date": "2024-09-28",
+          "url": "https://www.youtube.com/watch?v=gnI-jh_UEnQ"
+        },
+        {
+          "date": "2024-09-07",
+          "url": "https://www.youtube.com/watch?v=_4DYZAeGhcA"
+        },
+        {
+          "date": "2024-09-01",
+          "url": "https://www.youtube.com/watch?v=2qMbNZyTFhE"
+        }
+      ]
+    },
+    {
+      "name": "All of Your Love",
+      "count": 10,
+      "lastPlayed": "2026-05-31",
+      "playDates": [
+        "2026-05-31",
+        "2025-11-29",
+        "2025-11-23",
+        "2025-01-25",
+        "2025-01-12",
+        "2025-01-12",
+        "2024-11-23",
+        "2024-09-01",
+        "2024-08-11",
+        "2024-08-04"
+      ],
+      "urls": [
+        {
+          "date": "2026-05-31",
+          "url": "https://www.youtube.com/watch?v=uc2plsxpuQE"
+        },
+        {
+          "date": "2025-11-29",
+          "url": "https://www.youtube.com/watch?v=bNQu3DuCFv4"
+        },
+        {
+          "date": "2025-11-23",
+          "url": "https://www.youtube.com/watch?v=ZgEcAF-CvKs"
+        },
+        {
+          "date": "2025-01-25",
+          "url": "https://www.youtube.com/watch?v=c2T86nXq5E4"
+        },
+        {
+          "date": "2025-01-12",
+          "url": "https://www.youtube.com/watch?v=FJhh4OBcnSU"
+        },
+        {
+          "date": "2025-01-12",
+          "url": "https://www.youtube.com/watch?v=_l5OjNwU67c"
+        },
+        {
+          "date": "2024-11-23",
+          "url": "https://www.youtube.com/watch?v=FH0FSKWyNB0"
+        },
+        {
+          "date": "2024-09-01",
+          "url": "https://www.youtube.com/watch?v=2qMbNZyTFhE"
+        },
+        {
+          "date": "2024-08-11",
+          "url": "https://www.youtube.com/watch?v=TCn1A8_qd_g"
+        },
+        {
+          "date": "2024-08-04",
+          "url": "https://www.youtube.com/watch?v=NgHWoQgMz6Y"
+        }
+      ]
+    },
+    {
+      "name": "Hoochie Coochie Man",
+      "count": 20,
+      "lastPlayed": "2026-05-16",
+      "playDates": [
+        "2026-05-16",
+        "2026-04-26",
+        "2026-04-19",
+        "2026-02-08",
+        "2026-02-01",
+        "2026-01-31",
+        "2026-01-26",
+        "2026-01-25",
+        "2025-12-27",
+        "2025-12-21",
+        "2025-12-20",
+        "2025-12-15",
+        "2025-11-29",
+        "2025-11-23",
+        "2025-11-22",
+        "2025-11-10",
+        "2025-11-08",
+        "2025-10-26",
+        "2025-08-17",
+        "2025-08-09"
+      ],
+      "urls": [
+        {
+          "date": "2026-05-16",
+          "url": "https://www.youtube.com/watch?v=Gl1xVt9QDjQ"
+        },
+        {
+          "date": "2026-04-26",
+          "url": "https://www.youtube.com/watch?v=I0Eac_OQicg"
+        },
+        {
+          "date": "2026-04-19",
+          "url": "https://www.youtube.com/watch?v=Tpzqs5RIs78"
+        },
+        {
+          "date": "2026-02-08",
+          "url": "https://www.youtube.com/watch?v=MOUX714iUVI"
+        },
+        {
+          "date": "2026-02-01",
+          "url": "https://www.youtube.com/watch?v=zCExAFuP0GM"
+        },
+        {
+          "date": "2026-01-31",
+          "url": "https://www.youtube.com/watch?v=EcqHQ3vnjdA"
+        },
+        {
+          "date": "2026-01-26",
+          "url": "https://www.youtube.com/watch?v=JSAbOrgKDDc"
+        },
+        {
+          "date": "2026-01-25",
+          "url": "https://www.youtube.com/watch?v=jhgiukdGlGY"
+        },
+        {
+          "date": "2025-12-27",
+          "url": "https://www.youtube.com/watch?v=SbXLbZVVigk"
+        },
+        {
+          "date": "2025-12-21",
+          "url": "https://www.youtube.com/watch?v=PIG5hZtR2Xc"
+        },
+        {
+          "date": "2025-12-20",
+          "url": "https://www.youtube.com/watch?v=OZVq1BVI_AY"
+        },
+        {
+          "date": "2025-12-15",
+          "url": "https://www.youtube.com/watch?v=09T0YBgh5EU"
+        },
+        {
+          "date": "2025-11-29",
+          "url": "https://www.youtube.com/watch?v=bNQu3DuCFv4"
+        },
+        {
+          "date": "2025-11-23",
+          "url": "https://www.youtube.com/watch?v=ZgEcAF-CvKs"
+        },
+        {
+          "date": "2025-11-22",
+          "url": "https://www.youtube.com/watch?v=ODYrHL4W9ss"
+        },
+        {
+          "date": "2025-11-10",
+          "url": "https://www.youtube.com/watch?v=wpicXg7WGVI"
+        },
+        {
+          "date": "2025-11-08",
+          "url": "https://www.youtube.com/watch?v=LS6aHGfKQ8c"
+        },
+        {
+          "date": "2025-10-26",
+          "url": "https://www.youtube.com/watch?v=SzI-zaComPU"
+        },
+        {
+          "date": "2025-08-17",
+          "url": "https://www.youtube.com/watch?v=8n052euDrAw"
+        },
+        {
+          "date": "2025-08-09",
+          "url": "https://www.youtube.com/watch?v=S02urdCg79c"
+        }
+      ]
+    },
+    {
+      "name": "I'll Play the Blues for You",
+      "count": 25,
+      "lastPlayed": "2026-05-16",
+      "playDates": [
+        "2026-05-16",
+        "2026-04-26",
+        "2026-02-08",
+        "2026-02-01",
+        "2026-01-31",
+        "2026-01-25",
+        "2025-12-27",
+        "2025-12-21",
+        "2025-12-20",
+        "2025-12-15",
+        "2025-11-22",
+        "2025-11-08",
+        "2025-06-15",
+        "2025-06-06",
+        "2025-05-02",
+        "2025-04-06",
+        "2025-03-29",
+        "2025-03-26",
+        "2024-12-28",
+        "2024-10-26",
+        "2024-10-06",
+        "2024-09-28",
+        "2024-09-01",
+        "2024-08-11",
+        "2024-08-04"
+      ],
+      "urls": [
+        {
+          "date": "2026-05-16",
+          "url": "https://www.youtube.com/watch?v=Gl1xVt9QDjQ"
+        },
+        {
+          "date": "2026-04-26",
+          "url": "https://www.youtube.com/watch?v=I0Eac_OQicg"
+        },
+        {
+          "date": "2026-02-08",
+          "url": "https://www.youtube.com/watch?v=MOUX714iUVI"
+        },
+        {
+          "date": "2026-02-01",
+          "url": "https://www.youtube.com/watch?v=zCExAFuP0GM"
+        },
+        {
+          "date": "2026-01-31",
+          "url": "https://www.youtube.com/watch?v=EcqHQ3vnjdA"
+        },
+        {
+          "date": "2026-01-25",
+          "url": "https://www.youtube.com/watch?v=jhgiukdGlGY"
+        },
+        {
+          "date": "2025-12-27",
+          "url": "https://www.youtube.com/watch?v=SbXLbZVVigk"
+        },
+        {
+          "date": "2025-12-21",
+          "url": "https://www.youtube.com/watch?v=PIG5hZtR2Xc"
+        },
+        {
+          "date": "2025-12-20",
+          "url": "https://www.youtube.com/watch?v=OZVq1BVI_AY"
+        },
+        {
+          "date": "2025-12-15",
+          "url": "https://www.youtube.com/watch?v=09T0YBgh5EU"
+        },
+        {
+          "date": "2025-11-22",
+          "url": "https://www.youtube.com/watch?v=ODYrHL4W9ss"
+        },
+        {
+          "date": "2025-11-08",
+          "url": "https://www.youtube.com/watch?v=LS6aHGfKQ8c"
+        },
+        {
+          "date": "2025-06-15",
+          "url": "https://www.youtube.com/watch?v=Ruvk2Z1nRps"
+        },
+        {
+          "date": "2025-06-06",
+          "url": "https://www.youtube.com/watch?v=8R96bPow3zE"
+        },
+        {
+          "date": "2025-05-02",
+          "url": "https://www.youtube.com/watch?v=OkSWLx6_FlM"
+        },
+        {
+          "date": "2025-04-06",
+          "url": "https://www.youtube.com/watch?v=E09s7_2BXYY"
+        },
+        {
+          "date": "2025-03-29",
+          "url": "https://www.youtube.com/watch?v=RGD2TBzgY90"
+        },
+        {
+          "date": "2025-03-26",
+          "url": "https://www.youtube.com/watch?v=xgU5idQf8TQ"
+        },
+        {
+          "date": "2024-12-28",
+          "url": "https://www.youtube.com/watch?v=Ph-Vfo2GVgo"
+        },
+        {
+          "date": "2024-10-26",
+          "url": "https://www.youtube.com/watch?v=9EmQ2AF4thY"
+        },
+        {
+          "date": "2024-10-06",
+          "url": "https://www.youtube.com/watch?v=UXaM8n_mZjk"
+        },
+        {
+          "date": "2024-09-28",
+          "url": "https://www.youtube.com/watch?v=gnI-jh_UEnQ"
+        },
+        {
+          "date": "2024-09-01",
+          "url": "https://www.youtube.com/watch?v=2qMbNZyTFhE"
+        },
+        {
+          "date": "2024-08-11",
+          "url": "https://www.youtube.com/watch?v=TCn1A8_qd_g"
+        },
+        {
+          "date": "2024-08-04",
+          "url": "https://www.youtube.com/watch?v=NgHWoQgMz6Y"
+        }
+      ]
+    },
+    {
+      "name": "My Babe",
+      "count": 32,
+      "lastPlayed": "2026-04-26",
+      "playDates": [
+        "2026-04-26",
+        "2026-04-19",
+        "2026-02-08",
+        "2026-02-01",
+        "2026-01-31",
+        "2026-01-26",
+        "2026-01-25",
+        "2025-12-27",
+        "2025-12-21",
+        "2025-12-20",
+        "2025-12-15",
+        "2025-11-29",
+        "2025-11-23",
+        "2025-11-22",
+        "2025-11-10",
+        "2025-11-08",
+        "2025-10-26",
+        "2025-10-13",
+        "2025-10-05",
+        "2025-09-27",
+        "2025-09-15",
+        "2025-08-24",
+        "2025-08-17",
+        "2025-08-10",
+        "2025-08-09",
+        "2025-07-27",
+        "2025-07-21",
+        "2025-07-13",
+        "2025-07-12",
+        "2025-06-29",
+        "2025-06-28",
+        "2025-06-15"
+      ],
+      "urls": [
+        {
+          "date": "2026-04-26",
+          "url": "https://www.youtube.com/watch?v=I0Eac_OQicg"
+        },
+        {
+          "date": "2026-04-19",
+          "url": "https://www.youtube.com/watch?v=Tpzqs5RIs78"
+        },
+        {
+          "date": "2026-02-08",
+          "url": "https://www.youtube.com/watch?v=MOUX714iUVI"
+        },
+        {
+          "date": "2026-02-01",
+          "url": "https://www.youtube.com/watch?v=zCExAFuP0GM"
+        },
+        {
+          "date": "2026-01-31",
+          "url": "https://www.youtube.com/watch?v=EcqHQ3vnjdA"
+        },
+        {
+          "date": "2026-01-26",
+          "url": "https://www.youtube.com/watch?v=JSAbOrgKDDc"
+        },
+        {
+          "date": "2026-01-25",
+          "url": "https://www.youtube.com/watch?v=jhgiukdGlGY"
+        },
+        {
+          "date": "2025-12-27",
+          "url": "https://www.youtube.com/watch?v=SbXLbZVVigk"
+        },
+        {
+          "date": "2025-12-21",
+          "url": "https://www.youtube.com/watch?v=PIG5hZtR2Xc"
+        },
+        {
+          "date": "2025-12-20",
+          "url": "https://www.youtube.com/watch?v=OZVq1BVI_AY"
+        },
+        {
+          "date": "2025-12-15",
+          "url": "https://www.youtube.com/watch?v=09T0YBgh5EU"
+        },
+        {
+          "date": "2025-11-29",
+          "url": "https://www.youtube.com/watch?v=bNQu3DuCFv4"
+        },
+        {
+          "date": "2025-11-23",
+          "url": "https://www.youtube.com/watch?v=ZgEcAF-CvKs"
+        },
+        {
+          "date": "2025-11-22",
+          "url": "https://www.youtube.com/watch?v=ODYrHL4W9ss"
+        },
+        {
+          "date": "2025-11-10",
+          "url": "https://www.youtube.com/watch?v=wpicXg7WGVI"
+        },
+        {
+          "date": "2025-11-08",
+          "url": "https://www.youtube.com/watch?v=LS6aHGfKQ8c"
+        },
+        {
+          "date": "2025-10-26",
+          "url": "https://www.youtube.com/watch?v=SzI-zaComPU"
+        },
+        {
+          "date": "2025-10-13",
+          "url": "https://www.youtube.com/watch?v=qNYoafvfppA"
+        },
+        {
+          "date": "2025-10-05",
+          "url": "https://www.youtube.com/watch?v=_vKoK-ogFlg"
+        },
+        {
+          "date": "2025-09-27",
+          "url": "https://www.youtube.com/watch?v=rmAq2-f8pCs"
+        },
+        {
+          "date": "2025-09-15",
+          "url": "https://www.youtube.com/watch?v=YpEhom1kmsU"
+        },
+        {
+          "date": "2025-08-24",
+          "url": "https://www.youtube.com/watch?v=Iq0MbQGVpqs"
+        },
+        {
+          "date": "2025-08-17",
+          "url": "https://www.youtube.com/watch?v=8n052euDrAw"
+        },
+        {
+          "date": "2025-08-10",
+          "url": "https://www.youtube.com/watch?v=T9O6H8tgtR0"
+        },
+        {
+          "date": "2025-08-09",
+          "url": "https://www.youtube.com/watch?v=S02urdCg79c"
+        },
+        {
+          "date": "2025-07-27",
+          "url": "https://www.youtube.com/watch?v=ZRbtYI24HNo"
+        },
+        {
+          "date": "2025-07-21",
+          "url": "https://www.youtube.com/watch?v=KJDkQZWzw1E"
+        },
+        {
+          "date": "2025-07-13",
+          "url": "https://www.youtube.com/watch?v=PS8-UZ6jXoo"
+        },
+        {
+          "date": "2025-07-12",
+          "url": "https://www.youtube.com/watch?v=50EpXfI36-I"
+        },
+        {
+          "date": "2025-06-29",
+          "url": "https://www.youtube.com/watch?v=Hr_9VWmnmkk"
+        },
+        {
+          "date": "2025-06-28",
+          "url": "https://www.youtube.com/watch?v=KoBk-JAfzZU"
+        },
+        {
+          "date": "2025-06-15",
+          "url": "https://www.youtube.com/watch?v=Ruvk2Z1nRps"
+        }
+      ]
+    },
+    {
+      "name": "Born in Chicago",
+      "count": 16,
+      "lastPlayed": "2026-04-26",
+      "playDates": [
+        "2026-04-26",
+        "2026-04-19",
+        "2026-02-08",
+        "2026-02-01",
+        "2026-01-31",
+        "2026-01-25",
+        "2025-12-21",
+        "2025-12-20",
+        "2025-12-15",
+        "2025-11-29",
+        "2025-11-23",
+        "2025-11-22",
+        "2025-11-10",
+        "2025-11-08",
+        "2025-10-26",
+        "2025-08-17"
+      ],
+      "urls": [
+        {
+          "date": "2026-04-26",
+          "url": "https://www.youtube.com/watch?v=I0Eac_OQicg"
+        },
+        {
+          "date": "2026-04-19",
+          "url": "https://www.youtube.com/watch?v=Tpzqs5RIs78"
+        },
+        {
+          "date": "2026-02-08",
+          "url": "https://www.youtube.com/watch?v=MOUX714iUVI"
+        },
+        {
+          "date": "2026-02-01",
+          "url": "https://www.youtube.com/watch?v=zCExAFuP0GM"
+        },
+        {
+          "date": "2026-01-31",
+          "url": "https://www.youtube.com/watch?v=EcqHQ3vnjdA"
+        },
+        {
+          "date": "2026-01-25",
+          "url": "https://www.youtube.com/watch?v=jhgiukdGlGY"
+        },
+        {
+          "date": "2025-12-21",
+          "url": "https://www.youtube.com/watch?v=PIG5hZtR2Xc"
+        },
+        {
+          "date": "2025-12-20",
+          "url": "https://www.youtube.com/watch?v=OZVq1BVI_AY"
+        },
+        {
+          "date": "2025-12-15",
+          "url": "https://www.youtube.com/watch?v=09T0YBgh5EU"
+        },
+        {
+          "date": "2025-11-29",
+          "url": "https://www.youtube.com/watch?v=bNQu3DuCFv4"
+        },
+        {
+          "date": "2025-11-23",
+          "url": "https://www.youtube.com/watch?v=ZgEcAF-CvKs"
+        },
+        {
+          "date": "2025-11-22",
+          "url": "https://www.youtube.com/watch?v=ODYrHL4W9ss"
+        },
+        {
+          "date": "2025-11-10",
+          "url": "https://www.youtube.com/watch?v=wpicXg7WGVI"
+        },
+        {
+          "date": "2025-11-08",
+          "url": "https://www.youtube.com/watch?v=LS6aHGfKQ8c"
+        },
+        {
+          "date": "2025-10-26",
+          "url": "https://www.youtube.com/watch?v=SzI-zaComPU"
+        },
+        {
+          "date": "2025-08-17",
+          "url": "https://www.youtube.com/watch?v=8n052euDrAw"
+        }
+      ]
+    },
+    {
+      "name": "Same Old Blues",
+      "count": 24,
+      "lastPlayed": "2026-04-19",
+      "playDates": [
+        "2026-04-19",
+        "2026-01-31",
+        "2025-11-29",
+        "2025-11-22",
+        "2025-11-08",
+        "2025-10-05",
+        "2025-08-24",
+        "2025-08-17",
+        "2025-08-10",
+        "2025-08-09",
+        "2025-07-27",
+        "2025-07-21",
+        "2025-07-13",
+        "2025-07-12",
+        "2025-06-28",
+        "2025-04-12",
+        "2025-04-06",
+        "2025-03-29",
+        "2025-01-25",
+        "2024-12-28",
+        "2024-10-26",
+        "2024-09-28",
+        "2024-09-01",
+        "2024-08-11"
+      ],
+      "urls": [
+        {
+          "date": "2026-04-19",
+          "url": "https://www.youtube.com/watch?v=Tpzqs5RIs78"
+        },
+        {
+          "date": "2026-01-31",
+          "url": "https://www.youtube.com/watch?v=EcqHQ3vnjdA"
+        },
+        {
+          "date": "2025-11-29",
+          "url": "https://www.youtube.com/watch?v=bNQu3DuCFv4"
+        },
+        {
+          "date": "2025-11-22",
+          "url": "https://www.youtube.com/watch?v=ODYrHL4W9ss"
+        },
+        {
+          "date": "2025-11-08",
+          "url": "https://www.youtube.com/watch?v=LS6aHGfKQ8c"
+        },
+        {
+          "date": "2025-10-05",
+          "url": "https://www.youtube.com/watch?v=_vKoK-ogFlg"
+        },
+        {
+          "date": "2025-08-24",
+          "url": "https://www.youtube.com/watch?v=Iq0MbQGVpqs"
+        },
+        {
+          "date": "2025-08-17",
+          "url": "https://www.youtube.com/watch?v=8n052euDrAw"
+        },
+        {
+          "date": "2025-08-10",
+          "url": "https://www.youtube.com/watch?v=T9O6H8tgtR0"
+        },
+        {
+          "date": "2025-08-09",
+          "url": "https://www.youtube.com/watch?v=S02urdCg79c"
+        },
+        {
+          "date": "2025-07-27",
+          "url": "https://www.youtube.com/watch?v=ZRbtYI24HNo"
+        },
+        {
+          "date": "2025-07-21",
+          "url": "https://www.youtube.com/watch?v=KJDkQZWzw1E"
+        },
+        {
+          "date": "2025-07-13",
+          "url": "https://www.youtube.com/watch?v=PS8-UZ6jXoo"
+        },
+        {
+          "date": "2025-07-12",
+          "url": "https://www.youtube.com/watch?v=50EpXfI36-I"
+        },
+        {
+          "date": "2025-06-28",
+          "url": "https://www.youtube.com/watch?v=KoBk-JAfzZU"
+        },
+        {
+          "date": "2025-04-12",
+          "url": "https://www.youtube.com/watch?v=bObIrmM8piM"
+        },
+        {
+          "date": "2025-04-06",
+          "url": "https://www.youtube.com/watch?v=E09s7_2BXYY"
+        },
+        {
+          "date": "2025-03-29",
+          "url": "https://www.youtube.com/watch?v=RGD2TBzgY90"
+        },
+        {
+          "date": "2025-01-25",
+          "url": "https://www.youtube.com/watch?v=c2T86nXq5E4"
+        },
+        {
+          "date": "2024-12-28",
+          "url": "https://www.youtube.com/watch?v=Ph-Vfo2GVgo"
+        },
+        {
+          "date": "2024-10-26",
+          "url": "https://www.youtube.com/watch?v=9EmQ2AF4thY"
+        },
+        {
+          "date": "2024-09-28",
+          "url": "https://www.youtube.com/watch?v=gnI-jh_UEnQ"
+        },
+        {
+          "date": "2024-09-01",
+          "url": "https://www.youtube.com/watch?v=2qMbNZyTFhE"
+        },
+        {
+          "date": "2024-08-11",
+          "url": "https://www.youtube.com/watch?v=TCn1A8_qd_g"
+        }
+      ]
+    },
+    {
+      "name": "Blues With a Feeling",
+      "count": 39,
+      "lastPlayed": "2026-02-08",
+      "playDates": [
+        "2026-02-08",
+        "2026-02-01",
+        "2026-01-31",
+        "2026-01-25",
+        "2025-12-27",
+        "2025-12-21",
+        "2025-12-20",
+        "2025-12-15",
+        "2025-11-29",
+        "2025-11-23",
+        "2025-11-22",
+        "2025-11-10",
+        "2025-11-08",
+        "2025-10-26",
+        "2025-10-13",
+        "2025-10-05",
+        "2025-09-27",
+        "2025-09-15",
+        "2025-08-24",
+        "2025-08-17",
+        "2025-08-10",
+        "2025-08-09",
+        "2025-07-27",
+        "2025-07-21",
+        "2025-07-13",
+        "2025-07-12",
+        "2025-06-29",
+        "2025-06-28",
+        "2025-06-15",
+        "2025-06-06",
+        "2025-05-02",
+        "2025-04-12",
+        "2025-04-06",
+        "2025-03-29",
+        "2025-03-26",
+        "2025-03-22",
+        "2025-02-09",
+        "2025-02-02",
+        "2025-01-30"
+      ],
+      "urls": [
+        {
+          "date": "2026-02-08",
+          "url": "https://www.youtube.com/watch?v=MOUX714iUVI"
+        },
+        {
+          "date": "2026-02-01",
+          "url": "https://www.youtube.com/watch?v=zCExAFuP0GM"
+        },
+        {
+          "date": "2026-01-31",
+          "url": "https://www.youtube.com/watch?v=EcqHQ3vnjdA"
+        },
+        {
+          "date": "2026-01-25",
+          "url": "https://www.youtube.com/watch?v=jhgiukdGlGY"
+        },
+        {
+          "date": "2025-12-27",
+          "url": "https://www.youtube.com/watch?v=SbXLbZVVigk"
+        },
+        {
+          "date": "2025-12-21",
+          "url": "https://www.youtube.com/watch?v=PIG5hZtR2Xc"
+        },
+        {
+          "date": "2025-12-20",
+          "url": "https://www.youtube.com/watch?v=OZVq1BVI_AY"
+        },
+        {
+          "date": "2025-12-15",
+          "url": "https://www.youtube.com/watch?v=09T0YBgh5EU"
+        },
+        {
+          "date": "2025-11-29",
+          "url": "https://www.youtube.com/watch?v=bNQu3DuCFv4"
+        },
+        {
+          "date": "2025-11-23",
+          "url": "https://www.youtube.com/watch?v=ZgEcAF-CvKs"
+        },
+        {
+          "date": "2025-11-22",
+          "url": "https://www.youtube.com/watch?v=ODYrHL4W9ss"
+        },
+        {
+          "date": "2025-11-10",
+          "url": "https://www.youtube.com/watch?v=wpicXg7WGVI"
+        },
+        {
+          "date": "2025-11-08",
+          "url": "https://www.youtube.com/watch?v=LS6aHGfKQ8c"
+        },
+        {
+          "date": "2025-10-26",
+          "url": "https://www.youtube.com/watch?v=SzI-zaComPU"
+        },
+        {
+          "date": "2025-10-13",
+          "url": "https://www.youtube.com/watch?v=qNYoafvfppA"
+        },
+        {
+          "date": "2025-10-05",
+          "url": "https://www.youtube.com/watch?v=_vKoK-ogFlg"
+        },
+        {
+          "date": "2025-09-27",
+          "url": "https://www.youtube.com/watch?v=rmAq2-f8pCs"
+        },
+        {
+          "date": "2025-09-15",
+          "url": "https://www.youtube.com/watch?v=YpEhom1kmsU"
+        },
+        {
+          "date": "2025-08-24",
+          "url": "https://www.youtube.com/watch?v=Iq0MbQGVpqs"
+        },
+        {
+          "date": "2025-08-17",
+          "url": "https://www.youtube.com/watch?v=8n052euDrAw"
+        },
+        {
+          "date": "2025-08-10",
+          "url": "https://www.youtube.com/watch?v=T9O6H8tgtR0"
+        },
+        {
+          "date": "2025-08-09",
+          "url": "https://www.youtube.com/watch?v=S02urdCg79c"
+        },
+        {
+          "date": "2025-07-27",
+          "url": "https://www.youtube.com/watch?v=ZRbtYI24HNo"
+        },
+        {
+          "date": "2025-07-21",
+          "url": "https://www.youtube.com/watch?v=KJDkQZWzw1E"
+        },
+        {
+          "date": "2025-07-13",
+          "url": "https://www.youtube.com/watch?v=PS8-UZ6jXoo"
+        },
+        {
+          "date": "2025-07-12",
+          "url": "https://www.youtube.com/watch?v=50EpXfI36-I"
+        },
+        {
+          "date": "2025-06-29",
+          "url": "https://www.youtube.com/watch?v=Hr_9VWmnmkk"
+        },
+        {
+          "date": "2025-06-28",
+          "url": "https://www.youtube.com/watch?v=KoBk-JAfzZU"
+        },
+        {
+          "date": "2025-06-15",
+          "url": "https://www.youtube.com/watch?v=Ruvk2Z1nRps"
+        },
+        {
+          "date": "2025-06-06",
+          "url": "https://www.youtube.com/watch?v=8R96bPow3zE"
+        },
+        {
+          "date": "2025-05-02",
+          "url": "https://www.youtube.com/watch?v=OkSWLx6_FlM"
+        },
+        {
+          "date": "2025-04-12",
+          "url": "https://www.youtube.com/watch?v=bObIrmM8piM"
+        },
+        {
+          "date": "2025-04-06",
+          "url": "https://www.youtube.com/watch?v=E09s7_2BXYY"
+        },
+        {
+          "date": "2025-03-29",
+          "url": "https://www.youtube.com/watch?v=RGD2TBzgY90"
+        },
+        {
+          "date": "2025-03-26",
+          "url": "https://www.youtube.com/watch?v=xgU5idQf8TQ"
+        },
+        {
+          "date": "2025-03-22",
+          "url": "https://www.youtube.com/watch?v=wvTohCiJ9E4"
+        },
+        {
+          "date": "2025-02-09",
+          "url": "https://www.youtube.com/watch?v=EJZi7HBLv24"
+        },
+        {
+          "date": "2025-02-02",
+          "url": "https://www.youtube.com/watch?v=rN7Z6HCRQlg"
+        },
+        {
+          "date": "2025-01-30",
+          "url": "https://www.youtube.com/watch?v=Ffxvzayt0_8"
+        }
+      ]
+    },
+    {
+      "name": "横浜ホンキートンクブルース",
+      "count": 37,
+      "lastPlayed": "2026-02-08",
+      "playDates": [
+        "2026-02-08",
+        "2026-02-01",
+        "2026-01-26",
+        "2026-01-25",
+        "2025-12-27",
+        "2025-12-21",
+        "2025-12-20",
+        "2025-12-15",
+        "2025-11-23",
+        "2025-11-10",
+        "2025-11-08",
+        "2025-10-26",
+        "2025-10-13",
+        "2025-08-24",
+        "2025-08-10",
+        "2025-08-09",
+        "2025-07-27",
+        "2025-07-21",
+        "2025-07-13",
+        "2025-07-12",
+        "2025-06-29",
+        "2025-06-28",
+        "2025-06-15",
+        "2025-06-06",
+        "2025-05-02",
+        "2025-03-29",
+        "2025-03-22",
+        "2025-01-30",
+        "2025-01-25",
+        "2025-01-13",
+        "2025-01-12",
+        "2025-01-12",
+        "2024-12-28",
+        "2024-12-15",
+        "2024-10-26",
+        "2024-09-28",
+        "2024-08-04"
+      ],
+      "urls": [
+        {
+          "date": "2026-02-08",
+          "url": "https://www.youtube.com/watch?v=MOUX714iUVI"
+        },
+        {
+          "date": "2026-02-01",
+          "url": "https://www.youtube.com/watch?v=zCExAFuP0GM"
+        },
+        {
+          "date": "2026-01-26",
+          "url": "https://www.youtube.com/watch?v=JSAbOrgKDDc"
+        },
+        {
+          "date": "2026-01-25",
+          "url": "https://www.youtube.com/watch?v=jhgiukdGlGY"
+        },
+        {
+          "date": "2025-12-27",
+          "url": "https://www.youtube.com/watch?v=SbXLbZVVigk"
+        },
+        {
+          "date": "2025-12-21",
+          "url": "https://www.youtube.com/watch?v=PIG5hZtR2Xc"
+        },
+        {
+          "date": "2025-12-20",
+          "url": "https://www.youtube.com/watch?v=OZVq1BVI_AY"
+        },
+        {
+          "date": "2025-12-15",
+          "url": "https://www.youtube.com/watch?v=09T0YBgh5EU"
+        },
+        {
+          "date": "2025-11-23",
+          "url": "https://www.youtube.com/watch?v=ZgEcAF-CvKs"
+        },
+        {
+          "date": "2025-11-10",
+          "url": "https://www.youtube.com/watch?v=wpicXg7WGVI"
+        },
+        {
+          "date": "2025-11-08",
+          "url": "https://www.youtube.com/watch?v=LS6aHGfKQ8c"
+        },
+        {
+          "date": "2025-10-26",
+          "url": "https://www.youtube.com/watch?v=SzI-zaComPU"
+        },
+        {
+          "date": "2025-10-13",
+          "url": "https://www.youtube.com/watch?v=qNYoafvfppA"
+        },
+        {
+          "date": "2025-08-24",
+          "url": "https://www.youtube.com/watch?v=Iq0MbQGVpqs"
+        },
+        {
+          "date": "2025-08-10",
+          "url": "https://www.youtube.com/watch?v=T9O6H8tgtR0"
+        },
+        {
+          "date": "2025-08-09",
+          "url": "https://www.youtube.com/watch?v=S02urdCg79c"
+        },
+        {
+          "date": "2025-07-27",
+          "url": "https://www.youtube.com/watch?v=ZRbtYI24HNo"
+        },
+        {
+          "date": "2025-07-21",
+          "url": "https://www.youtube.com/watch?v=KJDkQZWzw1E"
+        },
+        {
+          "date": "2025-07-13",
+          "url": "https://www.youtube.com/watch?v=PS8-UZ6jXoo"
+        },
+        {
+          "date": "2025-07-12",
+          "url": "https://www.youtube.com/watch?v=50EpXfI36-I"
+        },
+        {
+          "date": "2025-06-29",
+          "url": "https://www.youtube.com/watch?v=Hr_9VWmnmkk"
+        },
+        {
+          "date": "2025-06-28",
+          "url": "https://www.youtube.com/watch?v=KoBk-JAfzZU"
+        },
+        {
+          "date": "2025-06-15",
+          "url": "https://www.youtube.com/watch?v=Ruvk2Z1nRps"
+        },
+        {
+          "date": "2025-06-06",
+          "url": "https://www.youtube.com/watch?v=8R96bPow3zE"
+        },
+        {
+          "date": "2025-05-02",
+          "url": "https://www.youtube.com/watch?v=OkSWLx6_FlM"
+        },
+        {
+          "date": "2025-03-29",
+          "url": "https://www.youtube.com/watch?v=RGD2TBzgY90"
+        },
+        {
+          "date": "2025-03-22",
+          "url": "https://www.youtube.com/watch?v=wvTohCiJ9E4"
+        },
+        {
+          "date": "2025-01-30",
+          "url": "https://www.youtube.com/watch?v=Ffxvzayt0_8"
+        },
+        {
+          "date": "2025-01-25",
+          "url": "https://www.youtube.com/watch?v=c2T86nXq5E4"
+        },
+        {
+          "date": "2025-01-13",
+          "url": "https://www.youtube.com/watch?v=zzGr4FarwBs"
+        },
+        {
+          "date": "2025-01-12",
+          "url": "https://www.youtube.com/watch?v=FJhh4OBcnSU"
+        },
+        {
+          "date": "2025-01-12",
+          "url": "https://www.youtube.com/watch?v=_l5OjNwU67c"
+        },
+        {
+          "date": "2024-12-28",
+          "url": "https://www.youtube.com/watch?v=Ph-Vfo2GVgo"
+        },
+        {
+          "date": "2024-12-15",
+          "url": "https://www.youtube.com/watch?v=MT09z-D0xTs"
+        },
+        {
+          "date": "2024-10-26",
+          "url": "https://www.youtube.com/watch?v=9EmQ2AF4thY"
+        },
+        {
+          "date": "2024-09-28",
+          "url": "https://www.youtube.com/watch?v=gnI-jh_UEnQ"
+        },
+        {
+          "date": "2024-08-04",
+          "url": "https://www.youtube.com/watch?v=NgHWoQgMz6Y"
+        }
+      ]
+    },
+    {
+      "name": "Got My Mojo Workin'",
+      "count": 42,
+      "lastPlayed": "2026-02-01",
+      "playDates": [
+        "2026-02-01",
+        "2026-01-31",
+        "2026-01-25",
+        "2025-12-27",
+        "2025-12-21",
+        "2025-12-20",
+        "2025-12-15",
+        "2025-11-23",
+        "2025-11-22",
+        "2025-11-10",
+        "2025-11-08",
+        "2025-10-26",
+        "2025-10-13",
+        "2025-10-05",
+        "2025-08-17",
+        "2025-08-10",
+        "2025-07-27",
+        "2025-06-15",
+        "2025-06-06",
+        "2025-05-02",
+        "2025-04-12",
+        "2025-04-06",
+        "2025-03-29",
+        "2025-03-22",
+        "2025-02-09",
+        "2025-02-02",
+        "2025-01-30",
+        "2025-01-25",
+        "2025-01-13",
+        "2025-01-12",
+        "2025-01-12",
+        "2024-12-28",
+        "2024-12-15",
+        "2024-12-13",
+        "2024-11-23",
+        "2024-10-26",
+        "2024-10-06",
+        "2024-09-28",
+        "2024-09-07",
+        "2024-09-01",
+        "2024-08-11",
+        "2024-08-04"
+      ],
+      "urls": [
+        {
+          "date": "2026-02-01",
+          "url": "https://www.youtube.com/watch?v=zCExAFuP0GM"
+        },
+        {
+          "date": "2026-01-31",
+          "url": "https://www.youtube.com/watch?v=EcqHQ3vnjdA"
+        },
+        {
+          "date": "2026-01-25",
+          "url": "https://www.youtube.com/watch?v=jhgiukdGlGY"
+        },
+        {
+          "date": "2025-12-27",
+          "url": "https://www.youtube.com/watch?v=SbXLbZVVigk"
+        },
+        {
+          "date": "2025-12-21",
+          "url": "https://www.youtube.com/watch?v=PIG5hZtR2Xc"
+        },
+        {
+          "date": "2025-12-20",
+          "url": "https://www.youtube.com/watch?v=OZVq1BVI_AY"
+        },
+        {
+          "date": "2025-12-15",
+          "url": "https://www.youtube.com/watch?v=09T0YBgh5EU"
+        },
+        {
+          "date": "2025-11-23",
+          "url": "https://www.youtube.com/watch?v=ZgEcAF-CvKs"
+        },
+        {
+          "date": "2025-11-22",
+          "url": "https://www.youtube.com/watch?v=ODYrHL4W9ss"
+        },
+        {
+          "date": "2025-11-10",
+          "url": "https://www.youtube.com/watch?v=wpicXg7WGVI"
+        },
+        {
+          "date": "2025-11-08",
+          "url": "https://www.youtube.com/watch?v=LS6aHGfKQ8c"
+        },
+        {
+          "date": "2025-10-26",
+          "url": "https://www.youtube.com/watch?v=SzI-zaComPU"
+        },
+        {
+          "date": "2025-10-13",
+          "url": "https://www.youtube.com/watch?v=qNYoafvfppA"
+        },
+        {
+          "date": "2025-10-05",
+          "url": "https://www.youtube.com/watch?v=_vKoK-ogFlg"
+        },
+        {
+          "date": "2025-08-17",
+          "url": "https://www.youtube.com/watch?v=8n052euDrAw"
+        },
+        {
+          "date": "2025-08-10",
+          "url": "https://www.youtube.com/watch?v=T9O6H8tgtR0"
+        },
+        {
+          "date": "2025-07-27",
+          "url": "https://www.youtube.com/watch?v=ZRbtYI24HNo"
+        },
+        {
+          "date": "2025-06-15",
+          "url": "https://www.youtube.com/watch?v=Ruvk2Z1nRps"
+        },
+        {
+          "date": "2025-06-06",
+          "url": "https://www.youtube.com/watch?v=8R96bPow3zE"
+        },
+        {
+          "date": "2025-05-02",
+          "url": "https://www.youtube.com/watch?v=OkSWLx6_FlM"
+        },
+        {
+          "date": "2025-04-12",
+          "url": "https://www.youtube.com/watch?v=bObIrmM8piM"
+        },
+        {
+          "date": "2025-04-06",
+          "url": "https://www.youtube.com/watch?v=E09s7_2BXYY"
+        },
+        {
+          "date": "2025-03-29",
+          "url": "https://www.youtube.com/watch?v=RGD2TBzgY90"
+        },
+        {
+          "date": "2025-03-22",
+          "url": "https://www.youtube.com/watch?v=wvTohCiJ9E4"
+        },
+        {
+          "date": "2025-02-09",
+          "url": "https://www.youtube.com/watch?v=EJZi7HBLv24"
+        },
+        {
+          "date": "2025-02-02",
+          "url": "https://www.youtube.com/watch?v=rN7Z6HCRQlg"
+        },
+        {
+          "date": "2025-01-30",
+          "url": "https://www.youtube.com/watch?v=Ffxvzayt0_8"
+        },
+        {
+          "date": "2025-01-25",
+          "url": "https://www.youtube.com/watch?v=c2T86nXq5E4"
+        },
+        {
+          "date": "2025-01-13",
+          "url": "https://www.youtube.com/watch?v=zzGr4FarwBs"
+        },
+        {
+          "date": "2025-01-12",
+          "url": "https://www.youtube.com/watch?v=FJhh4OBcnSU"
+        },
+        {
+          "date": "2025-01-12",
+          "url": "https://www.youtube.com/watch?v=_l5OjNwU67c"
+        },
+        {
+          "date": "2024-12-28",
+          "url": "https://www.youtube.com/watch?v=Ph-Vfo2GVgo"
+        },
+        {
+          "date": "2024-12-15",
+          "url": "https://www.youtube.com/watch?v=MT09z-D0xTs"
+        },
+        {
+          "date": "2024-12-13",
+          "url": "https://www.youtube.com/watch?v=atlDRaMLc8s"
+        },
+        {
+          "date": "2024-11-23",
+          "url": "https://www.youtube.com/watch?v=FH0FSKWyNB0"
+        },
+        {
+          "date": "2024-10-26",
+          "url": "https://www.youtube.com/watch?v=9EmQ2AF4thY"
+        },
+        {
+          "date": "2024-10-06",
+          "url": "https://www.youtube.com/watch?v=UXaM8n_mZjk"
+        },
+        {
+          "date": "2024-09-28",
+          "url": "https://www.youtube.com/watch?v=gnI-jh_UEnQ"
+        },
+        {
+          "date": "2024-09-07",
+          "url": "https://www.youtube.com/watch?v=_4DYZAeGhcA"
+        },
+        {
+          "date": "2024-09-01",
+          "url": "https://www.youtube.com/watch?v=2qMbNZyTFhE"
+        },
+        {
+          "date": "2024-08-11",
+          "url": "https://www.youtube.com/watch?v=TCn1A8_qd_g"
+        },
+        {
+          "date": "2024-08-04",
+          "url": "https://www.youtube.com/watch?v=NgHWoQgMz6Y"
+        }
+      ]
+    },
+    {
+      "name": "That's Alright",
+      "count": 16,
+      "lastPlayed": "2025-12-27",
+      "playDates": [
+        "2025-12-27",
+        "2025-12-21",
+        "2025-12-20",
+        "2025-12-15",
+        "2025-06-06",
+        "2025-05-02",
+        "2025-04-12",
+        "2025-04-06",
+        "2025-03-29",
+        "2025-03-22",
+        "2025-02-09",
+        "2025-02-02",
+        "2025-01-30",
+        "2025-01-13",
+        "2024-12-15",
+        "2024-12-13"
+      ],
+      "urls": [
+        {
+          "date": "2025-12-27",
+          "url": "https://www.youtube.com/watch?v=SbXLbZVVigk"
+        },
+        {
+          "date": "2025-12-21",
+          "url": "https://www.youtube.com/watch?v=PIG5hZtR2Xc"
+        },
+        {
+          "date": "2025-12-20",
+          "url": "https://www.youtube.com/watch?v=OZVq1BVI_AY"
+        },
+        {
+          "date": "2025-12-15",
+          "url": "https://www.youtube.com/watch?v=09T0YBgh5EU"
+        },
+        {
+          "date": "2025-06-06",
+          "url": "https://www.youtube.com/watch?v=8R96bPow3zE"
+        },
+        {
+          "date": "2025-05-02",
+          "url": "https://www.youtube.com/watch?v=OkSWLx6_FlM"
+        },
+        {
+          "date": "2025-04-12",
+          "url": "https://www.youtube.com/watch?v=bObIrmM8piM"
+        },
+        {
+          "date": "2025-04-06",
+          "url": "https://www.youtube.com/watch?v=E09s7_2BXYY"
+        },
+        {
+          "date": "2025-03-29",
+          "url": "https://www.youtube.com/watch?v=RGD2TBzgY90"
+        },
+        {
+          "date": "2025-03-22",
+          "url": "https://www.youtube.com/watch?v=wvTohCiJ9E4"
+        },
+        {
+          "date": "2025-02-09",
+          "url": "https://www.youtube.com/watch?v=EJZi7HBLv24"
+        },
+        {
+          "date": "2025-02-02",
+          "url": "https://www.youtube.com/watch?v=rN7Z6HCRQlg"
+        },
+        {
+          "date": "2025-01-30",
+          "url": "https://www.youtube.com/watch?v=Ffxvzayt0_8"
+        },
+        {
+          "date": "2025-01-13",
+          "url": "https://www.youtube.com/watch?v=zzGr4FarwBs"
+        },
+        {
+          "date": "2024-12-15",
+          "url": "https://www.youtube.com/watch?v=MT09z-D0xTs"
+        },
+        {
+          "date": "2024-12-13",
+          "url": "https://www.youtube.com/watch?v=atlDRaMLc8s"
+        }
+      ]
+    },
+    {
+      "name": "Walkin' by Myself",
+      "count": 22,
+      "lastPlayed": "2025-11-29",
+      "playDates": [
+        "2025-11-29",
+        "2025-10-05",
+        "2025-09-15",
+        "2025-08-24",
+        "2025-06-28",
+        "2025-06-15",
+        "2025-06-06",
+        "2025-05-02",
+        "2025-04-12",
+        "2025-04-06",
+        "2025-03-29",
+        "2025-03-22",
+        "2025-02-09",
+        "2025-02-02",
+        "2025-01-30",
+        "2025-01-25",
+        "2025-01-13",
+        "2025-01-12",
+        "2025-01-12",
+        "2024-12-28",
+        "2024-12-15",
+        "2024-12-13"
+      ],
+      "urls": [
+        {
+          "date": "2025-11-29",
+          "url": "https://www.youtube.com/watch?v=bNQu3DuCFv4"
+        },
+        {
+          "date": "2025-10-05",
+          "url": "https://www.youtube.com/watch?v=_vKoK-ogFlg"
+        },
+        {
+          "date": "2025-09-15",
+          "url": "https://www.youtube.com/watch?v=YpEhom1kmsU"
+        },
+        {
+          "date": "2025-08-24",
+          "url": "https://www.youtube.com/watch?v=Iq0MbQGVpqs"
+        },
+        {
+          "date": "2025-06-28",
+          "url": "https://www.youtube.com/watch?v=KoBk-JAfzZU"
+        },
+        {
+          "date": "2025-06-15",
+          "url": "https://www.youtube.com/watch?v=Ruvk2Z1nRps"
+        },
+        {
+          "date": "2025-06-06",
+          "url": "https://www.youtube.com/watch?v=8R96bPow3zE"
+        },
+        {
+          "date": "2025-05-02",
+          "url": "https://www.youtube.com/watch?v=OkSWLx6_FlM"
+        },
+        {
+          "date": "2025-04-12",
+          "url": "https://www.youtube.com/watch?v=bObIrmM8piM"
+        },
+        {
+          "date": "2025-04-06",
+          "url": "https://www.youtube.com/watch?v=E09s7_2BXYY"
+        },
+        {
+          "date": "2025-03-29",
+          "url": "https://www.youtube.com/watch?v=RGD2TBzgY90"
+        },
+        {
+          "date": "2025-03-22",
+          "url": "https://www.youtube.com/watch?v=wvTohCiJ9E4"
+        },
+        {
+          "date": "2025-02-09",
+          "url": "https://www.youtube.com/watch?v=EJZi7HBLv24"
+        },
+        {
+          "date": "2025-02-02",
+          "url": "https://www.youtube.com/watch?v=rN7Z6HCRQlg"
+        },
+        {
+          "date": "2025-01-30",
+          "url": "https://www.youtube.com/watch?v=Ffxvzayt0_8"
+        },
+        {
+          "date": "2025-01-25",
+          "url": "https://www.youtube.com/watch?v=c2T86nXq5E4"
+        },
+        {
+          "date": "2025-01-13",
+          "url": "https://www.youtube.com/watch?v=zzGr4FarwBs"
+        },
+        {
+          "date": "2025-01-12",
+          "url": "https://www.youtube.com/watch?v=FJhh4OBcnSU"
+        },
+        {
+          "date": "2025-01-12",
+          "url": "https://www.youtube.com/watch?v=_l5OjNwU67c"
+        },
+        {
+          "date": "2024-12-28",
+          "url": "https://www.youtube.com/watch?v=Ph-Vfo2GVgo"
+        },
+        {
+          "date": "2024-12-15",
+          "url": "https://www.youtube.com/watch?v=MT09z-D0xTs"
+        },
+        {
+          "date": "2024-12-13",
+          "url": "https://www.youtube.com/watch?v=atlDRaMLc8s"
+        }
+      ]
+    },
+    {
+      "name": "Honest I Do",
+      "count": 9,
+      "lastPlayed": "2025-09-27",
+      "playDates": [
+        "2025-09-27",
+        "2025-09-15",
+        "2025-05-02",
+        "2025-04-12",
+        "2025-04-06",
+        "2025-03-29",
+        "2025-02-09",
+        "2025-02-02",
+        "2025-01-30"
+      ],
+      "urls": [
+        {
+          "date": "2025-09-27",
+          "url": "https://www.youtube.com/watch?v=rmAq2-f8pCs"
+        },
+        {
+          "date": "2025-09-15",
+          "url": "https://www.youtube.com/watch?v=YpEhom1kmsU"
+        },
+        {
+          "date": "2025-05-02",
+          "url": "https://www.youtube.com/watch?v=OkSWLx6_FlM"
+        },
+        {
+          "date": "2025-04-12",
+          "url": "https://www.youtube.com/watch?v=bObIrmM8piM"
+        },
+        {
+          "date": "2025-04-06",
+          "url": "https://www.youtube.com/watch?v=E09s7_2BXYY"
+        },
+        {
+          "date": "2025-03-29",
+          "url": "https://www.youtube.com/watch?v=RGD2TBzgY90"
+        },
+        {
+          "date": "2025-02-09",
+          "url": "https://www.youtube.com/watch?v=EJZi7HBLv24"
+        },
+        {
+          "date": "2025-02-02",
+          "url": "https://www.youtube.com/watch?v=rN7Z6HCRQlg"
+        },
+        {
+          "date": "2025-01-30",
+          "url": "https://www.youtube.com/watch?v=Ffxvzayt0_8"
+        }
+      ]
+    },
+    {
+      "name": "Telephone Blues",
+      "count": 3,
+      "lastPlayed": "2025-09-27",
+      "playDates": [
+        "2025-09-27",
+        "2025-09-15",
+        "2025-03-26"
+      ],
+      "urls": [
+        {
+          "date": "2025-09-27",
+          "url": "https://www.youtube.com/watch?v=rmAq2-f8pCs"
+        },
+        {
+          "date": "2025-09-15",
+          "url": "https://www.youtube.com/watch?v=YpEhom1kmsU"
+        },
+        {
+          "date": "2025-03-26",
+          "url": "https://www.youtube.com/watch?v=xgU5idQf8TQ"
+        }
+      ]
+    },
+    {
+      "name": "Stormy Monday",
+      "count": 3,
+      "lastPlayed": "2025-07-12",
+      "playDates": [
+        "2025-07-12",
+        "2025-06-29",
+        "2025-06-28"
+      ],
+      "urls": [
+        {
+          "date": "2025-07-12",
+          "url": "https://www.youtube.com/watch?v=50EpXfI36-I"
+        },
+        {
+          "date": "2025-06-29",
+          "url": "https://www.youtube.com/watch?v=Hr_9VWmnmkk"
+        },
+        {
+          "date": "2025-06-28",
+          "url": "https://www.youtube.com/watch?v=KoBk-JAfzZU"
+        }
+      ]
+    },
+    {
+      "name": "You Don't Love Me",
+      "count": 6,
+      "lastPlayed": "2025-01-25",
+      "playDates": [
+        "2025-01-25",
+        "2024-11-23",
+        "2024-10-26",
+        "2024-09-01",
+        "2024-08-11",
+        "2024-08-04"
+      ],
+      "urls": [
+        {
+          "date": "2025-01-25",
+          "url": "https://www.youtube.com/watch?v=c2T86nXq5E4"
+        },
+        {
+          "date": "2024-11-23",
+          "url": "https://www.youtube.com/watch?v=FH0FSKWyNB0"
+        },
+        {
+          "date": "2024-10-26",
+          "url": "https://www.youtube.com/watch?v=9EmQ2AF4thY"
+        },
+        {
+          "date": "2024-09-01",
+          "url": "https://www.youtube.com/watch?v=2qMbNZyTFhE"
+        },
+        {
+          "date": "2024-08-11",
+          "url": "https://www.youtube.com/watch?v=TCn1A8_qd_g"
+        },
+        {
+          "date": "2024-08-04",
+          "url": "https://www.youtube.com/watch?v=NgHWoQgMz6Y"
+        }
+      ]
+    },
+    {
+      "name": "Sweet Home Chicago",
+      "count": 1,
+      "lastPlayed": "2024-12-15",
+      "playDates": [
+        "2024-12-15"
+      ],
+      "urls": [
+        {
+          "date": "2024-12-15",
+          "url": "https://www.youtube.com/watch?v=MT09z-D0xTs"
+        }
+      ]
+    },
+    {
+      "name": "Walkin' Out on You",
+      "count": 1,
+      "lastPlayed": "2024-09-28",
+      "playDates": [
+        "2024-09-28"
+      ],
+      "urls": [
+        {
+          "date": "2024-09-28",
+          "url": "https://www.youtube.com/watch?v=gnI-jh_UEnQ"
+        }
+      ]
+    }
+  ],
+  "encores": [
+    {
+      "name": "横浜ホンキートンクブルース",
+      "count": 1,
+      "lastPlayed": "2026-06-06",
+      "playDates": [
+        "2026-06-06"
+      ],
+      "urls": [
+        {
+          "date": "2026-06-06",
+          "url": "https://www.youtube.com/watch?v=NyjlcwoUmpg"
+        }
+      ]
+    },
+    {
+      "name": "Let Me Love You Baby",
+      "count": 1,
+      "lastPlayed": "2026-05-31",
+      "playDates": [
+        "2026-05-31"
+      ],
+      "urls": [
+        {
+          "date": "2026-05-31",
+          "url": "https://www.youtube.com/watch?v=uc2plsxpuQE"
+        }
+      ]
+    },
+    {
+      "name": "Got My Mojo Workin'",
+      "count": 4,
+      "lastPlayed": "2026-05-16",
+      "playDates": [
+        "2026-05-16",
+        "2026-04-26",
+        "2026-04-19",
+        "2026-02-08"
+      ],
+      "urls": [
+        {
+          "date": "2026-05-16",
+          "url": "https://www.youtube.com/watch?v=Gl1xVt9QDjQ"
+        },
+        {
+          "date": "2026-04-26",
+          "url": "https://www.youtube.com/watch?v=I0Eac_OQicg"
+        },
+        {
+          "date": "2026-04-19",
+          "url": "https://www.youtube.com/watch?v=Tpzqs5RIs78"
+        },
+        {
+          "date": "2026-02-08",
+          "url": "https://www.youtube.com/watch?v=MOUX714iUVI"
+        }
+      ]
+    }
+  ],
   "unknown": [
-    "Baby Scratch My Back",
-    "Messin' With the Kid",
-    "Bad Boy",
-    "Key to the Highway",
-    "Help Me",
-    "Let Me Love You Baby",
-    "Members Only",
-    "Little by Little",
-    "You Belong to Me",
-    "横浜ホンキートンクブルース（）",
-    "All of Your Love",
-    "Let Me Love You Baby（）",
-    "Hoochie Coochie Man",
-    "I'll Play the Blues for You",
-    "Got My Mojo Workin'（）",
-    "My Babe",
-    "Born in Chicago",
-    "- Got My Mojo Workin'",
-    "Same Old Blues",
-    "Blues With a Feeling",
-    "横浜ホンキートンクブルース",
-    "baby scratch my back",
-    "messin' with the kid",
-    "i’ll play the blues for you",
-    "born in chicago",
-    "Got my mojo workin’",
-    "You belong to me",
-    "That’s Alright",
-    "you belong to me",
-    "All of your love",
-    "Walkin’ by Myself",
-    "Hoochie Coochie Man　　    　ソロ　スズナ→今井さん",
-    "same old blues",
-    "born in chicago　　      　bpm152",
-    "Help me",
-    "bad boy",
     "walking by myself",
-    "honest i do　　　※頭から８小節",
-    "help me",
-    "key to the highway",
-    "telephone blues",
-    "honest i do",
-    "born in chicago　   　　bpm152",
-    "Hoochie Coochie Man　　　ソロ　今井さんからスズナ",
-    "you be long to me",
-    "mojo working",
-    "フーチークーチーマン",
-    "walking out on you",
-    "stormy monday",
-    "mojo workin'",
-    "Honest I do",
-    "横浜ホンキートンク",
-    "blues with a　feeling",
-    "That’s Allright",
+    "walking out on you　　　",
+    "リクエスト　mojo workin'",
     "Kilin’ Floor",
-    "Honest I Do",
-    "let me love you",
-    "little by little",
-    "you don’t love me",
-    "Bad boy",
-    "sweet home chicago",
-    "Let me love you",
-    "Walkin’ out on you",
-    "Got My Mojo Workin'",
+    "メンバー紹介　　",
     "thrill is gone"
   ]
 }
