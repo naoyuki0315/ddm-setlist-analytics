@@ -43,6 +43,14 @@ def load_master_songs_from_web(csv_url):
         print(f"【エラー】マスターリストの読み込みに失敗しました: {e}")
         return []
 
+def timestamp_to_seconds(ts):
+    """ "12:34" や "1:02:34" のようなタイムスタンプ文字列を、秒数（int）に変換する """
+    parts = [int(p) for p in ts.split(':')]
+    seconds = 0
+    for p in parts:
+        seconds = seconds * 60 + p
+    return seconds
+
 def normalize_for_match(s):
     """
     YouTube概要欄のアバウトな表記を許容するため、
@@ -121,12 +129,16 @@ def analyze_description(description, date_str, video_id, master_songs, data_stor
 
         target_dict = data_store['encores'] if in_encore_section else data_store['main']
 
+        # 【追加】そのタイムスタンプの秒数を計算し、再生位置付きのURLを作る
+        ts_seconds = timestamp_to_seconds(timestamps[0]) if timestamps else 0
+        video_url = f"https://www.youtube.com/watch?v={video_id}&t={ts_seconds}s"
+
         if matched_song:
             if matched_song not in target_dict:
                 target_dict[matched_song] = {'count': 0, 'lastPlayed': '', 'playDates': [], 'urls': []}
             target_dict[matched_song]['count'] += 1
             target_dict[matched_song]['playDates'].append(date_str)
-            target_dict[matched_song]['urls'].append({'date': date_str, 'url': f"https://www.youtube.com/watch?v={video_id}"})
+            target_dict[matched_song]['urls'].append({'date': date_str, 'url': video_url})
             target_dict[matched_song]['lastPlayed'] = max(target_dict[matched_song]['lastPlayed'], date_str)
         else:
             if len(clean_line) > 2 and clean_line not in data_store['unknown']:
