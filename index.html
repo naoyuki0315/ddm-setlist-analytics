@@ -37,14 +37,19 @@
 
     async function init() {
       try {
+        // キャッシュを防ぐため、URLの後ろに毎回違う数字（タイムスタンプ）を自動で付与します
+        const cacheBuster = `?_=${new Date().getTime()}`;
+        
         const [resCsv, resJson] = await Promise.all([
           fetch(CSV_URL).then(r => r.text()),
-          fetch('./data.json').then(r => r.json())
+          fetch(`./data.json${cacheBuster}`).then(r => r.json())
         ]);
+        
         masterSongs = resCsv.split('\n').slice(1).map(line => {
             const cols = line.split(',');
             return cols[1] ? cols[1].trim() : "";
         }).filter(name => name !== "");
+        
         rawData = resJson;
 
         const select = document.getElementById('year-select');
@@ -62,11 +67,15 @@
         }
         select.innerHTML = [periods[0], ...periods.slice(1).reverse()].map(o => `<option value="${o.v}">${o.l}</option>`).join('');
         render();
-      } catch (e) { console.error(e); alert("データ読み込みエラー"); }
+      } catch (e) { 
+        console.error(e); 
+        alert("データ読み込みエラーが発生しました。コンソールを確認してください。"); 
+      }
     }
 
     function showVideos(name) {
-      const song = [...rawData.main, ...rawData.encores].find(s => s.name === name);
+      if (!rawData || (!rawData.main && !rawData.encores)) return;
+      const song = [...(rawData.main || []), ...(rawData.encores || [])].find(s => s.name === name);
       const list = document.getElementById('video-list');
       document.getElementById('modal-title').innerText = name;
       
@@ -80,6 +89,8 @@
     }
 
     function render() {
+      if (!rawData) return;
+      
       const tabs = { year: '年別', encore: 'アンコール年別', unknown: '持ち曲以外' };
       document.getElementById('tabs').innerHTML = Object.entries(tabs).map(([id, label]) => 
         `<button onclick="currentTab='${id}'; render()" class="pb-2 font-bold ${currentTab === id ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500'}">${label}</button>`
@@ -87,22 +98,27 @@
 
       document.getElementById('filter-area').classList.toggle('hidden', currentTab === 'unknown');
 
-      let source = currentTab === 'encore' ? [...rawData.encores] : [...rawData.main, ...rawData.encores];
-      
+      // 1. 持ち曲以外（unknown）タブの処理をPythonのデータ構造に最適化
       if (currentTab === 'unknown') {
-        const unknown = [...new Set(source.filter(s => !masterSongs.includes(s.name)).map(s => s.name))];
-        document.getElementById('list').innerHTML = unknown.map(name => `
+        const unknownList = rawData.unknown || [];
+        // 重複を排除して綺麗に並べる
+        const uniqueUnknown = [...new Set(unknownList)];
+        
+        document.getElementById('list').innerHTML = uniqueUnknown.map(name => `
           <tr class="border-t">
             <td class="p-3 text-red-600 font-bold">${name}</td>
           </tr>
-        `).join('') || "<tr><td class='p-8 text-center'>持ち曲以外はありません</td></tr>";
+        `).join('') || "<tr><td class='p-8 text-center text-gray-500'>持ち曲以外はありません</td></tr>";
         return;
       }
 
+      // 2. 通常のランキング処理
+      let source = currentTab === 'encore' ? [...(rawData.encores || [])] : [...(rawData.main || []), ...(rawData.encores || [])];
+      
       const val = document.getElementById('year-select').value;
       if (val !== 'all') {
         const [y, type] = val.split('-');
-        source = source.map(s => ({ ...s, playDates: s.playDates.filter(d => {
+        source = source.map(s => ({ ...s, playDates: (s.playDates || []).filter(d => {
           const [sy, sm] = d.split('-');
           if (sy !== y) return false;
           if (type === '1') return sm <= '06';
@@ -122,7 +138,7 @@
           <td class="p-3 font-bold">${i < 3 ? ['👑','🥈','🥉'][i] : (i+1)+'位'} ${s.name}</td>
           <td class="text-right p-3 font-bold text-blue-600">${s.count}回</td>
         </tr>
-      `).join('');
+      `).join('') || "<tr><td class='p-8 text-center text-gray-500'>該当する期間の演奏データがありません</td></tr>";
     }
     init();
   </script>
