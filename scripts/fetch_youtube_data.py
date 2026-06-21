@@ -22,7 +22,7 @@ def load_master_songs_from_web(csv_url):
         header_index = -1
         
         for row in reader:
-            # 「楽曲名」という文字が含まれる列を柔軟に検索（部分一致に対応）
+            if not row: continue
             if header_index == -1:
                 for idx, col in enumerate(row):
                     if '楽曲名' in col:
@@ -41,19 +41,16 @@ def load_master_songs_from_web(csv_url):
         if master_list:
             print(f"【ログ】持ち曲の例: {master_list[:5]}")
         else:
-            print("【⚠️警告】スプレッドシートから曲名が1件も読み込めませんでした。")
+            print("【⚠️警告】スプレッドシートから曲名が1件も読み込めませんでした。URLか公開設定を確認してください。")
         return master_list
     except Exception as e:
         print(f"【エラー】マスターリストの読み込みに失敗しました: {e}")
         return []
 
 def normalize_for_match(s):
-    # 全角半角の統一と小文字化
     s = unicodedata.normalize('NFKC', s).lower()
-    # 記号やスペース、不要な装飾文字を完全に排除
-    s = re.sub(r'[\s\'"’`・\(\)（）\-\[\]\?,_\.!\/\\：:※\*\+ ]', '', s)
-    
-    # 最低限必要な表記ゆれ吸収
+    # 矢印などの記号も一括排除
+    s = re.sub(r'[\s\'"’`・\(\)（）\-\[\]\?,_\.!\/\\：:※\*\+ →]', '', s)
     replacements = {
         'フーチークーチーマン': 'hoochiecoochieman',
         'working': 'workin',
@@ -64,30 +61,27 @@ def normalize_for_match(s):
     return s
 
 def analyze_description(description, date_str, video_id, master_songs, data_store):
+    if not description: return
     is_encore_mode = 'アンコール' in description.lower() or 'encore' in description.lower()
     
     lines = description.split('\n')
     for line in lines:
         line = line.strip()
         
-        # タイムスタンプ（例 01:23 や 1:23）を探す
         match = re.search(r'\d{1,2}:\d{2}', line)
         if not match: continue
         
-        # メンバー紹介やノイズ行を除外
         if any(x in line.lower() for x in ['members', 'vocal', 'guitar', 'harp', 'drums', 'bass']): continue
 
         timestamp = match.group(0)
         before, after = line.split(timestamp, 1)
         
-        # 前後の文字列を掃除
         clean_before = re.sub(r'^\d+[\.\s]*', '', before).strip()
         clean_before = re.sub(r'^[・\-\s/]+', '', clean_before).strip()
         
         clean_after = re.sub(r'^\d+[\.\s]*', '', after).strip()
         clean_after = re.sub(r'^[・\-\s/]+', '', clean_after).strip()
         
-        # どちらに曲名が入っているか判定（前後両対応）
         raw_title = ""
         if len(clean_before) > 2 and not any(x in clean_before.lower() for x in ['intro', 'greeting', 'mc', 'トーク', 'timestamps']):
             raw_title = clean_before
@@ -99,7 +93,6 @@ def analyze_description(description, date_str, video_id, master_songs, data_stor
         matched_song = None
         clean_raw = normalize_for_match(raw_title)
         
-        # 部分一致のロジックで安全に比較
         for master in master_songs:
             m_norm = normalize_for_match(master)
             if m_norm in clean_raw or clean_raw in m_norm:
@@ -124,28 +117,40 @@ def main():
     if not API_KEY:
         print("【エラー】YOUTUBE_API_KEY が環境変数に設定されていません。")
         return
-    youtube = build('youtube', 'v3', developerKey=API_KEY)
-    
-    print("【ログ】YouTubeから動画リストを取得中...")
-    channel_res = youtube.channels().list(part="contentDetails", id=CHANNEL_ID).execute()
-    uploads_playlist_id = channel_res["items"][0]["contentDetails"]["relatedPlaylists"]["uploads"]
-    
-    videos = []
-    next_page_token = None
-    while True:
-        playlist_res = youtube.playlistItems().list(part="snippet", playlistId=uploads_playlist_id, maxResults=50, pageToken=next_page_token).execute()
-        videos.extend(playlist_res.get("items", []))
-        next_page_token = playlist_res.get("nextPageToken")
-        if not next_page_token: break
-    print(f"【ログ】YouTubeから {len(videos)} 件の動画を取得しました。")
+    try:
+        youtube = build('youtube', 'v3', developerKey=API_KEY)
+        
+        print("【ログ】YouTubeから動画リストを取得中...")
+        channel_res = youtube.channels().list(part="contentDetails", id=CHANNEL_ID).execute()
+        uploads_playlist_id = channel_res["items"][0]["contentDetails"]["relatedPlaylists"]["uploads"]
+        
+        videos = []
+        next_page_token = None
+        while True:
+            playlist_res = youtube.playlistItems().list(part="snippet", playlistId=uploads_playlist_id, maxResults=50, pageToken=next_page_token).execute()
+            videos.extend(playlist_res.get("items", []))
+            next_page_token = playlist_res.get("nextPageToken")
+            if not next_page_token: break
+        print(f"【ログ】YouTubeから {len(videos)} 件の動画を取得しました。")
+    except Exception as e:
+        print(f"【エラー】YouTube APIからのデータ取得中にエラーが発生しました: {e}")
+        return
 
     master_songs = load_master_songs_from_web(CSV_URL)
     data_store = {'main': {}, 'encores': {}, 'unknown': []}
 
     print("【ログ】動画説明欄の解析を開始します...")
     for video in videos:
-        snippet = video["snippet"]
-        analyze_description(snippet["description"], snippet["publishedAt"].split('T')[0], snippet["resourceId"]["videoId"], master_songs, data_store)
+        try:
+            snippet = video.get("snippet", {})
+            desc = snippet.get("description", "")
+            pub_at = snippet.get("publishedAt", "2000-01-01T00:00:00Z").split('T')[0]
+            v_id = snippet.get("resourceId", {}).get("videoId", "")
+            if v_id:
+                analyze_description(desc, pub_at, v_id, master_songs, data_store)
+        except Exception as e:
+            # 万が一特定の動画でバグっても、スキップして処理を続行させる
+            continue
 
     output = {
         "lastUpdated": datetime.now(timezone(timedelta(hours=+9))).strftime("%Y-%m-%d %H:%M"),
@@ -153,10 +158,12 @@ def main():
         "encores": [{"name": k, **v} for k, v in data_store['encores'].items()],
         "unknown": data_store['unknown']
     }
-    with open('data.json', 'w', encoding='utf-8') as f:
-        json.dump(output, f, ensure_ascii=False, indent=2)
-    
-    print(f"✅ 集計完了！ main: {len(output['main'])}件, encores: {len(output['encores'])}件, unknown: {len(output['unknown'])}件")
+    try:
+        with open('data.json', 'w', encoding='utf-8') as f:
+            json.dump(output, f, ensure_ascii=False, indent=2)
+        print(f"✅ 集計完了！ファイル保存成功 main: {len(output['main'])}件, encores: {len(output['encores'])}件, unknown: {len(output['unknown'])}件")
+    except Exception as e:
+        print(f"【エラー】data.jsonの保存に失敗しました: {e}")
 
 if __name__ == "__main__":
     main()
