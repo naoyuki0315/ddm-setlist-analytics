@@ -35,7 +35,6 @@ def load_master_songs_from_web(csv_url):
 
 def normalize_for_match(s):
     s = unicodedata.normalize('NFKC', s).lower()
-    # よくある表記ゆれを統合
     replacements = {
         'hoochiecoochieman': 'hoochiecoochieman', 'フーチークーチーマン': 'hoochiecoochieman',
         'workin': 'workin', 'working': 'workin', 'alright': 'alright', 'allright': 'alright',
@@ -47,23 +46,40 @@ def normalize_for_match(s):
     return s
 
 def analyze_description(description, date_str, video_id, master_songs, data_store):
-    # アンコール判定：説明欄に「アンコール」という文字があれば以降をアンコール扱い
     is_encore_mode = 'アンコール' in description.lower() or 'encore' in description.lower()
     
-    # 行ごとに解析
     lines = description.split('\n')
     for line in lines:
         line = line.strip()
-        # 曲名の行は「数字から始まる」か「タイムスタンプを含む」
-        # パターン: "1. 曲名 1:23" または "曲名 1:23"
-        if not re.search(r'\d{1,2}:\d{2}', line): continue
-        if any(x in line.lower() for x in ['members', 'vocal', 'guitar', 'harp']): continue
+        
+        # タイムスタンプ（例 01:23 や 1:23）を探す
+        match = re.search(r'\d{1,2}:\d{2}', line)
+        if not match: continue
+        
+        # メンバー紹介や楽器名の行は除外
+        if any(x in line.lower() for x in ['members', 'vocal', 'guitar', 'harp', 'drums', 'bass']): continue
 
-        # 曲名を抽出（タイムスタンプの手前まで）
-        parts = re.split(r'\d{1,2}:\d{2}', line)
-        raw_title = re.sub(r'^\d+[\.\s]*', '', parts[0]).strip()
+        timestamp = match.group(0)
+        # タイムスタンプの「前」と「後」に分解
+        before, after = line.split(timestamp, 1)
+        
+        # 前後の文字列から、行頭の数字や余計な記号を掃除
+        clean_before = re.sub(r'^\d+[\.\s]*', '', before).strip()
+        clean_before = re.sub(r'^[・\-\s/]+', '', clean_before).strip()
+        
+        clean_after = re.sub(r'^\d+[\.\s]*', '', after).strip()
+        clean_after = re.sub(r'^[・\-\s/]+', '', clean_after).strip()
+        
+        # どちらに曲名が入っているか判定（文字数が長く、ノイズでない方を採用）
+        raw_title = ""
+        if len(clean_before) > 2 and not any(x in clean_before.lower() for x in ['intro', 'greeting', 'mc', 'トーク', 'timestamps']):
+            raw_title = clean_before
+        elif len(clean_after) > 2 and not any(x in clean_after.lower() for x in ['intro', 'greeting', 'mc', 'トーク', 'timestamps']):
+            raw_title = clean_after
+            
         if not raw_title: continue
 
+        # マッチング処理
         matched_song = None
         clean_raw = normalize_for_match(raw_title)
         for master in master_songs:
@@ -71,8 +87,8 @@ def analyze_description(description, date_str, video_id, master_songs, data_stor
                 matched_song = master
                 break
         
-        # アンコール判定（行にアンコール関連の文字があるか）
-        is_encore_line = is_encore_mode and ('アンコール' in line.lower() or 'encore' in line.lower())
+        # アンコール判定
+        is_encore_line = is_encore_mode and ('アンコール' in line.lower() or 'encore' in line.lower() or 'アンコール' in raw_title)
         target_dict = data_store['encores'] if is_encore_line else data_store['main']
 
         if matched_song:
