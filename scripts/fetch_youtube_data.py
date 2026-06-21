@@ -38,10 +38,6 @@ def load_master_songs_from_web(csv_url):
         
         master_list = list(set(songs))
         print(f"【ログ】スプレッドシートから {len(master_list)} 件の持ち曲リストを読み込みました。")
-        if master_list:
-            print(f"【ログ】持ち曲の例: {master_list[:5]}")
-        else:
-            print("【⚠️警告】スプレッドシートから曲名が1件も読み込めませんでした。URLか公開設定を確認してください。")
         return master_list
     except Exception as e:
         print(f"【エラー】マスターリストの読み込みに失敗しました: {e}")
@@ -49,7 +45,7 @@ def load_master_songs_from_web(csv_url):
 
 def normalize_for_match(s):
     s = unicodedata.normalize('NFKC', s).lower()
-    # 矢印などの記号も一括排除
+    # 記号やスペースを一括排除
     s = re.sub(r'[\s\'"’`・\(\)（）\-\[\]\?,_\.!\/\\：:※\*\+ →]', '', s)
     replacements = {
         'フーチークーチーマン': 'hoochiecoochieman',
@@ -68,38 +64,36 @@ def analyze_description(description, date_str, video_id, master_songs, data_stor
     for line in lines:
         line = line.strip()
         
-        match = re.search(r'\d{1,2}:\d{2}', line)
-        if not match: continue
+        # 1. タイムスタンプ（MM:SS や HH:MM:SS）をすべて抽出
+        timestamps = re.findall(r'\b(?:\d{1,2}:)?\d{1,2}:\d{2}\b', line)
+        if not timestamps: continue
         
-        if any(x in line.lower() for x in ['members', 'vocal', 'guitar', 'harp', 'drums', 'bass']): continue
-
-        timestamp = match.group(0)
-        before, after = line.split(timestamp, 1)
-        
-        clean_before = re.sub(r'^\d+[\.\s]*', '', before).strip()
-        clean_before = re.sub(r'^[・\-\s/]+', '', clean_before).strip()
-        
-        clean_after = re.sub(r'^\d+[\.\s]*', '', after).strip()
-        clean_after = re.sub(r'^[・\-\s/]+', '', clean_after).strip()
-        
-        raw_title = ""
-        if len(clean_before) > 2 and not any(x in clean_before.lower() for x in ['intro', 'greeting', 'mc', 'トーク', 'timestamps']):
-            raw_title = clean_before
-        elif len(clean_after) > 2 and not any(x in clean_after.lower() for x in ['intro', 'greeting', 'mc', 'トーク', 'timestamps']):
-            raw_title = clean_after
+        # 2. 行からタイムスタンプ部分を完全に消去
+        clean_line = line
+        for ts in timestamps:
+            clean_line = clean_line.replace(ts, "")
             
-        if not raw_title: continue
+        # 3. 先頭の曲番（1. や 02 など）や不要な記号を掃除
+        clean_line = re.sub(r'^\d+[\.\s\-・]*', '', clean_line)
+        # カッコ書き（Guitar solo等）を一時的に除去して曲名判定を正確にする
+        clean_line = re.sub(r'[\(\[\{【].*?[\)\]\}】]', '', clean_line)
+        clean_line = clean_line.strip(" ・-/:,[]()")
+        
+        # 4. 明らかなノイズ行（MCや挨拶、メンバー紹介のみの行）はスキップ
+        if not clean_line or any(x in clean_line.lower() for x in ['intro', 'greeting', 'mc', 'トーク', 'timestamps', 'members', 'vocal:', 'drums:', 'bass:']):
+            continue
 
+        # 5. 照合ロジック
         matched_song = None
-        clean_raw = normalize_for_match(raw_title)
+        clean_raw = normalize_for_match(clean_line)
         
         for master in master_songs:
             m_norm = normalize_for_match(master)
-            if m_norm in clean_raw or clean_raw in m_norm:
+            if m_norm and (m_norm in clean_raw or clean_raw in m_norm):
                 matched_song = master
                 break
         
-        is_encore_line = is_encore_mode and ('アンコール' in line.lower() or 'encore' in line.lower() or 'アンコール' in raw_title)
+        is_encore_line = is_encore_mode and ('アンコール' in line.lower() or 'encore' in line.lower() or 'アンコール' in clean_line)
         target_dict = data_store['encores'] if is_encore_line else data_store['main']
 
         if matched_song:
@@ -110,8 +104,9 @@ def analyze_description(description, date_str, video_id, master_songs, data_stor
             target_dict[matched_song]['urls'].append({'date': date_str, 'url': f"https://www.youtube.com/watch?v={video_id}"})
             target_dict[matched_song]['lastPlayed'] = max(target_dict[matched_song]['lastPlayed'], date_str)
         else:
-            if raw_title not in data_store['unknown']:
-                data_store['unknown'].append(raw_title)
+            # 2文字以下の意味のない記号ゴミはunknownに入れない
+            if len(clean_line) > 2 and clean_line not in data_store['unknown']:
+                data_store['unknown'].append(clean_line)
 
 def main():
     if not API_KEY:
@@ -126,14 +121,18 @@ def main():
         
         videos = []
         next_page_token = None
-        while True:
+        # APIクォータ切れを防ぐため、最大3ページ（150本）までに制限（必要に応じて調整してください）
+        page_count = 0
+        while page_count < 3:
             playlist_res = youtube.playlistItems().list(part="snippet", playlistId=uploads_playlist_id, maxResults=50, pageToken=next_page_token).execute()
             videos.extend(playlist_res.get("items", []))
             next_page_token = playlist_res.get("nextPageToken")
+            page_count += 1
             if not next_page_token: break
+            
         print(f"【ログ】YouTubeから {len(videos)} 件の動画を取得しました。")
     except Exception as e:
-        print(f"【エラー】YouTube APIからのデータ取得中にエラーが発生しました: {e}")
+        print(f"【エラー】YouTube APIからのデータ取得中にエラーが発生しました（クォータ切れの可能性あり）: {e}")
         return
 
     master_songs = load_master_songs_from_web(CSV_URL)
@@ -149,7 +148,6 @@ def main():
             if v_id:
                 analyze_description(desc, pub_at, v_id, master_songs, data_store)
         except Exception as e:
-            # 万が一特定の動画でバグっても、スキップして処理を続行させる
             continue
 
     output = {
