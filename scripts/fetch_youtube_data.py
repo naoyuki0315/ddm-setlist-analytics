@@ -19,33 +19,35 @@ def load_master_songs_from_web(csv_url):
         f = io.StringIO(response.text)
         reader = csv.reader(f)
         songs = []
-        header_index = -1
         
+        # 【修正】1行目（ヘッダー行）は文字の有無に関わらずスキップ
+        try:
+            next(reader)
+        except StopIteration:
+            return []
+            
+        # 【修正】2行目以降から、固定でB列（インデックス 1）の値を直接読み込む
         for row in reader:
             if not row: continue
-            if header_index == -1:
-                for idx, col in enumerate(row):
-                    if '楽曲名' in col:
-                        header_index = idx
-                        break
-                if header_index != -1:
-                    continue
-            
-            if header_index != -1 and len(row) > header_index:
-                song = row[header_index].strip()
-                if song and '楽曲名' not in song and not song.isdigit():
+            if len(row) > 1:  # B列が存在する行のみ対象
+                song = row[1].strip()  # インデックス1 ＝ B列
+                if song and not song.isdigit():
                     songs.append(song)
         
         master_list = list(set(songs))
-        print(f"【ログ】スプレッドシートから {len(master_list)} 件の持ち曲リストを読み込みました。")
+        print(f"【ログ】スプレッドシートのB列（2行目以降）から {len(master_list)} 件の持ち曲リストを読み込みました。")
         return master_list
     except Exception as e:
         print(f"【エラー】マスターリストの読み込みに失敗しました: {e}")
         return []
 
 def normalize_for_match(s):
+    """
+    YouTube概要欄のアバウトな表記を許容するため、
+    大文字小文字・半角全角・スペース・あらゆる記号を消し去って統一化する関数
+    """
     s = unicodedata.normalize('NFKC', s).lower()
-    # 記号やスペースを一括排除
+    # 空白、スラッシュ、コロン、カッコ、各種記号をすべて消去
     s = re.sub(r'[\s\'"’`・\(\)（）\-\[\]\?,_\.!\/\\：:※\*\+ →]', '', s)
     replacements = {
         'フーチークーチーマン': 'hoochiecoochieman',
@@ -64,31 +66,32 @@ def analyze_description(description, date_str, video_id, master_songs, data_stor
     for line in lines:
         line = line.strip()
         
-        # 1. タイムスタンプ（MM:SS や HH:MM:SS）をすべて抽出
+        # 1. タイムスタンプ（MM:SS等）を抽出
         timestamps = re.findall(r'\b(?:\d{1,2}:)?\d{1,2}:\d{2}\b', line)
         if not timestamps: continue
         
-        # 2. 行からタイムスタンプ部分を完全に消去
+        # 2. 行からタイムスタンプを消去
         clean_line = line
         for ts in timestamps:
             clean_line = clean_line.replace(ts, "")
             
-        # 3. 先頭の曲番（1. や 02 など）や不要な記号を掃除
+        # 3. 先頭の「1.」「02.」などの曲番や不要な記号をお掃除
         clean_line = re.sub(r'^\d+[\.\s\-・]*', '', clean_line)
-        # カッコ書き（Guitar solo等）を一時的に除去して曲名判定を正確にする
+        # 後ろにくっついている「(Live)」「[Guitar solo]」などのカッコ書きを自動除去して許容する
         clean_line = re.sub(r'[\(\[\{【].*?[\)\]\}】]', '', clean_line)
         clean_line = clean_line.strip(" ・-/:,[]()")
         
-        # 4. 明らかなノイズ行（MCや挨拶、メンバー紹介のみの行）はスキップ
+        # 4. ノイズ行のスキップ
         if not clean_line or any(x in clean_line.lower() for x in ['intro', 'greeting', 'mc', 'トーク', 'timestamps', 'members', 'vocal:', 'drums:', 'bass:']):
             continue
 
-        # 5. 照合ロジック
+        # 5. 照合ロジック（アバウトな概要欄を許容する部分一致）
         matched_song = None
         clean_raw = normalize_for_match(clean_line)
         
         for master in master_songs:
             m_norm = normalize_for_match(master)
+            # 概要欄に持ち曲名が含まれているか、または持ち曲名に概要欄の文字が含まれていれば「一致」と判定
             if m_norm and (m_norm in clean_raw or clean_raw in m_norm):
                 matched_song = master
                 break
@@ -104,7 +107,6 @@ def analyze_description(description, date_str, video_id, master_songs, data_stor
             target_dict[matched_song]['urls'].append({'date': date_str, 'url': f"https://www.youtube.com/watch?v={video_id}"})
             target_dict[matched_song]['lastPlayed'] = max(target_dict[matched_song]['lastPlayed'], date_str)
         else:
-            # 2文字以下の意味のない記号ゴミはunknownに入れない
             if len(clean_line) > 2 and clean_line not in data_store['unknown']:
                 data_store['unknown'].append(clean_line)
 
@@ -121,7 +123,6 @@ def main():
         
         videos = []
         next_page_token = None
-        # APIクォータ切れを防ぐため、最大3ページ（150本）までに制限（必要に応じて調整してください）
         page_count = 0
         while page_count < 3:
             playlist_res = youtube.playlistItems().list(part="snippet", playlistId=uploads_playlist_id, maxResults=50, pageToken=next_page_token).execute()
