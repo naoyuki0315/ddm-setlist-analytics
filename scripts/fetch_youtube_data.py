@@ -20,29 +20,47 @@ def load_master_songs_from_web(csv_url):
         reader = csv.reader(f)
         songs = []
         header_index = -1
+        
         for row in reader:
-            if '楽曲名' in row:
-                header_index = row.index('楽曲名')
-                continue
+            # 「楽曲名」という文字が含まれる列を柔軟に検索（部分一致に対応）
+            if header_index == -1:
+                for idx, col in enumerate(row):
+                    if '楽曲名' in col:
+                        header_index = idx
+                        break
+                if header_index != -1:
+                    continue
+            
             if header_index != -1 and len(row) > header_index:
                 song = row[header_index].strip()
-                if song and song != '楽曲名' and not song.isdigit():
+                if song and '楽曲名' not in song and not song.isdigit():
                     songs.append(song)
-        return list(set(songs))
+        
+        master_list = list(set(songs))
+        print(f"【ログ】スプレッドシートから {len(master_list)} 件の持ち曲リストを読み込みました。")
+        if master_list:
+            print(f"【ログ】持ち曲の例: {master_list[:5]}")
+        else:
+            print("【⚠️警告】スプレッドシートから曲名が1件も読み込めませんでした。")
+        return master_list
     except Exception as e:
-        print(f"マスターリストの読み込みに失敗しました: {e}")
+        print(f"【エラー】マスターリストの読み込みに失敗しました: {e}")
         return []
 
 def normalize_for_match(s):
+    # 全角半角の統一と小文字化
     s = unicodedata.normalize('NFKC', s).lower()
+    # 記号やスペース、不要な装飾文字を完全に排除
+    s = re.sub(r'[\s\'"’`・\(\)（）\-\[\]\?,_\.!\/\\：:※\*\+ ]', '', s)
+    
+    # 最低限必要な表記ゆれ吸収
     replacements = {
-        'hoochiecoochieman': 'hoochiecoochieman', 'フーチークーチーマン': 'hoochiecoochieman',
-        'workin': 'workin', 'working': 'workin', 'alright': 'alright', 'allright': 'alright',
-        'killin': 'killin', 'kilin': 'killin', 'walking': 'walkin', 'walkin': 'walkin',
-        'baby': '', 'mojo': 'gotmymojoworkin', 'mojoworkin': 'gotmymojoworkin'
+        'フーチークーチーマン': 'hoochiecoochieman',
+        'working': 'workin',
+        'allright': 'alright',
     }
-    s = re.sub(r'[\s\'"’`・\(\)（）\-\[\]]', '', s)
-    for key, val in replacements.items(): s = s.replace(key, val)
+    for key, val in replacements.items():
+        s = s.replace(key, val)
     return s
 
 def analyze_description(description, date_str, video_id, master_songs, data_store):
@@ -56,21 +74,20 @@ def analyze_description(description, date_str, video_id, master_songs, data_stor
         match = re.search(r'\d{1,2}:\d{2}', line)
         if not match: continue
         
-        # メンバー紹介や楽器名の行は除外
+        # メンバー紹介やノイズ行を除外
         if any(x in line.lower() for x in ['members', 'vocal', 'guitar', 'harp', 'drums', 'bass']): continue
 
         timestamp = match.group(0)
-        # タイムスタンプの「前」と「後」に分解
         before, after = line.split(timestamp, 1)
         
-        # 前後の文字列から、行頭の数字や余計な記号を掃除
+        # 前後の文字列を掃除
         clean_before = re.sub(r'^\d+[\.\s]*', '', before).strip()
         clean_before = re.sub(r'^[・\-\s/]+', '', clean_before).strip()
         
         clean_after = re.sub(r'^\d+[\.\s]*', '', after).strip()
         clean_after = re.sub(r'^[・\-\s/]+', '', clean_after).strip()
         
-        # どちらに曲名が入っているか判定（文字数が長く、ノイズでない方を採用）
+        # どちらに曲名が入っているか判定（前後両対応）
         raw_title = ""
         if len(clean_before) > 2 and not any(x in clean_before.lower() for x in ['intro', 'greeting', 'mc', 'トーク', 'timestamps']):
             raw_title = clean_before
@@ -79,15 +96,16 @@ def analyze_description(description, date_str, video_id, master_songs, data_stor
             
         if not raw_title: continue
 
-        # マッチング処理
         matched_song = None
         clean_raw = normalize_for_match(raw_title)
+        
+        # 部分一致のロジックで安全に比較
         for master in master_songs:
-            if normalize_for_match(master) in clean_raw or clean_raw in normalize_for_match(master):
+            m_norm = normalize_for_match(master)
+            if m_norm in clean_raw or clean_raw in m_norm:
                 matched_song = master
                 break
         
-        # アンコール判定
         is_encore_line = is_encore_mode and ('アンコール' in line.lower() or 'encore' in line.lower() or 'アンコール' in raw_title)
         target_dict = data_store['encores'] if is_encore_line else data_store['main']
 
@@ -103,9 +121,12 @@ def analyze_description(description, date_str, video_id, master_songs, data_stor
                 data_store['unknown'].append(raw_title)
 
 def main():
-    if not API_KEY: return
+    if not API_KEY:
+        print("【エラー】YOUTUBE_API_KEY が環境変数に設定されていません。")
+        return
     youtube = build('youtube', 'v3', developerKey=API_KEY)
     
+    print("【ログ】YouTubeから動画リストを取得中...")
     channel_res = youtube.channels().list(part="contentDetails", id=CHANNEL_ID).execute()
     uploads_playlist_id = channel_res["items"][0]["contentDetails"]["relatedPlaylists"]["uploads"]
     
@@ -116,10 +137,12 @@ def main():
         videos.extend(playlist_res.get("items", []))
         next_page_token = playlist_res.get("nextPageToken")
         if not next_page_token: break
+    print(f"【ログ】YouTubeから {len(videos)} 件の動画を取得しました。")
 
     master_songs = load_master_songs_from_web(CSV_URL)
     data_store = {'main': {}, 'encores': {}, 'unknown': []}
 
+    print("【ログ】動画説明欄の解析を開始します...")
     for video in videos:
         snippet = video["snippet"]
         analyze_description(snippet["description"], snippet["publishedAt"].split('T')[0], snippet["resourceId"]["videoId"], master_songs, data_store)
@@ -132,7 +155,8 @@ def main():
     }
     with open('data.json', 'w', encoding='utf-8') as f:
         json.dump(output, f, ensure_ascii=False, indent=2)
-    print("✅ 集計完了")
+    
+    print(f"✅ 集計完了！ main: {len(output['main'])}件, encores: {len(output['encores'])}件, unknown: {len(output['unknown'])}件")
 
 if __name__ == "__main__":
     main()
