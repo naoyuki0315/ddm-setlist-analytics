@@ -8,13 +8,13 @@ on:
 permissions:
   contents: write
 
-# ▼この2行のおまじないを追加しました▼
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   update-data:
     runs-on: ubuntu-latest
+    environment: github-pages  # 👈【ここ！】github-pagesの部屋のキーを使うように指定しました
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
