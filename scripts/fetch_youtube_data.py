@@ -5,6 +5,7 @@ import unicodedata
 import requests
 import csv
 import io
+import difflib
 from datetime import datetime, timezone, timedelta
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
@@ -52,7 +53,8 @@ def normalize_for_match(s):
     s = re.sub(r'[\s\'"’`・\(\)（）\-\[\]\?,_\.!\/\\：:※\*\+ →]', '', s)
     replacements = {
         'フーチークーチーマン': 'hoochiecoochieman',
-        'working': 'workin',
+        # 【変更】"working"だけでなく "walking" 等も含めて、-ing と -in' のゆらぎを汎用的に統一する
+        'ing': 'in',
         'allright': 'alright',
     }
     for key, val in replacements.items():
@@ -61,12 +63,18 @@ def normalize_for_match(s):
 
 def analyze_description(description, date_str, video_id, master_songs, data_store):
     if not description: return
-    is_encore_mode = 'アンコール' in description.lower() or 'encore' in description.lower()
-    
+
     lines = description.split('\n')
+    # 【変更】「アンコール」という文字が出てきた行以降は、最後までアンコール扱いにする
+    # （見出し行「---アンコール---」と曲名の行が別々になっている概要欄に対応するため）
+    in_encore_section = False
+
     for line in lines:
         line = line.strip()
-        
+
+        if 'アンコール' in line.lower() or 'encore' in line.lower():
+            in_encore_section = True
+
         # 1. タイムスタンプ（MM:SS等）を抽出
         timestamps = re.findall(r'\b(?:\d{1,2}:)?\d{1,2}:\d{2}\b', line)
         if not timestamps: continue
@@ -78,12 +86,14 @@ def analyze_description(description, date_str, video_id, master_songs, data_stor
             
         # 3. 先頭の「1.」「02.」などの曲番や不要な記号をお掃除
         clean_line = re.sub(r'^\d+[\.\s\-・]*', '', clean_line)
+        # 【追加】「リクエスト」「Request」などの前置きラベルを除去
+        clean_line = re.sub(r'^(リクエスト|request)[\s：:　]*', '', clean_line, flags=re.IGNORECASE)
         # 後ろにくっついている「(Live)」「[Guitar solo]」などのカッコ書きを自動除去して許容する
         clean_line = re.sub(r'[\(\[\{【].*?[\)\]\}】]', '', clean_line)
         clean_line = clean_line.strip(" ・-/:,[]()")
         
-        # 4. ノイズ行のスキップ
-        if not clean_line or any(x in clean_line.lower() for x in ['intro', 'greeting', 'mc', 'トーク', 'timestamps', 'members', 'vocal:', 'drums:', 'bass:']):
+        # 4. ノイズ行のスキップ（【追加】日本語の「メンバー」もここで除外する）
+        if not clean_line or any(x in clean_line.lower() for x in ['intro', 'greeting', 'mc', 'トーク', 'timestamps', 'members', 'メンバー', 'vocal:', 'drums:', 'bass:']):
             continue
 
         # 5. 照合ロジック（アバウトな概要欄を許容する部分一致）
@@ -96,9 +106,20 @@ def analyze_description(description, date_str, video_id, master_songs, data_stor
             if m_norm and (m_norm in clean_raw or clean_raw in m_norm):
                 matched_song = master
                 break
-        
-        is_encore_line = is_encore_mode and ('アンコール' in line.lower() or 'encore' in line.lower() or 'アンコール' in clean_line)
-        target_dict = data_store['encores'] if is_encore_line else data_store['main']
+
+        # 【追加】5b. 部分一致でも見つからない場合、タイプミス等を許容するあいまい一致にフォールバック
+        if not matched_song and len(clean_raw) >= 4:
+            best_ratio, best_master = 0, None
+            for master in master_songs:
+                m_norm = normalize_for_match(master)
+                if not m_norm: continue
+                ratio = difflib.SequenceMatcher(None, clean_raw, m_norm).ratio()
+                if ratio > best_ratio:
+                    best_ratio, best_master = ratio, master
+            if best_ratio >= 0.85:
+                matched_song = best_master
+
+        target_dict = data_store['encores'] if in_encore_section else data_store['main']
 
         if matched_song:
             if matched_song not in target_dict:
