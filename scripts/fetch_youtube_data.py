@@ -10,7 +10,7 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
 API_KEY = os.environ.get("YOUTUBE_API_KEY")
-CHANNEL_ID = "UC4m7H3u7Uo-QZq8e9s4_7Sg" 
+CHANNEL_HANDLE = "@70315"  # チャンネルのハンドル（@から始まる形式）
 CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTzWOELNEzNkvAb1Nld1Tjzv0_Z5mvRvuQdeH20jy-LYP0cycHgpWcpR6rcSBFqm-5lGKZYLgSmW4cg/pub?gid=842461559&single=true&output=csv'
 
 def load_master_songs_from_web(csv_url):
@@ -123,12 +123,12 @@ def main():
         youtube = build('youtube', 'v3', developerKey=API_KEY)
 
         print("【ログ】YouTubeから動画リストを取得中...")
-        channel_res = youtube.channels().list(part="contentDetails", id=CHANNEL_ID).execute()
+        channel_res = youtube.channels().list(part="contentDetails", forHandle=CHANNEL_HANDLE).execute()
 
         # 【追加】itemsが無い/空の場合に、具体的な状況を出力する
         items = channel_res.get("items")
         if not items:
-            print(f"【エラー】チャンネル情報が取得できませんでした。CHANNEL_ID が正しいか確認してください。レスポンス全体: {json.dumps(channel_res, ensure_ascii=False)[:500]}")
+            print(f"【エラー】チャンネル情報が取得できませんでした。CHANNEL_HANDLE が正しいか確認してください。レスポンス全体: {json.dumps(channel_res, ensure_ascii=False)[:500]}")
             return
 
         uploads_playlist_id = items[0]["contentDetails"]["relatedPlaylists"]["uploads"]
