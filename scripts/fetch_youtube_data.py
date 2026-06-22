@@ -237,6 +237,16 @@ def main():
             vid = v.get("id", "不明")
             print(f"  - {pub} | {title} | id={vid}")
 
+        # 【デバッグ用・一時的】問題になっている特定の動画の概要欄をそのまま表示する
+        target_check_id = "Gl1xVt9QDjQ"
+        target_video = next((v for v in videos if v.get("id") == target_check_id), None)
+        if target_video:
+            print(f"【デバッグ】対象動画({target_check_id})の概要欄全文 ↓↓↓")
+            print(repr(target_video.get("snippet", {}).get("description", "")))
+            print("【デバッグ】対象動画の概要欄 ↑↑↑ ここまで")
+        else:
+            print(f"【デバッグ】対象動画({target_check_id})はvideosリストの中に見つかりませんでした。")
+
     except HttpError as e:
         # 【追加】HttpErrorの場合は、HTTPステータスコードと理由を具体的に出力する
         # （クォータ切れ／APIキー無効／リファラー制限／APIが有効化されていない、等を見分けるための情報）
@@ -267,6 +277,8 @@ def main():
             if v_id:
                 analyze_description(desc, pub_at, v_id, master_songs, data_store)
         except Exception as e:
+            # 【変更】今までエラーを表示せず黙ってスキップしていたが、原因が分かるようにログを出す
+            print(f"【エラー】動画(id={video.get('id', '不明')})の解析中にエラーが発生しました（この動画はスキップされました）: {type(e).__name__}: {e}")
             continue
 
     output = {
