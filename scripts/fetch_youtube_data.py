@@ -178,14 +178,17 @@ def main():
         videos = []
         next_page_token = None
         page_count = 0
-        while page_count < 3:
+        # 【変更】3ページ（150本）までという制限を撤廃し、動画が何本あっても全件取得する
+        # （アップロード一覧プレイリストは古い動画から順に並んでいるため、件数制限があると
+        #   チャンネルの動画が増えるほど「最近の動画」が取得できなくなってしまっていた）
+        while True:
             playlist_res = youtube.playlistItems().list(part="snippet", playlistId=uploads_playlist_id, maxResults=50, pageToken=next_page_token).execute()
             videos.extend(playlist_res.get("items", []))
             next_page_token = playlist_res.get("nextPageToken")
             page_count += 1
             if not next_page_token: break
 
-        print(f"【ログ】YouTubeから {len(videos)} 件の動画を取得しました。")
+        print(f"【ログ】YouTubeから {len(videos)} 件の動画を取得しました。（{page_count}ページ取得）")
 
     except HttpError as e:
         # 【追加】HttpErrorの場合は、HTTPステータスコードと理由を具体的に出力する
