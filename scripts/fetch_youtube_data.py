@@ -96,8 +96,8 @@ def analyze_description(description, date_str, video_id, master_songs, data_stor
         clean_line = re.sub(r'^\d+[\.\s\-・]*', '', clean_line)
         # 【追加】「リクエスト」「Request」などの前置きラベルを除去
         clean_line = re.sub(r'^(リクエスト|request)[\s：:　]*', '', clean_line, flags=re.IGNORECASE)
-        # 後ろにくっついている「(Live)」「[Guitar solo]」などのカッコ書きを自動除去して許容する
-        clean_line = re.sub(r'[\(\[\{【].*?[\)\]\}】]', '', clean_line)
+        # 後ろにくっついている「(Live)」「[Guitar solo]」「（アンコール曲）」などのカッコ書きを自動除去して許容する
+        clean_line = re.sub(r'[\(\[\{【（].*?[\)\]\}】）]', '', clean_line)
         clean_line = clean_line.strip(" ・-/:,[]()")
         
         # 4. ノイズ行のスキップ（【追加】日本語の「メンバー」もここで除外する）
@@ -174,12 +174,29 @@ def main():
             return
 
         channel_id = items[0]["id"]
+        uploads_playlist_id = items[0]["contentDetails"]["relatedPlaylists"]["uploads"]
 
-        # 【変更】「アップロード一覧」プレイリスト（playlistItems）は、ライブ配信のアーカイブが
-        # 反映されないことがあるため、search.list でチャンネルの全動画IDを直接検索して取得する
-        video_ids = []
+        video_id_set = set()
+
+        # 【方法1】アップロード一覧プレイリストから取得
         next_page_token = None
-        page_count = 0
+        page_count_a = 0
+        while True:
+            playlist_res = youtube.playlistItems().list(part="contentDetails", playlistId=uploads_playlist_id, maxResults=50, pageToken=next_page_token).execute()
+            for item in playlist_res.get("items", []):
+                vid = item.get("contentDetails", {}).get("videoId")
+                if vid:
+                    video_id_set.add(vid)
+            next_page_token = playlist_res.get("nextPageToken")
+            page_count_a += 1
+            if not next_page_token or page_count_a >= 40:
+                break
+        print(f"【ログ】方法1（アップロード一覧）から {len(video_id_set)} 件の動画IDを取得しました。（{page_count_a}ページ）")
+
+        # 【方法2】search.list からも取得し、方法1で漏れている分（ライブ配信アーカイブ等）を補う
+        before_count = len(video_id_set)
+        next_page_token = None
+        page_count_b = 0
         while True:
             search_res = youtube.search().list(
                 channelId=channel_id,
@@ -192,13 +209,14 @@ def main():
             for item in search_res.get("items", []):
                 vid = item.get("id", {}).get("videoId")
                 if vid:
-                    video_ids.append(vid)
+                    video_id_set.add(vid)
             next_page_token = search_res.get("nextPageToken")
-            page_count += 1
-            if not next_page_token or page_count >= 40:  # 安全のための上限（2000本まで）
+            page_count_b += 1
+            if not next_page_token or page_count_b >= 40:
                 break
+        print(f"【ログ】方法2（検索API）を合体させ、{len(video_id_set) - before_count} 件を追加で発見しました。（{page_count_b}ページ）合計: {len(video_id_set)} 件")
 
-        print(f"【ログ】YouTubeから {len(video_ids)} 件の動画IDを取得しました。（{page_count}ページ取得）")
+        video_ids = list(video_id_set)
 
         # 【追加】動画IDを50件ずつまとめて、概要欄（description）の全文を取得する
         videos = []
