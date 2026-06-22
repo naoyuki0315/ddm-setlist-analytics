@@ -141,8 +141,14 @@ def analyze_description(description, date_str, video_id, master_songs, data_stor
             target_dict[matched_song]['urls'].append({'date': date_str, 'url': video_url})
             target_dict[matched_song]['lastPlayed'] = max(target_dict[matched_song]['lastPlayed'], date_str)
         else:
-            if len(clean_line) > 2 and clean_line not in data_store['unknown']:
-                data_store['unknown'].append(clean_line)
+            # 【変更】持ち曲以外（未一致）も、main/encoresと同じ形で日付・動画リンクを記録する
+            if len(clean_line) > 2:
+                if clean_line not in data_store['unknown']:
+                    data_store['unknown'][clean_line] = {'count': 0, 'lastPlayed': '', 'playDates': [], 'urls': []}
+                data_store['unknown'][clean_line]['count'] += 1
+                data_store['unknown'][clean_line]['playDates'].append(date_str)
+                data_store['unknown'][clean_line]['urls'].append({'date': date_str, 'url': video_url})
+                data_store['unknown'][clean_line]['lastPlayed'] = max(data_store['unknown'][clean_line]['lastPlayed'], date_str)
 
 def main():
     if not API_KEY:
@@ -195,7 +201,7 @@ def main():
         return
 
     master_songs = load_master_songs_from_web(CSV_URL)
-    data_store = {'main': {}, 'encores': {}, 'unknown': []}
+    data_store = {'main': {}, 'encores': {}, 'unknown': {}}
 
     print("【ログ】動画説明欄の解析を開始します...")
     for video in videos:
@@ -213,7 +219,7 @@ def main():
         "lastUpdated": datetime.now(timezone(timedelta(hours=+9))).strftime("%Y-%m-%d %H:%M"),
         "main": [{"name": k, **v} for k, v in data_store['main'].items()],
         "encores": [{"name": k, **v} for k, v in data_store['encores'].items()],
-        "unknown": data_store['unknown']
+        "unknown": [{"name": k, **v} for k, v in data_store['unknown'].items()]
     }
     try:
         with open('data.json', 'w', encoding='utf-8') as f:
