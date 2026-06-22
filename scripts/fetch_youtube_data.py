@@ -227,6 +227,16 @@ def main():
 
         print(f"【ログ】{len(videos)} 件の動画の詳細情報を取得しました。")
 
+        # 【デバッグ用・一時的】取得できた動画のうち、投稿日が新しい方から5件を表示する
+        # （最近の動画が本当に取得できているか確認するためのログ。確認できたら削除してOK）
+        sorted_recent = sorted(videos, key=lambda v: v.get("snippet", {}).get("publishedAt", ""), reverse=True)[:5]
+        print("【デバッグ】取得した動画のうち、投稿日が新しい方から5件:")
+        for v in sorted_recent:
+            pub = v.get("snippet", {}).get("publishedAt", "不明")
+            title = v.get("snippet", {}).get("title", "不明")
+            vid = v.get("id", "不明")
+            print(f"  - {pub} | {title} | id={vid}")
+
     except HttpError as e:
         # 【追加】HttpErrorの場合は、HTTPステータスコードと理由を具体的に出力する
         # （クォータ切れ／APIキー無効／リファラー制限／APIが有効化されていない、等を見分けるための情報）
