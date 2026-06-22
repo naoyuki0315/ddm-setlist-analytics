@@ -70,8 +70,9 @@
         for(let y = 2024; y <= curY; y++) {
           if (y === 2024) periods.push({v:'2024-2', l:'2024年後半'});
           else {
-            if (y < curY || curM > 6) periods.push({v:y+'-1', l:y+'年前半'});
-            if (y < curY || curM > 12) periods.push({v:y+'-2', l:y+'年後半'});
+            // 【変更】「年前半」は、今年の途中でも常に表示する（以前は curM > 6 の場合のみ表示され、年の前半中はその年自体が出てこなかった）
+            periods.push({v:y+'-1', l:y+'年前半'});
+            if (y < curY || curM > 6) periods.push({v:y+'-2', l:y+'年後半'});
             if (y < curY) periods.push({v:y+'-all', l:y+'年総合'});
           }
         }
