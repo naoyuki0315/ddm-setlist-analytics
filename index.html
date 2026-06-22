@@ -86,13 +86,15 @@
 
     function showVideos(name) {
       if (!rawData) return;
-      // 【変更】持ち曲以外（unknown）も検索対象に含める
-      const song = [...(rawData.main || []), ...(rawData.encores || []), ...(rawData.unknown || [])].find(s => s.name === name);
+      // 【変更】同じ曲名が main と encores の両方に別レコードとして存在することがあるため、
+      // find()で1件だけ取るのではなく、filter()で全件集めてurlsを合体させる
+      const matches = [...(rawData.main || []), ...(rawData.encores || []), ...(rawData.unknown || [])].filter(s => s.name === name);
+      const allUrls = matches.flatMap(s => s.urls || []);
       const list = document.getElementById('video-list');
       document.getElementById('modal-title').innerText = name;
       
-      if (song && song.urls && song.urls.length > 0) {
-        list.innerHTML = song.urls.sort((a,b) => b.date.localeCompare(a.date))
+      if (allUrls.length > 0) {
+        list.innerHTML = allUrls.sort((a,b) => b.date.localeCompare(a.date))
           .map(u => `<a href="${u.url}" target="_blank" class="block p-4 border-b hover:bg-gray-50 text-blue-600 font-medium">${u.date} の演奏を見る</a>`).join('');
       } else {
         list.innerHTML = "<p class='p-8 text-center text-gray-500'>動画リンクが見つかりません</p>";
