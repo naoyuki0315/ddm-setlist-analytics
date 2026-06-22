@@ -173,22 +173,41 @@ def main():
             print(f"【エラー】チャンネル情報が取得できませんでした。CHANNEL_HANDLE が正しいか確認してください。レスポンス全体: {json.dumps(channel_res, ensure_ascii=False)[:500]}")
             return
 
-        uploads_playlist_id = items[0]["contentDetails"]["relatedPlaylists"]["uploads"]
+        channel_id = items[0]["id"]
 
-        videos = []
+        # 【変更】「アップロード一覧」プレイリスト（playlistItems）は、ライブ配信のアーカイブが
+        # 反映されないことがあるため、search.list でチャンネルの全動画IDを直接検索して取得する
+        video_ids = []
         next_page_token = None
         page_count = 0
-        # 【変更】3ページ（150本）までという制限を撤廃し、動画が何本あっても全件取得する
-        # （アップロード一覧プレイリストは古い動画から順に並んでいるため、件数制限があると
-        #   チャンネルの動画が増えるほど「最近の動画」が取得できなくなってしまっていた）
         while True:
-            playlist_res = youtube.playlistItems().list(part="snippet", playlistId=uploads_playlist_id, maxResults=50, pageToken=next_page_token).execute()
-            videos.extend(playlist_res.get("items", []))
-            next_page_token = playlist_res.get("nextPageToken")
+            search_res = youtube.search().list(
+                channelId=channel_id,
+                part="id",
+                type="video",
+                order="date",
+                maxResults=50,
+                pageToken=next_page_token
+            ).execute()
+            for item in search_res.get("items", []):
+                vid = item.get("id", {}).get("videoId")
+                if vid:
+                    video_ids.append(vid)
+            next_page_token = search_res.get("nextPageToken")
             page_count += 1
-            if not next_page_token: break
+            if not next_page_token or page_count >= 40:  # 安全のための上限（2000本まで）
+                break
 
-        print(f"【ログ】YouTubeから {len(videos)} 件の動画を取得しました。（{page_count}ページ取得）")
+        print(f"【ログ】YouTubeから {len(video_ids)} 件の動画IDを取得しました。（{page_count}ページ取得）")
+
+        # 【追加】動画IDを50件ずつまとめて、概要欄（description）の全文を取得する
+        videos = []
+        for i in range(0, len(video_ids), 50):
+            batch = video_ids[i:i+50]
+            videos_res = youtube.videos().list(part="snippet", id=",".join(batch)).execute()
+            videos.extend(videos_res.get("items", []))
+
+        print(f"【ログ】{len(videos)} 件の動画の詳細情報を取得しました。")
 
     except HttpError as e:
         # 【追加】HttpErrorの場合は、HTTPステータスコードと理由を具体的に出力する
@@ -215,7 +234,8 @@ def main():
             snippet = video.get("snippet", {})
             desc = snippet.get("description", "")
             pub_at = snippet.get("publishedAt", "2000-01-01T00:00:00Z").split('T')[0]
-            v_id = snippet.get("resourceId", {}).get("videoId", "")
+            # 【変更】videos().list() のレスポンスでは、動画IDはトップレベルの "id" に直接入っている
+            v_id = video.get("id", "")
             if v_id:
                 analyze_description(desc, pub_at, v_id, master_songs, data_store)
         except Exception as e:
