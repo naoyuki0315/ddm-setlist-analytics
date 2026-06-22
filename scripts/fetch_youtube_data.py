@@ -151,6 +151,9 @@ def analyze_description(description, date_str, video_id, master_songs, data_stor
                 data_store['unknown'][clean_line]['lastPlayed'] = max(data_store['unknown'][clean_line]['lastPlayed'], date_str)
 
 def main():
+    # 【追加】このログが出れば「新しいコードが実際に実行された」ことの確実な証拠になる
+    print("【ログ】スクリプトバージョン: v3（unknownもオブジェクト形式・アンコール判定ステートフル・あいまい一致対応）")
+
     if not API_KEY:
         print("【エラー】YOUTUBE_API_KEY が環境変数に設定されていません。")
         return
