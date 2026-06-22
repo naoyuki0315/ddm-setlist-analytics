@@ -100,8 +100,8 @@ def analyze_description(description, date_str, video_id, master_songs, data_stor
         clean_line = re.sub(r'[\(\[\{【（].*?[\)\]\}】）]', '', clean_line)
         clean_line = clean_line.strip(" ・-/:,[]()")
         
-        # 4. ノイズ行のスキップ（【追加】日本語の「メンバー」もここで除外する）
-        if not clean_line or any(x in clean_line.lower() for x in ['intro', 'greeting', 'mc', 'トーク', 'timestamps', 'members', 'メンバー', 'vocal:', 'drums:', 'bass:']):
+        # 4. ノイズ行のスキップ（【修正】英語の「members」は実在の持ち曲『Members Only』を巻き込んで毎回消してしまっていたため除外。日本語の「メンバー」は残す）
+        if not clean_line or any(x in clean_line.lower() for x in ['intro', 'greeting', 'mc', 'トーク', 'timestamps', 'メンバー', 'vocal:', 'drums:', 'bass:']):
             continue
 
         # 5. 照合ロジック（アバウトな概要欄を許容する部分一致）
@@ -236,16 +236,6 @@ def main():
             title = v.get("snippet", {}).get("title", "不明")
             vid = v.get("id", "不明")
             print(f"  - {pub} | {title} | id={vid}")
-
-        # 【デバッグ用・一時的】問題になっている特定の動画の概要欄をそのまま表示する
-        target_check_id = "Gl1xVt9QDjQ"
-        target_video = next((v for v in videos if v.get("id") == target_check_id), None)
-        if target_video:
-            print(f"【デバッグ】対象動画({target_check_id})の概要欄全文 ↓↓↓")
-            print(repr(target_video.get("snippet", {}).get("description", "")))
-            print("【デバッグ】対象動画の概要欄 ↑↑↑ ここまで")
-        else:
-            print(f"【デバッグ】対象動画({target_check_id})はvideosリストの中に見つかりませんでした。")
 
     except HttpError as e:
         # 【追加】HttpErrorの場合は、HTTPステータスコードと理由を具体的に出力する
