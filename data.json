@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-06-22 05:26",
+  "lastUpdated": "2026-06-22 21:57",
   "main": [
     {
       "name": "Baby Scratch My Back",
@@ -2893,6 +2893,19 @@
     }
   ],
   "unknown": [
-    "thrill is gone"
+    {
+      "name": "thrill is gone",
+      "count": 1,
+      "lastPlayed": "2024-08-04",
+      "playDates": [
+        "2024-08-04"
+      ],
+      "urls": [
+        {
+          "date": "2024-08-04",
+          "url": "https://www.youtube.com/watch?v=NgHWoQgMz6Y&t=1515s"
+        }
+      ]
+    }
   ]
 }
