@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>スズナ演奏曲ランキング</title>
-  <link rel="icon" href="./icon.png" type="image/png">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 44'%3E%3Cpath d='M4 16 L11 22 L24 8 L37 22 L44 16 L40 38 L8 38 Z' fill='%23F4C430' stroke='%23D4A017' stroke-width='1.5' stroke-linejoin='round'/%3E%3Ccircle cx='4' cy='16' r='3' fill='%23F4C430' stroke='%23D4A017' stroke-width='1'/%3E%3Ccircle cx='44' cy='16' r='3' fill='%23F4C430' stroke='%23D4A017' stroke-width='1'/%3E%3Ccircle cx='24' cy='8' r='3' fill='%23F4C430' stroke='%23D4A017' stroke-width='1'/%3E%3C/svg%3E">
   <link rel="apple-touch-icon" href="./icon.png">
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -115,19 +115,52 @@
       if (tr) showVideos(tr.dataset.name);
     });
 
-    // 【追加】タップしやすい大きめの行（曲名+最終演奏日 / 回数 / ›マーク）を作る共通関数
+    // 【追加】1〜3位用のマーク（王冠の中に「1位」、金/銅メダルの中に「2位」「3位」）
+    // サイズは4位の文字(15px)の1.6倍 ＝ 24px相当を基準にする
+    function crownBadge(text) {
+      return `
+      <svg viewBox="0 0 48 44" width="62" height="57" class="inline-block align-middle shrink-0">
+        <path d="M4 16 L11 22 L24 8 L37 22 L44 16 L40 38 L8 38 Z" fill="#F4C430" stroke="#D4A017" stroke-width="1.5" stroke-linejoin="round"/>
+        <circle cx="4" cy="16" r="3" fill="#F4C430" stroke="#D4A017" stroke-width="1"/>
+        <circle cx="44" cy="16" r="3" fill="#F4C430" stroke="#D4A017" stroke-width="1"/>
+        <circle cx="24" cy="8" r="3" fill="#F4C430" stroke="#D4A017" stroke-width="1"/>
+        <text x="24" y="32" font-size="13" font-weight="bold" fill="#7A5C00" text-anchor="middle">${text}</text>
+      </svg>`;
+    }
+    function medalBadge(text, color, ring, txt) {
+      return `
+      <svg viewBox="0 0 44 48" width="57" height="62" class="inline-block align-middle shrink-0">
+        <path d="M14 6 L18 22 L26 22 L30 6" stroke="#C0392B" stroke-width="3" fill="none"/>
+        <circle cx="22" cy="32" r="14" fill="${color}" stroke="${ring}" stroke-width="2"/>
+        <circle cx="22" cy="32" r="10" fill="none" stroke="${ring}" stroke-width="1" opacity="0.5"/>
+        <text x="22" y="37" font-size="11" font-weight="bold" fill="${txt}" text-anchor="middle">${text}</text>
+      </svg>`;
+    }
+    function rankMark(rank) {
+      if (rank === 0) return crownBadge('1位');
+      if (rank === 1) return medalBadge('2位', '#E8E8E8', '#B0B0B0', '#555555');
+      if (rank === 2) return medalBadge('3位', '#E8A87C', '#C87941', '#6B3410');
+      if (rank !== null) return `<span class="inline-block w-[62px] text-center font-bold text-[15px] text-gray-700 shrink-0">${rank+1}位</span>`;
+      return '';
+    }
+
+    // 【追加】タップしやすい大きめの行（マーク+曲名+最終演奏日 / 回数 / ›マーク）を作る共通関数
     function buildRow(rank, name, count, lastPlayed, nameColorClass, countColorClass, chevronClass) {
-      const rankLabel = rank !== null ? (rank < 3 ? `${['👑','🥈','🥉'][rank]} ${rank+1}位` : `${rank+1}位`) : '';
       return `
         <tr class="border-b active:bg-gray-100 cursor-pointer" data-name="${escapeHtml(name)}">
-          <td class="pl-4 py-4">
-            <div class="font-bold text-[15px] ${nameColorClass}">${rankLabel} ${escapeHtml(name)}</div>
-            <div class="text-xs text-gray-400 mt-1">最終演奏: ${formatDate(lastPlayed)}</div>
+          <td class="pl-3 py-4">
+            <div class="flex items-center gap-2">
+              ${rankMark(rank)}
+              <div>
+                <div class="font-bold text-[15px] ${nameColorClass}">${escapeHtml(name)}</div>
+                <div class="text-xs text-gray-400 mt-1">最終演奏: ${formatDate(lastPlayed)}</div>
+              </div>
+            </div>
           </td>
-          <td class="pr-3 text-right whitespace-nowrap">
+          <td class="pr-3 text-right whitespace-nowrap align-middle">
             <div class="font-bold text-xl ${countColorClass}">${count}回</div>
           </td>
-          <td class="pr-4">
+          <td class="pr-4 align-middle">
             <span class="inline-flex items-center justify-center w-8 h-8 rounded-full ${chevronClass} font-bold text-lg">›</span>
           </td>
         </tr>
