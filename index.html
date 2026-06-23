@@ -2,19 +2,22 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>スズナ演奏曲ランキング</title>
   <link rel="icon" href="./icon.png" type="image/png">
   <link rel="apple-touch-icon" href="./icon.png">
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-50 text-gray-800 p-4">
-  <div id="root" class="max-w-2xl mx-auto">
-    <h1 class="text-xl font-bold mb-6 text-gray-900 leading-tight">スズナ演奏曲<br>ライブ演奏回数ランキング</h1>
-    <div id="tabs" class="flex gap-4 border-b mb-4"></div>
-    <div id="filter-area" class="mb-4">
-      <select id="year-select" onchange="render()" class="p-2 border rounded w-full bg-white"></select>
+<body class="bg-gray-50 text-gray-800">
+  <div id="root" class="max-w-2xl mx-auto sm:p-4">
+    <div class="px-4 pt-4 sm:px-0 sm:pt-0">
+      <h1 class="text-xl font-bold mb-6 text-gray-900 leading-tight">スズナ演奏曲<br>ライブ演奏回数ランキング</h1>
+      <div id="tabs" class="flex gap-4 border-b mb-4"></div>
+      <div id="filter-area" class="mb-4">
+        <select id="year-select" onchange="render()" class="p-2 border rounded w-full bg-white"></select>
+      </div>
     </div>
-    <table class="w-full bg-white shadow rounded overflow-hidden">
+    <table class="w-full bg-white sm:shadow sm:rounded overflow-hidden">
       <tbody id="list"></tbody>
     </table>
   </div>
@@ -35,7 +38,6 @@
     let masterSongs = [];
     let currentTab = 'year';
 
-    // 【追加】曲名に ' や < など特殊文字が入っていても安全にHTMLへ埋め込むためのエスケープ関数
     function escapeHtml(str) {
       return String(str)
         .replace(/&/g, '&amp;')
@@ -45,9 +47,15 @@
         .replace(/'/g, '&#39;');
     }
 
+    // 【追加】"2026-05-16" のような日付を "2026/5/16" の表記にする
+    function formatDate(d) {
+      if (!d) return '記録なし';
+      const [y, m, day] = d.split('-');
+      return `${y}/${parseInt(m, 10)}/${parseInt(day, 10)}`;
+    }
+
     async function init() {
       try {
-        // キャッシュを防ぐため、URLの後ろに毎回違う数字（タイムスタンプ）を自動で付与します
         const cacheBuster = `?_=${new Date().getTime()}`;
         
         const [resCsv, resJson] = await Promise.all([
@@ -70,7 +78,6 @@
         for(let y = 2024; y <= curY; y++) {
           if (y === 2024) periods.push({v:'2024-2', l:'2024年後半'});
           else {
-            // 【変更】「年前半」は、今年の途中でも常に表示する（以前は curM > 6 の場合のみ表示され、年の前半中はその年自体が出てこなかった）
             periods.push({v:y+'-1', l:y+'年前半'});
             if (y < curY || curM > 6) periods.push({v:y+'-2', l:y+'年後半'});
             if (y < curY) periods.push({v:y+'-all', l:y+'年総合'});
@@ -86,8 +93,6 @@
 
     function showVideos(name) {
       if (!rawData) return;
-      // 【変更】同じ曲名が main と encores の両方に別レコードとして存在することがあるため、
-      // find()で1件だけ取るのではなく、filter()で全件集めてurlsを合体させる
       const matches = [...(rawData.main || []), ...(rawData.encores || []), ...(rawData.unknown || [])].filter(s => s.name === name);
       const allUrls = matches.flatMap(s => s.urls || []);
       const list = document.getElementById('video-list');
@@ -102,12 +107,27 @@
       document.getElementById('modal').classList.remove('hidden');
     }
 
-    // 【追加】曲名をそのままonclick属性に埋め込む方式（アポストロフィが入っている曲名で壊れる）をやめ、
-    // data-name属性 + イベントの委譲（delegation）で安全にクリックを処理する
     document.getElementById('list').addEventListener('click', (e) => {
       const tr = e.target.closest('tr[data-name]');
       if (tr) showVideos(tr.dataset.name);
     });
+
+    // 【追加】タップしやすい大きめの行（曲名+最終演奏日 / 回数 / ›マーク）を作る共通関数
+    function buildRow(rank, name, count, lastPlayed, nameColorClass, countColorClass) {
+      const rankLabel = rank !== null ? (rank < 3 ? ['👑','🥈','🥉'][rank] : (rank+1)+'位') : '';
+      return `
+        <tr class="border-b active:bg-gray-100 cursor-pointer" data-name="${escapeHtml(name)}">
+          <td class="pl-4 py-4">
+            <div class="font-bold text-[15px] ${nameColorClass}">${rankLabel} ${escapeHtml(name)}</div>
+            <div class="text-xs text-gray-400 mt-1">最終演奏: ${formatDate(lastPlayed)}</div>
+          </td>
+          <td class="pr-3 text-right whitespace-nowrap">
+            <div class="font-bold text-xl ${countColorClass}">${count}回</div>
+          </td>
+          <td class="pr-3 text-gray-300 text-xl font-light">›</td>
+        </tr>
+      `;
+    }
 
     function render() {
       if (!rawData) return;
@@ -119,18 +139,13 @@
 
       document.getElementById('filter-area').classList.toggle('hidden', currentTab === 'unknown');
 
-      // 1. 持ち曲以外（unknown）タブの処理
-      // 【変更】main/encoresと同じ構造（count・playDates・urls付き）になったので、
-      // ランキング表示にして、クリックで演奏日と動画リンクを見られるようにする
+      // 1. 持ち曲以外（unknown）タブ
       if (currentTab === 'unknown') {
         const unknownStats = [...(rawData.unknown || [])].sort((a, b) => b.count - a.count);
 
-        document.getElementById('list').innerHTML = unknownStats.map(s => `
-          <tr class="border-t hover:bg-gray-50 cursor-pointer" data-name="${escapeHtml(s.name)}">
-            <td class="p-3 text-red-600 font-bold">${escapeHtml(s.name)}</td>
-            <td class="text-right p-3 font-bold text-red-400">${s.count}回</td>
-          </tr>
-        `).join('') || "<tr><td class='p-8 text-center text-gray-500'>持ち曲以外はありません</td></tr>";
+        document.getElementById('list').innerHTML = unknownStats.map(s => 
+          buildRow(null, s.name, s.count, s.lastPlayed, 'text-red-600', 'text-red-500')
+        ).join('') || "<tr><td colspan='3' class='p-8 text-center text-gray-500'>持ち曲以外はありません</td></tr>";
         return;
       }
 
@@ -149,19 +164,18 @@
         })})).filter(s => s.playDates.length > 0);
       }
 
+      // 【変更】countに加えて、絞り込んだ期間内での最終演奏日（lastPlayed）も集計する
       const map = {};
       source.forEach(s => {
-        if (!map[s.name]) map[s.name] = { name: s.name, count: 0 };
+        if (!map[s.name]) map[s.name] = { name: s.name, count: 0, lastPlayed: '' };
         map[s.name].count += s.playDates.length;
+        const maxDate = s.playDates.reduce((max, d) => d > max ? d : max, '');
+        if (maxDate > map[s.name].lastPlayed) map[s.name].lastPlayed = maxDate;
       });
 
-      // 【変更】onclick="showVideos('${s.name}')" を data-name属性に変更（アポストロフィ対策）
-      document.getElementById('list').innerHTML = Object.values(map).sort((a,b) => b.count - a.count).map((s, i) => `
-        <tr class="border-t hover:bg-gray-50 cursor-pointer" data-name="${escapeHtml(s.name)}">
-          <td class="p-3 font-bold">${i < 3 ? ['👑','🥈','🥉'][i] : (i+1)+'位'} ${escapeHtml(s.name)}</td>
-          <td class="text-right p-3 font-bold text-blue-600">${s.count}回</td>
-        </tr>
-      `).join('') || "<tr><td class='p-8 text-center text-gray-500'>該当する期間の演奏データがありません</td></tr>";
+      document.getElementById('list').innerHTML = Object.values(map).sort((a,b) => b.count - a.count).map((s, i) => 
+        buildRow(i, s.name, s.count, s.lastPlayed, 'text-gray-900', 'text-blue-600')
+      ).join('') || "<tr><td colspan='3' class='p-8 text-center text-gray-500'>該当する期間の演奏データがありません</td></tr>";
     }
     init();
   </script>
