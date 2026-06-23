@@ -117,7 +117,7 @@
 
     // 【追加】タップしやすい大きめの行（曲名+最終演奏日 / 回数 / ›マーク）を作る共通関数
     function buildRow(rank, name, count, lastPlayed, nameColorClass, countColorClass, chevronClass) {
-      const rankLabel = rank !== null ? (rank < 3 ? ['👑','🥈','🥉'][rank] : (rank+1)+'位') : '';
+      const rankLabel = rank !== null ? (rank < 3 ? `${['👑','🥈','🥉'][rank]} ${rank+1}位` : `${rank+1}位`) : '';
       return `
         <tr class="border-b active:bg-gray-100 cursor-pointer" data-name="${escapeHtml(name)}">
           <td class="pl-4 py-4">
