@@ -12,9 +12,12 @@
   <div id="root" class="max-w-2xl mx-auto sm:p-4">
     <div class="px-4 pt-4 sm:px-0 sm:pt-0">
       <h1 class="text-xl font-bold mb-6 text-gray-900 leading-tight">スズナ演奏曲<br>ライブ演奏回数ランキング</h1>
-      <div id="tabs" class="flex gap-4 border-b mb-4"></div>
+      <div id="tabs" class="flex gap-1 bg-gray-100 rounded-lg p-1 mb-4"></div>
       <div id="filter-area" class="mb-4">
-        <select id="year-select" onchange="render()" class="p-2 border rounded w-full bg-white"></select>
+        <div class="relative">
+          <select id="year-select" onchange="render()" class="appearance-none w-full p-3 pr-10 border-2 border-blue-200 rounded-lg bg-white font-bold text-blue-700"></select>
+          <div class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-blue-500 text-base">▼</div>
+        </div>
       </div>
     </div>
     <table class="w-full bg-white sm:shadow sm:rounded overflow-hidden">
@@ -113,7 +116,7 @@
     });
 
     // 【追加】タップしやすい大きめの行（曲名+最終演奏日 / 回数 / ›マーク）を作る共通関数
-    function buildRow(rank, name, count, lastPlayed, nameColorClass, countColorClass) {
+    function buildRow(rank, name, count, lastPlayed, nameColorClass, countColorClass, chevronClass) {
       const rankLabel = rank !== null ? (rank < 3 ? ['👑','🥈','🥉'][rank] : (rank+1)+'位') : '';
       return `
         <tr class="border-b active:bg-gray-100 cursor-pointer" data-name="${escapeHtml(name)}">
@@ -124,7 +127,9 @@
           <td class="pr-3 text-right whitespace-nowrap">
             <div class="font-bold text-xl ${countColorClass}">${count}回</div>
           </td>
-          <td class="pr-3 text-gray-300 text-xl font-light">›</td>
+          <td class="pr-4">
+            <span class="inline-flex items-center justify-center w-8 h-8 rounded-full ${chevronClass} font-bold text-lg">›</span>
+          </td>
         </tr>
       `;
     }
@@ -132,9 +137,9 @@
     function render() {
       if (!rawData) return;
       
-      const tabs = { year: '年別', encore: 'アンコール年別', unknown: '持ち曲以外' };
+      const tabs = { year: 'ライブ演奏回数', encore: 'アンコール演奏回数', unknown: '持ち曲以外' };
       document.getElementById('tabs').innerHTML = Object.entries(tabs).map(([id, label]) => 
-        `<button onclick="currentTab='${id}'; render()" class="pb-2 font-bold ${currentTab === id ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500'}">${label}</button>`
+        `<button onclick="currentTab='${id}'; render()" class="flex-1 py-2 text-sm font-bold rounded-md transition-colors ${currentTab === id ? 'bg-white text-blue-600 shadow' : 'text-gray-500'}">${label}</button>`
       ).join('');
 
       document.getElementById('filter-area').classList.toggle('hidden', currentTab === 'unknown');
@@ -144,7 +149,7 @@
         const unknownStats = [...(rawData.unknown || [])].sort((a, b) => b.count - a.count);
 
         document.getElementById('list').innerHTML = unknownStats.map(s => 
-          buildRow(null, s.name, s.count, s.lastPlayed, 'text-red-600', 'text-red-500')
+          buildRow(null, s.name, s.count, s.lastPlayed, 'text-red-600', 'text-red-500', 'bg-red-100 text-red-500')
         ).join('') || "<tr><td colspan='3' class='p-8 text-center text-gray-500'>持ち曲以外はありません</td></tr>";
         return;
       }
@@ -174,7 +179,7 @@
       });
 
       document.getElementById('list').innerHTML = Object.values(map).sort((a,b) => b.count - a.count).map((s, i) => 
-        buildRow(i, s.name, s.count, s.lastPlayed, 'text-gray-900', 'text-blue-600')
+        buildRow(i, s.name, s.count, s.lastPlayed, 'text-gray-900', 'text-blue-600', 'bg-blue-100 text-blue-500')
       ).join('') || "<tr><td colspan='3' class='p-8 text-center text-gray-500'>該当する期間の演奏データがありません</td></tr>";
     }
     init();
