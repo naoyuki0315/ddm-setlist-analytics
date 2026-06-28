@@ -237,6 +237,16 @@ def main():
             vid = v.get("id", "不明")
             print(f"  - {pub} | {title} | id={vid}")
 
+        # 【デバッグ用・一時的】6/28の動画の概要欄をそのまま表示して、改行(\n)が入っているか確認する
+        target_check_id = "szIyo5E5QyQ"
+        target_video = next((v for v in videos if v.get("id") == target_check_id), None)
+        if target_video:
+            print(f"【デバッグ】対象動画({target_check_id})の概要欄全文 ↓↓↓")
+            print(repr(target_video.get("snippet", {}).get("description", "")))
+            print("【デバッグ】対象動画の概要欄 ↑↑↑ ここまで")
+        else:
+            print(f"【デバッグ】対象動画({target_check_id})はvideosリストの中に見つかりませんでした。")
+
     except HttpError as e:
         # 【追加】HttpErrorの場合は、HTTPステータスコードと理由を具体的に出力する
         # （クォータ切れ／APIキー無効／リファラー制限／APIが有効化されていない、等を見分けるための情報）
